@@ -1,0 +1,28 @@
+{
+  "name": "easy-restaurant",
+  "version": "1.0.0",
+  "description": "Simple restaurant management software",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mr5he11/easy-restaurant.git"
+  },
+  "keywords": [
+    "restaurant",
+    "node",
+    "caFoscariUniversity"
+  ],
+  "author": "Stefano Sello & Roberto Milan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Mr5he11/easy-restaurant/issues"
+  },
+  "homepage": "https://github.com/Mr5he11/easy-restaurant#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}

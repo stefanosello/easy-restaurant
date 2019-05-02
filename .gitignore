@@ -59,3 +59,50 @@ typings/
 
 # next.js build output
 .next
+
+# !!! ANGULAR FRONTEND !!!
+
+# compiled output
+/easy-restaurant-frontend/dist
+/easy-restaurant-frontend/tmp
+/easy-restaurant-frontend/out-tsc
+# Only exists if Bazel was run
+/easy-restaurant-frontend/bazel-out
+
+# dependencies
+/easy-restaurant-frontend/node_modules
+
+# profiling files
+/easy-restaurant-frontend/chrome-profiler-events.json
+/easy-restaurant-frontend/speed-measure-plugin.json
+
+# IDEs and editors
+/easy-restaurant-frontend/.idea
+/easy-restaurant-frontend/.project
+/easy-restaurant-frontend/.classpath
+/easy-restaurant-frontend/.c9/
+/easy-restaurant-frontend/*.launch
+/easy-restaurant-frontend/.settings/
+/easy-restaurant-frontend/*.sublime-workspace
+
+# IDE - VSCode
+/easy-restaurant-frontend/.vscode/*
+!/easy-restaurant-frontend/.vscode/settings.json
+!/easy-restaurant-frontend/.vscode/tasks.json
+!/easy-restaurant-frontend/.vscode/launch.json
+!/easy-restaurant-frontend/.vscode/extensions.json
+/easy-restaurant-frontend/.history/*
+
+# misc
+/easy-restaurant-frontend/.sass-cache
+/easy-restaurant-frontend/connect.lock
+/easy-restaurant-frontend/coverage
+/easy-restaurant-frontend/libpeerconnection.log
+/easy-restaurant-frontend/npm-debug.log
+/easy-restaurant-frontend/yarn-error.log
+/easy-restaurant-frontend/testem.log
+/easy-restaurant-frontend/typings
+
+# System Files
+/easy-restaurant-frontend/.DS_Store
+/easy-restaurant-frontend/Thumbs.db
