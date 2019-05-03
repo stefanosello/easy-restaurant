@@ -1,6 +1,6 @@
-import { Document, Schema, model} from "mongoose";
+import { Document, Schema, model } from "mongoose";
 
 export interface ITable extends Document {
-    n_seats: number;
+    seats: number;
     ordinations: [];
 }
