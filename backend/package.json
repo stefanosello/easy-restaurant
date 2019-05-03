@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "compile": "tsc",
+    "serve": "node ./dist/index.js",
+    "start:dev": "ts-node-dev --respawn --transpileOnly ./src/index.ts",
+    "start": "npm run compile && npm run serve"
   },
   "repository": {
     "type": "git",
@@ -29,6 +32,8 @@
   },
   "devDependencies": {
     "@types/mongodb": "^3.1.26",
-    "@types/mongoose": "^5.3.27"
+    "@types/mongoose": "^5.3.27",
+    "ts-node-dev": "^1.0.0-pre.34",
+    "typescript": "^3.4.5"
   }
 }

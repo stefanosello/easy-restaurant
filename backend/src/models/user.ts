@@ -1,4 +1,4 @@
-import { Document, Schema, Model, model} from "mongoose";
+import { Document, Schema, model} from "mongoose";
 
 const Roles = Object.freeze({
 	Cook: "cook",
@@ -7,10 +7,10 @@ const Roles = Object.freeze({
 });
 
 export interface IUser extends Document {
-  username: string;
-  digest: string;
-  salt: string;
-  role: string;
+	username: string;
+	digest: string;
+	salt: string;
+	role: string;
 }
 
 const UserSchema: Schema = new Schema({
