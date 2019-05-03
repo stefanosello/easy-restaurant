@@ -62,6 +62,9 @@
 # next.js build output
 /backend/.next
 
+# compiled output
+/backend/dist
+
 # !!! ANGULAR FRONTEND !!!
 
 # compiled output
