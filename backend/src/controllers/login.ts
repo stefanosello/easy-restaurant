@@ -1,7 +1,7 @@
-import jsonwebtoken from 'jsonwebtoken'
 import { Handler } from 'express'
+import User from '../models/user'
 
-const login: Handler = (req, res) => {
+const login: Handler = (req, res, next) => {
 
   // If we reach this point, the user is successfully authenticated and
   // has been injected into req.user
@@ -9,16 +9,15 @@ const login: Handler = (req, res) => {
   // We now generate a JWT with the useful user data
   // and return it as response
 
-  var tokendata = {
-    username: req.user.username,
-    role: req.user.role,
-    id: req.user.id
-  };
+  let token;
 
-  console.log("Login granted. Generating token");
-  var token_signed = jsonwebtoken.sign(tokendata, process.env.JWT_SECRET!, { expiresIn: '1h' });
-
-  return res.status(200).json({ error: false, errormessage: "", token: token_signed });
+  try {
+    token = new User(req.user).generateToken();
+  }
+  catch(error) {
+    next({ statusCode: 500, error: true, errormessage: "Error generating token"})
+  }
+  return res.status(200).json({ error: false, errormessage: "", token: token });
 
 }
 

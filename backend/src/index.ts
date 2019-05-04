@@ -7,7 +7,7 @@ import http from 'http'
 import https from 'https'
 import fs from 'fs'
 import routes from './routes'
-import * as user from './models/user'
+import User from './models/user'
 
 if (setup.error) {
     console.log("Unable to load \".env\" file. Please provide one to store the JWT secret key");
@@ -21,7 +21,6 @@ if (!process.env.JWT_SECRET) {
 const app = express();
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-    console.log("Request error: " + JSON.stringify(err));
     res.status(err.statusCode || 500).json(err);
 }
 
@@ -41,20 +40,25 @@ app
         res.status(404).json({ statusCode: 404, error: true, errormessage: "Invalid endpoint" });
     });
 
-mongoose.connect(process.env.MONGODB_URI!)
+mongoose.connect(process.env.MONGODB_URI!, {
+    useNewUrlParser: true,
+    useCreateIndex: true
+})
     .then(() => {
-        console.log("Connected to MongoDB");
+        console.log(`Connected to MongoDB on ${process.env.MONGODB_URI}`);
 
-        var u = user.newUser({
+        let admin = new User({
             username: "admin",
         });
-        u.setPassword("admin");
-        u.setCashDesk();
+        admin.setPassword("admin");
+        admin.setCashDesk();
 
-        u.save()
+        admin.save()
             .then(() => console.log("Admin user created"))
             .catch((err) => {
-                console.log("Unable to create admin user: " + err);
+                // Ignore if user already exists
+                if (err.code !== 11000)
+                    console.log("Unable to create admin user: " + err);
             });
 
         // HTTP Server
@@ -72,7 +76,7 @@ mongoose.connect(process.env.MONGODB_URI!)
         });
         */
 
-    }, () => {
-        console.log("Unable to connect to MongoDB");
+    }, (err) => {
+        console.log(`Unable to connect to MongoDB:\n${err}`);
         process.exit(-2);
     })

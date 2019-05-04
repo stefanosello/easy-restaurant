@@ -1,13 +1,14 @@
 import { Document, Schema, Model, model } from 'mongoose';
+import jsonwebtoken from 'jsonwebtoken'
 import crypto from 'crypto';
 
-const Roles = Object.freeze({
-    Cook: "cook",
-    Waiter: "waiter",
-    CashDesk: "cash_desk"
-});
+export enum Roles {
+    Cook = "cook",
+    Waiter = "waiter",
+    CashDesk = "cash_desk"
+}
 
-export interface IUser extends Document {
+interface IUser extends Document {
     readonly _id: Schema.Types.ObjectId,
     username: string,
     role: string,
@@ -17,10 +18,16 @@ export interface IUser extends Document {
     validatePassword: (pwd: string) => boolean,
     setCook: () => void,
     setWaiter: () => void,
-    setCashDesk: () => void
+    setCashDesk: () => void,
+    generateToken: (exp?: string) => string
 }
 
-var UserSchema = new Schema({
+// declare user static members and methods here
+interface IUserModel extends Model<IUser> {
+    roles: Readonly<object>
+}
+
+const UserSchema = new Schema<IUser>({
     username: { type: String, required: true, unique: true },
     role: { type: String, enum: Object.values(Roles), required: true },
     salt: { type: String, required: true },
@@ -71,19 +78,15 @@ UserSchema.methods.setCashDesk = function (): void {
     this.role = Roles.CashDesk
 }
 
-Object.assign(UserSchema.statics, { Roles });
-
-export function getSchema() { return UserSchema; }
-
-let userModel: Model<IUser>;  // This is not exposed outside the model
-export function getModel(): Model<IUser> { // Return Model as singleton
-    if (!userModel) {
-        userModel = model('User', getSchema())
-    }
-    return userModel;
+UserSchema.methods.generateToken = function (exp: string = '1h'): string {
+    return jsonwebtoken.sign({
+        username: this.username,
+        role: this.role,
+        id: this._id
+    }, process.env.JWT_SECRET!, { expiresIn: exp })
 }
 
-export function newUser(data: any): IUser {
-    let _usermodel = getModel();
-    return new _usermodel(data);
-}
+UserSchema.statics.roles = Object.values(Roles);
+
+const User = model<IUser, IUserModel>('User', UserSchema)
+export default User
