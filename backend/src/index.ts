@@ -49,9 +49,9 @@ mongoose.connect(process.env.MONGODB_URI!, {
 
         let admin = new User({
             username: "admin",
+            role: "cash_desk"
         });
         admin.setPassword("admin");
-        admin.setCashDesk();
 
         admin.save()
             .then(() => console.log("Admin user created"))

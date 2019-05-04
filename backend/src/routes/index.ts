@@ -1,7 +1,8 @@
 import { Router } from 'express'
-import login from '../controllers/login'
-import register from '../controllers/register'
-import * as Auth from '../controllers/auth'
+import loginController from '../controllers/login'
+import * as authController from '../controllers/auth'
+import * as userController from '../controllers/user'
+import usersRoutes from './users'
 
 const router = Router();
 
@@ -13,15 +14,15 @@ router
       endpoints: ["/login", "/register", "/users"]
     }
   ))
-  .post('/register', register)
-  .post('/login', Auth.credentials, login)
+  .post('/register', userController.create)
+  .post('/login', authController.credentials, loginController)
 
   // Every other page requires access
-  .use(Auth.token)
+  .use(authController.token)
 
   // Routes
-  .get('/users', Auth.admin, (req, res, next) => res.send('User endpoint'))
-  .get('/tables', (req, res, next) => res.send('Tables endpoint'))
-  .get('/orders', (req, res, next) => res.send('Orders endpoint'))
+  .use('/users', authController.admin, usersRoutes)
+  .use('/tables', (req, res, next) => res.send('Tables endpoint'))
+  .use('/orders', (req, res, next) => res.send('Orders endpoint'))
 
 export default router;

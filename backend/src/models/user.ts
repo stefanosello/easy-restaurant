@@ -11,14 +11,15 @@ export enum Roles {
 interface IUser extends Document {
     readonly _id: Schema.Types.ObjectId,
     username: string,
+    name: {
+        first: string,
+        last: string
+    }
     role: string,
     salt: string,
     digest: string,
     setPassword: (pwd: string) => void,
     validatePassword: (pwd: string) => boolean,
-    setCook: () => void,
-    setWaiter: () => void,
-    setCashDesk: () => void,
     generateToken: (exp?: string) => string
 }
 
@@ -29,13 +30,16 @@ interface IUserModel extends Model<IUser> {
 
 const UserSchema = new Schema<IUser>({
     username: { type: String, required: true, unique: true },
+    name: {
+        first: String,
+        last: String
+    },
     role: { type: String, enum: Object.values(Roles), required: true },
-    salt: { type: String, required: true },
-    digest: { type: String, required: true }
+    salt: String,
+    digest: String
 })
 
 // Here we add some methods to the user Schema
-
 UserSchema.methods.setPassword = function (pwd: string) {
 
     this.salt = crypto.randomBytes(16).toString('hex'); // We use a random 16-bytes hex string for salt
@@ -64,18 +68,6 @@ UserSchema.methods.validatePassword = function (pwd: string): boolean {
     hmac.update(pwd);
     var digest = hmac.digest('hex');
     return (this.digest === digest);
-}
-
-UserSchema.methods.setCook = function (): void {
-    this.role = Roles.Cook
-}
-
-UserSchema.methods.setWaiter = function (): void {
-    this.role = Roles.Waiter
-}
-
-UserSchema.methods.setCashDesk = function (): void {
-    this.role = Roles.CashDesk
 }
 
 UserSchema.methods.generateToken = function (exp: string = '1h'): string {
