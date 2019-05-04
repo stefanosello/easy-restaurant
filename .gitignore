@@ -63,7 +63,7 @@
 /backend/.next
 
 # compiled output
-/backend/dist
+/backend/dist/
 
 # !!! ANGULAR FRONTEND !!!
 
