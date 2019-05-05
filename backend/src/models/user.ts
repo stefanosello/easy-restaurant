@@ -1,7 +1,7 @@
 import { Document, Schema, Model, model } from 'mongoose';
 import jsonwebtoken from 'jsonwebtoken'
 import crypto from 'crypto';
-
+ 
 export enum Roles {
     Cook = "cook",
     Waiter = "waiter",
