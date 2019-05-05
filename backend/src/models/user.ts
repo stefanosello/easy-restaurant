@@ -1,6 +1,6 @@
 import { Document, Schema, Model, model } from 'mongoose';
 import jsonwebtoken from 'jsonwebtoken'
-import crypto from 'crypto';
+import bcrypt from 'bcrypt';
 
 export enum Roles {
     Cook = "cook",
@@ -11,14 +11,12 @@ export enum Roles {
 interface IUser extends Document {
     readonly _id: Schema.Types.ObjectId,
     username: string,
+    password: string,
     name: {
         first: string,
         last: string
     }
     role: string,
-    salt: string,
-    digest: string,
-    setPassword: (pwd: string) => void,
     validatePassword: (pwd: string) => boolean,
     generateToken: (exp?: string) => string
 }
@@ -30,44 +28,28 @@ interface IUserModel extends Model<IUser> {
 
 const UserSchema = new Schema<IUser>({
     username: { type: String, required: true, unique: true },
+    password: String,
     name: {
         first: String,
         last: String
     },
-    role: { type: String, enum: Object.values(Roles), required: true },
-    salt: String,
-    digest: String
+    role: { type: String, enum: Object.values(Roles), required: true }
 })
 
-// Here we add some methods to the user Schema
-UserSchema.methods.setPassword = function (pwd: string) {
+UserSchema.pre<IUser>('save', function (next) {
+    // prevent username edits
+    if (this.isModified('username')) {
+        throw 'Username is read only!'
+    }
 
-    this.salt = crypto.randomBytes(16).toString('hex'); // We use a random 16-bytes hex string for salt
-
-    // We use the hash function sha512 to hash both the password and salt to
-    // obtain a password digest 
-    // 
-    // From wikipedia: (https://en.wikipedia.org/wiki/HMAC)
-    // In cryptography, an HMAC (sometimes disabbreviated as either keyed-hash message 
-    // authentication code or hash-based message authentication code) is a specific type 
-    // of message authentication code (MAC) involving a cryptographic hash function and 
-    // a secret cryptographic key.
-    //
-    var hmac = crypto.createHmac('sha512', this.salt);
-    hmac.update(pwd);
-    this.digest = hmac.digest('hex'); // The final digest depends both by the password and the salt
-}
+    // hash password
+    let saltRounds = 12;
+    this.password = bcrypt.hashSync(this.password, saltRounds);
+    next();
+});
 
 UserSchema.methods.validatePassword = function (pwd: string): boolean {
-
-    // To validate the password, we compute the digest with the
-    // same HMAC to check if it matches with the digest we stored
-    // in the database.
-    //
-    var hmac = crypto.createHmac('sha512', this.salt);
-    hmac.update(pwd);
-    var digest = hmac.digest('hex');
-    return (this.digest === digest);
+    return bcrypt.compareSync(pwd, this.password)
 }
 
 UserSchema.methods.generateToken = function (exp: string = '1h'): string {

@@ -42,18 +42,17 @@ app
 
 mongoose.connect(process.env.MONGODB_URI!, {
     useNewUrlParser: true,
-    useCreateIndex: true
+    useCreateIndex: true,
+    useFindAndModify: false
 })
     .then(() => {
         console.log(`Connected to MongoDB on ${process.env.MONGODB_URI}`);
 
-        let admin = new User({
+        let admin = User.create({
             username: "admin",
+            password: "admin",
             role: "cash_desk"
-        });
-        admin.setPassword("admin");
-
-        admin.save()
+        })
             .then(() => console.log("Admin user created"))
             .catch((err) => {
                 // Ignore if user already exists
