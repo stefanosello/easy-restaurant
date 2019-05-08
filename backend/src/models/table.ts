@@ -11,11 +11,14 @@ export interface ITable extends Document {
 
 const TableSchema: Schema = new Schema({
 	number: { type: Number, required: true },
-	pendingOrders: [Order],
-	pastOrders: [Order]
+	pendingOrders: [ ],
+	pastOrders: [ ]
 });
 
 TableSchema.methods.emptyPendingOrdersList = function() {
 	this.pastOrders = this.pastOrders.concat(this.pendingOrders);
 	this.pendingOrders = [];
 } 
+
+const Table = model<ITable>('Table', TableSchema);
+export default Table; 

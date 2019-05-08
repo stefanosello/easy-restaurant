@@ -3,6 +3,7 @@ import loginController from '../controllers/login'
 import * as authController from '../controllers/auth'
 import * as userController from '../controllers/user'
 import usersRoutes from './users'
+import tablesRoutes from './tables'
 
 const router = Router();
 
@@ -22,7 +23,7 @@ router
 
   // Routes
   .use('/users', authController.admin, usersRoutes)
-  .use('/tables', (req, res, next) => res.send('Tables endpoint'))
+  .use('/tables', tablesRoutes)
   .use('/orders', (req, res, next) => res.send('Orders endpoint'))
 
 export default router;
