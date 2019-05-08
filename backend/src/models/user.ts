@@ -37,11 +37,6 @@ const UserSchema = new Schema<IUser>({
 })
 
 UserSchema.pre<IUser>('save', function (next) {
-    // prevent username edits
-    if (this.isModified('username')) {
-        throw 'Username is read only!'
-    }
-
     // hash password
     let saltRounds = 12;
     this.password = bcrypt.hashSync(this.password, saltRounds);

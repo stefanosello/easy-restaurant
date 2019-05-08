@@ -39,6 +39,7 @@ export const create: Handler = (req, res, next) => {
   let user = User.create(req.body)
     .then(data => res.status(200).json({ error: false, errormessage: "", id: data._id }))
     .catch(err => {
+      console.log(err);
       let msg = `DB error: ${err.errmsg}`
       if (err.code === 11000)
         msg = "User already exists"
