@@ -12,7 +12,7 @@ export interface IOrder extends Document {
     }];
 };
 
-const OrderSchema: Schema = new Schema({
+export const OrderSchema: Schema = new Schema({
 	kitchen: [{
 	    food_id: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Item" },
 	    quantity: { type: Number, required: true }
