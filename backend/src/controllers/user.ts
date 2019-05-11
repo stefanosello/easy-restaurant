@@ -42,7 +42,7 @@ export const create: Handler = (req, res, next) => {
       let msg = `DB error: ${err.errmsg}`
       if (err.code === 11000)
         msg = "User already exists"
-      return next({ statusCode: 400, error: true, errormessage: msg });
+      return next({ statusCode: 409, error: true, errormessage: msg });
     });
 }
 
@@ -53,7 +53,9 @@ export const update: Handler = (req, res, next) => {
       return next({ statusCode: 400, error: true, errormessage: `DB error: ${err.errmsg}` })
     });
 }
-export const updatePartial: Handler = (req, res, next) => { }
+export const updatePartial: Handler = (req, res, next) => { 
+  res.status(501);
+}
 
 export const remove: Handler = (req, res, next) => {
   if (req.user.username != req.params.username) {
