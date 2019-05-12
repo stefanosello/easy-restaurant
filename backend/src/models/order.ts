@@ -3,6 +3,7 @@ import mongoose, { Document, Schema, model } from "mongoose";
 export interface IOrder extends Document {
 	readonly _id: Schema.Types.ObjectId;
 	readonly created_at: Schema.Types.Date;
+	processed: Schema.Types.Date;
     kitchen: [{
         food_id: Schema.Types.ObjectId,
         quantity: number
@@ -15,6 +16,7 @@ export interface IOrder extends Document {
 
 export const OrderSchema: Schema = new Schema({
 	created_at: { type: Date, default: Date.now() },
+	processed: { type: Date, default: null },
 	kitchen: [{
 	    food_id: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Item" },
 	    quantity: { type: Number, required: true }
@@ -22,7 +24,7 @@ export const OrderSchema: Schema = new Schema({
 	bar: [{
 	    beverage_id: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Item" },
 	    quantity: { type: Number, required: true }
-	}]
+	}],
 });
 
 const Order = model<IOrder>('Order', OrderSchema);

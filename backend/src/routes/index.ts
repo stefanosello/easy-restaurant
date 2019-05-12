@@ -5,6 +5,7 @@ import * as userController from '../controllers/user'
 import usersRoutes from './users'
 import tablesRoutes from './tables'
 import ordersRoutes from './orders'
+import itemsRoutes from './items'
 
 const router = Router();
 
@@ -26,5 +27,6 @@ router
   .use('/users', authController.admin, usersRoutes)
   .use('/tables', tablesRoutes)
   .use('/orders', ordersRoutes)
+  .use('/items', itemsRoutes)
 
 export default router;
