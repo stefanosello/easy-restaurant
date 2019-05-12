@@ -7,13 +7,13 @@ export enum Types {
  
 export interface IItem extends Document {
 	readonly _id: Schema.Types.ObjectId;
-	name: string;
+	readonly name: string;
 	price: number;
 	type: string;
 };
 
 const ItemSchema: Schema = new Schema({
-	name: { type: String, required: true },
+	name: { type: String, unique : true, required : true, dropDups: true },
 	price: { type: Number, required: true },
 	type: { type: String, required: true, enum: Object.values(Types) }
 });
