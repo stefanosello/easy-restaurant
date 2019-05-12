@@ -4,6 +4,7 @@ import * as authController from '../controllers/auth'
 import * as userController from '../controllers/user'
 import usersRoutes from './users'
 import tablesRoutes from './tables'
+import ordersRoutes from './orders'
 
 const router = Router();
 
@@ -24,6 +25,6 @@ router
   // Routes
   .use('/users', authController.admin, usersRoutes)
   .use('/tables', tablesRoutes)
-  .use('/orders', (req, res, next) => res.send('Orders endpoint'))
+  .use('/orders', ordersRoutes)
 
 export default router;

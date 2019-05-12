@@ -58,6 +58,6 @@ export const remove: Handler = (req, res, next) => {
 	    	}
 	    })
 	    .catch(err => {
-	      return next({ statusCode: 400, error: true, errormessage: `DB error: ${err.errmsg}` })
+	      	return next({ statusCode: 400, error: true, errormessage: `DB error: ${err.errmsg}` })
 	    });
 }

@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import * as controller from '../controllers/table'
+import ordersRoutes from './orders'
 
 const tables = Router();
 
@@ -12,5 +13,7 @@ tables.route('/:tableNumber')
   .put(controller.update)
   .patch(controller.updatePartial)
   .delete(controller.remove)
+
+tables.use('/:tableNumber/orders', ordersRoutes)
 
 export default tables
