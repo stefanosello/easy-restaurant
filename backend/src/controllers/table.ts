@@ -4,7 +4,7 @@ import  Table from '../models/table'
 export const getAll: Handler = (req, res, next) => {
   	Table.find()
 	    .then(tables => {
-	      return res.status(200).json({ tables, links: [{ href: req.baseUrl, rel: "self" }] })
+	      return res.status(200).json({ tables })
 	    })
 	    .catch(err => {
 	      return next({ statusCode: 404, error: true, errormessage: `DB error: ${err}` });
@@ -38,7 +38,7 @@ export const create: Handler = (req, res, next) => {
 
 export const update: Handler = (req, res, next) => { 
 	Table.findOneAndUpdate({ number: req.params.number }, req.body)
-	    .then(data => res.status(200).json({ error: false, errormessage: "", result: "Table modified" }))
+	    .then(table => res.status(200).json({ table }))
 	    .catch(err => {
 	      return next({ statusCode: 400, error: true, errormessage: `DB error: ${err.errmsg}` })
 	    });

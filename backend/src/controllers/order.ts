@@ -5,7 +5,7 @@ import  Table from '../models/table'
 export const getAll: Handler = (req, res, next) => {
   	Order.find()
 	    .then(orders => {
-	      return res.status(200).json({ orders, links: [{ href: req.baseUrl, rel: "self" }] })
+	      return res.status(200).json({ orders })
 	    })
 	    .catch(err => {
 	      return next({ statusCode: 404, error: true, errormessage: `DB error: ${err}` });

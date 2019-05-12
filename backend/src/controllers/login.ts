@@ -10,14 +10,25 @@ const login: Handler = (req, res, next) => {
   // and return it as response
 
   let token;
+  let refresh;
+  let user = new User(req.user);
 
   try {
-    token = new User(req.user).generateToken();
+    token = user.generateToken();
+    refresh = user.generateRefreshToken(req.ip);
   }
-  catch(error) {
-    next({ statusCode: 500, error: true, errormessage: "Error generating token"})
+  catch (error) {
+    next({ statusCode: 500, error: true, errormessage: "Error generating token" })
   }
-  return res.status(200).json({ error: false, errormessage: "", token: token });
+
+  console.log({token, refresh})
+
+  return res.status(200).json({
+    error: false,
+    errormessage: "",
+    token: token,
+    session: refresh
+  });
 
 }
 

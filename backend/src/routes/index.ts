@@ -23,7 +23,7 @@ router
   .use(authController.token)
 
   // Routes
-  .use('/users', authController.admin, usersRoutes)
+  .use('/users', usersRoutes)
   .use('/tables', tablesRoutes)
   .use('/orders', ordersRoutes)
 

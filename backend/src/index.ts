@@ -53,7 +53,7 @@ mongoose.connect(process.env.MONGODB_URI!, {
             password: "admin",
             role: "cash_desk"
         })
-            .then(() => console.log("Admin user created"))
+            .then(user => console.log("Admin user created"))
             .catch((err) => {
                 // Ignore if user already exists
                 if (err.code !== 11000)

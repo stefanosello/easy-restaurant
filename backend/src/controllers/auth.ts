@@ -17,19 +17,20 @@ passport
   ))
   .use(new jwt.Strategy({
     jwtFromRequest: jwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.JWT_SECRET
-  }, function (payload, done) {
-    return User.findById(payload.id)
-      .then(user => {
-        return done(null, user)
-      })
-      .catch(err => {
-        return done(err);
-      });
+    secretOrKey: process.env.JWT_SECRET,
+    algorithms: ["HS256"]
+  }, (payload, done) => {
+    done(null, {
+      id: payload.id,
+      username: payload.username,
+      role: payload.role
+    })
   }));
 
-export const token = passport.authenticate('jwt', { session: false })
-export const credentials = passport.authenticate('basic', { session: false })
+export const credentials: Handler = passport.authenticate('basic', { session: false })
+
+export const token: Handler = passport.authenticate('jwt', { session: false })
+
 export const admin: Handler = (req, res, next) => {
   let user = new User(req.user);
   if (user.role == Roles.CashDesk)
