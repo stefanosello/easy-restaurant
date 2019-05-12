@@ -1,14 +1,20 @@
 import { Handler } from 'express'
+import { Query } from 'mongoose'
 import  Item from '../models/item'
 
 export const get: Handler = (req, res, next) => {
-    let params:object = {
-        type: req.params.itemType ? req.params.itemType : undefined,
-        name: req.params.itemName ? req.params.itemName : undefined
-    }
+    let type:string = req.query.itemType ? req.query.itemType : undefined;
+    let name:string = req.query.itemName ? req.query.itemName : undefined;
     // this one is a flag that, if true, makes the controller return a single object instead of an array
-    let findOne:boolean = req.params.findOne || false;
-    Item.find(params)
+    let findOne:boolean = req.query.findOne || false;
+    let query:Query<any> = Item.find({})
+    if (type) {
+        query = query.where('type').equals(type);
+    }
+    if (name) {
+        query = query.where('name').equals(name);
+    }
+    query
         .then(items => {
             if (findOne) {
                 return res.status(200).json({ item: items[0] });
@@ -18,7 +24,7 @@ export const get: Handler = (req, res, next) => {
         })
         .catch(err => {
             return res.json({ statusCode: 500, error: true, errormessage: err });
-        })
+        });
 }
 
 export const create: Handler = (req, res, next) => {
