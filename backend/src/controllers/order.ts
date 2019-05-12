@@ -3,7 +3,6 @@ import  Order, { IOrder } from '../models/order'
 import  Table from '../models/table'
 
 export const getAll: Handler = (req, res, next) => {
-<<<<<<< HEAD
   	Order.find()
 	    .then(orders => {
 	      return res.status(200).json({ orders })
@@ -11,28 +10,6 @@ export const getAll: Handler = (req, res, next) => {
 	    .catch(err => {
 	      return next({ statusCode: 404, error: true, errormessage: `DB error: ${err}` });
 	    })
-||||||| merged common ancestors
-  	Order.find()
-	    .then(orders => {
-	      return res.status(200).json({ orders, links: [{ href: req.baseUrl, rel: "self" }] })
-	    })
-	    .catch(err => {
-	      return next({ statusCode: 404, error: true, errormessage: `DB error: ${err}` });
-	    })
-=======
-	let tableNumber:number = req.params.tableNumber;
-	Table.findOne({ number: tableNumber })
-		.then(table => {
-			if (table) {
-				return res.status(200).json({ pendingOrders: table.pendingOrders, pastOrders: table.pastOrders, tableNumber: table.number });
-			} else {
-				return res.json({ statusCode: 404, error: true, errormessage: `Table ${tableNumber} not found\n`});
-			}
-		})
-		.catch(err => {
-			return next({ statusCode: 404, error: true, errormessage: `DB error: ${err}` });
-		})
->>>>>>> 9cb456cd1fa9fe8951701a365ce239cbbba17311
 }
 
 // After analyzed the context in which this kind of controller could be used
