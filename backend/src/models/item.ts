@@ -10,12 +10,14 @@ export interface IItem extends Document {
 	readonly name: string;
 	price: number;
 	type: string;
+	subtype: string;
 };
 
 const ItemSchema: Schema = new Schema({
 	name: { type: String, unique : true, required : true, dropDups: true },
 	price: { type: Number, required: true },
-	type: { type: String, required: true, enum: Object.values(Types) }
+	type: { type: String, required: true, enum: Object.values(Types) },
+	subtype: { type: String } 
 });
 
 interface IItemModel extends Model<IItem> {
