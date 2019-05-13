@@ -1,4 +1,5 @@
 import { Handler } from 'express'
+import { Schema } from 'mongoose'
 import  Order, { IOrder } from '../models/order'
 import  Table from '../models/table'
 
@@ -65,14 +66,37 @@ export const create: Handler = (req, res, next) => {
 		});
 }
 
-export const update: Handler = (req, res, next) => { 
-	res.status(501);
-}
-
-export const updatePartial: Handler = (req, res, next) => { 
-	res.status(501);
+export const update: Handler = (req, res, next) => {
+	let tableNumber:number = req.params.tableNumber;
+	let orderId:Schema.Types.ObjectId = req.params.orderId;
+	let updatedInfo = JSON.parse(req.body).updatedInfo;
+	Table.findOne({ number: tableNumber })
+		.then(table => {
+			if (table) {
+				let orderIndex:number = table.pendingOrders.findIndex((element) => element.id == orderId);
+				if (orderIndex >= 0) {
+					Object.keys(updatedInfo).forEach(key => {
+						table.pendingOrders[orderIndex][key] = updatedInfo[key]; 
+					})
+					table.save()
+						.then(order => {
+							return res.status(200).json({ order });
+						})
+						.catch(err => {
+							return next({ statusCode: 500, error: true, errormessage: err });
+						});
+				} else {
+					return next({ statusCode: 500, error: true, errormessage: "Order not found" });
+				}
+			} else {
+				return next({ statusCode: 500, error: true, errormessage: "Table not found" });
+			}		
+		})
+		.catch(err => {
+			return next({ statusCode: 500, error: true, errormessage: err });
+		});
 }
 
 export const remove: Handler = (req, res, next) => {
-	res.status(501);
+	res.status(403).end();
 }

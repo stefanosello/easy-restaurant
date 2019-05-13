@@ -10,7 +10,6 @@ orders.route('/')
 orders.route('/:orderId')
   .get(controller.get)
   .put(controller.update)
-  .patch(controller.updatePartial)
   .delete(controller.remove)
 
 export default orders

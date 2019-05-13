@@ -4,6 +4,7 @@ export interface IOrder extends Document {
 	readonly _id: Schema.Types.ObjectId;
 	readonly created_at: Schema.Types.Date;
 	processed: Schema.Types.Date;
+	[key:number]: number;
     kitchen: [{
         food_id: Schema.Types.ObjectId,
         quantity: number
