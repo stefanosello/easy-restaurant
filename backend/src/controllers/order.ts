@@ -75,12 +75,16 @@ export const update: Handler = (req, res, next) => {
 			if (table) {
 				let orderIndex:number = table.pendingOrders.findIndex((element) => element.id == orderId);
 				if (orderIndex >= 0) {
-					Object.keys(updatedInfo).forEach(key => {
-						table.pendingOrders[orderIndex][key] = updatedInfo[key]; 
-					})
+					if (updatedInfo.kitchen) {
+						table.pendingOrders[orderIndex].kitchen = updatedInfo.kitchen;
+					}
+					if (updatedInfo.bar) {
+						table.pendingOrders[orderIndex].bar = updatedInfo.bar;
+					} 
 					table.save()
-						.then(order => {
-							return res.status(200).json({ order });
+						.then(table => {
+							let modifiedOrder:IOrder|undefined = table.pendingOrders.find((element) => element.id == orderId);
+							return res.status(200).json({ modifiedOrder });
 						})
 						.catch(err => {
 							return next({ statusCode: 500, error: true, errormessage: err });
