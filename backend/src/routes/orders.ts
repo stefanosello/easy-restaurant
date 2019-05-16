@@ -7,7 +7,7 @@ orders.route('/')
   .post(controller.create)
 
 orders.route('/pending-orders/')
-  .get(controller.getAll)
+  .get(controller.get)
   .delete(controller.emptyPendingOrdersList)
 
 orders.route('/pending-orders/:orderId')

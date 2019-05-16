@@ -6,11 +6,11 @@ export interface IOrder extends Document {
 	processed: Schema.Types.Date;
 	[key:number]: number;
     kitchen: [{
-        food_id: Schema.Types.ObjectId,
+        food: Schema.Types.ObjectId,
         quantity: number
     }];
     bar: [{
-        beverage_id: Schema.Types.ObjectId,
+        beverage: Schema.Types.ObjectId,
         quantity: number
     }];
 };
@@ -19,11 +19,11 @@ export const OrderSchema: Schema = new Schema({
 	created_at: { type: Date, default: Date.now() },
 	processed: { type: Date, default: null },
 	kitchen: [{
-	    food_id: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Item" },
+	    food: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Item" },
 	    quantity: { type: Number, required: true }
 	}],
 	bar: [{
-	    beverage_id: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Item" },
+	    beverage: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Item" },
 	    quantity: { type: Number, required: true }
 	}],
 });

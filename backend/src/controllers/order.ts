@@ -4,41 +4,35 @@ import  Order, { IOrder } from '../models/order'
 import  Table from '../models/table'
 import { Roles } from '../models/user'
 
-export const getAll: Handler = (req, res, next) => {
-  	Order.find()
-	    .then(orders => {
-	      return res.status(200).json({ orders })
-	    })
-	    .catch(err => {
-	      return next({ statusCode: 404, error: true, errormessage: `DB error: ${err}` });
-	    })
-}
-
 // After analyzed the context in which this kind of controller could be used
 // it was decided to allow searching an order by Id only in the pending orders list of a table
 export const get: Handler = (req, res, next) => {
-	// let tableNumber:number = req.params.tableNumber;
-	// Table.findOne(tableNumber)
-	// 	.then(table => {
-	// 		if (table) {
-	// 			let order:IOrder|undefined = table.pendingOrders.find(order => { return order._id == req.params.orderId });
-	// 			if (order) {
-	// 				return res.status(200).json({ order });
-	// 			} else {
-	// 				return res.json({ statusCode: 404, error: true, errormessage: "Order not found" });
-	// 			}
-	// 		} else {
-	// 			return res.json({ statusCode: 404, error: true, errormessage: `Table ${tableNumber} not found`});
-	// 		}
-	// 	})
-	// 	.catch(err => {
-	// 		return next({ statusCode: 404, error: true, errormessage: `DB error: ${err}`})
-	// 	})
-	Table.findOne({ number: req.params.tableNumber, 'pendingOrders._id': req.params.orderId })
-		.populate('pendingOrders.kitchen.food_id')
-		//.populate('pendingOrders.bar.beverage_id')
+	let findBlock:any = { };
+	if ('tableNumber' in req.params) {
+		findBlock['number'] = req.params.tableNumber;
+	}
+	if ('orderId' in req.params) {
+		findBlock['pendingOrders._id'] = req.params.orderId;
+	}
+	Table.findOne(findBlock)
+		.populate('pendingOrders.kitchen.food')
+		.populate('pendingOrders.bar.beverage')
 		.then(result => {
-			return res.status(200).json({ result });
+			if (result) {
+				let response:any = { };
+				if ('pendingOrders._id' in findBlock) {
+					response = result.pendingOrders.find((element) => element._id == findBlock['pendingOrders._id']);
+				} else {
+					response = {
+						'pendingOrders': result.pendingOrders,
+						'pastOrders': result.pastOrders
+					}
+				}
+				return res.status(200).json(response);
+			} else {
+				return next({statusCode: 500, error: true, errormessage: "Table not found"});
+			}
+			
 		})
 		.catch(err => {
 			return next({statusCode: 500, error: true, errormessage: err});
@@ -138,11 +132,4 @@ export const emptyPendingOrdersList: Handler = (req, res, next) => {
 
 export const remove: Handler = (req, res, next) => {
 	res.status(501).end();
-}
-
-function parseOrdersForFrontend(orders:Array<IOrder>) {
-	let parsedOrders:Array<Object> = [];
-	orders.forEach((order, index) => {
-		
-	})
 }
