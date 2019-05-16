@@ -88,8 +88,31 @@ export const update: Handler = (req, res, next) => {
 		}
 	)
 	.then(table => {
-		res.status(200).json({ table });
+		return res.status(200).json({ table });
 	});
+}
+
+export const emptyPendingOrdersList: Handler = (req, res, next) => {
+	Table.findOne({ number: req.params.tableNumber })
+		.then(table => {
+			if (table) {
+				table.emptyPendingOrdersList();
+				table.save()
+					.then(table => {
+						return res.status(200).json({ table });
+					})
+					.catch(err => {
+						let msg = `DB error: ${err}`;
+						return next({ statusCode: 500, error: true, errormessage: msg });
+					});
+			} else {
+				return next({ statusCode: 404, error: true, errormessage: "Table not found" });
+			}
+		})
+		.catch(err => {
+			let msg = `DB error: ${err}`;
+			return next({ statusCode: 500, error: true, errormessage: msg });
+		});
 }
 
 export const remove: Handler = (req, res, next) => {

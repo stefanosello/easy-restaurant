@@ -3,11 +3,12 @@ import * as controller from '../controllers/order'
 
 const orders = Router({mergeParams: true});
 
-orders.route('/')
+orders.route('/pending-orders/')
   .get(controller.getAll)
   .post(controller.create)
+  .delete(controller.emptyPendingOrdersList)
 
-orders.route('/:orderId')
+orders.route('/pending-orders/:orderId')
   .get(controller.get)
   .put(controller.update)
   .delete(controller.remove)
