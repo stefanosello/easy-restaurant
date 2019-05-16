@@ -2,6 +2,7 @@ import { Handler } from 'express'
 import { Schema } from 'mongoose'
 import  Order, { IOrder } from '../models/order'
 import  Table from '../models/table'
+import { Roles } from '../models/user'
 
 export const getAll: Handler = (req, res, next) => {
   	Order.find()
@@ -16,22 +17,31 @@ export const getAll: Handler = (req, res, next) => {
 // After analyzed the context in which this kind of controller could be used
 // it was decided to allow searching an order by Id only in the pending orders list of a table
 export const get: Handler = (req, res, next) => {
-	let tableNumber:number = req.params.tableNumber;
-	Table.findOne(tableNumber)
-		.then(table => {
-			if (table) {
-				let order:IOrder|undefined = table.pendingOrders.find(order => { return order._id == req.params.orderId });
-				if (order) {
-					return res.status(200).json({ order });
-				} else {
-					return res.json({ statusCode: 404, error: true, errormessage: "Order not found" });
-				}
-			} else {
-				return res.json({ statusCode: 404, error: true, errormessage: `Table ${tableNumber} not found`});
-			}
+	// let tableNumber:number = req.params.tableNumber;
+	// Table.findOne(tableNumber)
+	// 	.then(table => {
+	// 		if (table) {
+	// 			let order:IOrder|undefined = table.pendingOrders.find(order => { return order._id == req.params.orderId });
+	// 			if (order) {
+	// 				return res.status(200).json({ order });
+	// 			} else {
+	// 				return res.json({ statusCode: 404, error: true, errormessage: "Order not found" });
+	// 			}
+	// 		} else {
+	// 			return res.json({ statusCode: 404, error: true, errormessage: `Table ${tableNumber} not found`});
+	// 		}
+	// 	})
+	// 	.catch(err => {
+	// 		return next({ statusCode: 404, error: true, errormessage: `DB error: ${err}`})
+	// 	})
+	Table.findOne({ number: req.params.tableNumber, 'pendingOrders._id': req.params.orderId })
+		.populate('pendingOrders.kitchen.food_id')
+		//.populate('pendingOrders.bar.beverage_id')
+		.then(result => {
+			return res.status(200).json({ result });
 		})
 		.catch(err => {
-			return next({ statusCode: 404, error: true, errormessage: `DB error: ${err}`})
+			return next({statusCode: 500, error: true, errormessage: err});
 		})
 }
 
@@ -71,11 +81,22 @@ export const update: Handler = (req, res, next) => {
 	let orderId:Schema.Types.ObjectId = req.params.orderId;
 	let updatedInfo = JSON.parse(req.body.updatedInfo);
 	let updateBlock:any = { };
-	if (updatedInfo.kitchen) {
-		updateBlock['pendingOrders.$.kitchen'] = updatedInfo.kitchen;
+	// changes to order contents can be made only from Cash Desk and Waiters
+	if (req.user.role == Roles.Waiter || req.user.role == Roles.CashDesk) {
+		if ("kitchen" in updatedInfo) {
+			updateBlock['pendingOrders.$.kitchen'] = updatedInfo.kitchen;
+		}
+		if ("bar" in updatedInfo) {
+			updateBlock['pendingOrders.$.bar'] = updatedInfo.bar;
+		}
 	}
-	if (updatedInfo.bar) {
-		updateBlock['pendingOrders.$.bar'] = updatedInfo.bar;
+	// changing processed status of an order can only been made from Cash Desk or Cooks
+	if ("processed" in updatedInfo && (req.user.role == Roles.CashDesk || req.user.role == Roles.Cook)) {
+		if (updatedInfo.processed) {
+			updateBlock['pendingOrders.$.processed'] = Date.now();
+		} else {
+			updateBlock['pendingOrders.$.processed'] = null;
+		}
 	}
 	Table.updateOne(
 		{ number: tableNumber, 'pendingOrders._id': orderId },
@@ -116,5 +137,12 @@ export const emptyPendingOrdersList: Handler = (req, res, next) => {
 }
 
 export const remove: Handler = (req, res, next) => {
-	res.status(403).end();
+	res.status(501).end();
+}
+
+function parseOrdersForFrontend(orders:Array<IOrder>) {
+	let parsedOrders:Array<Object> = [];
+	orders.forEach((order, index) => {
+		
+	})
 }

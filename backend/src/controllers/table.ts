@@ -38,10 +38,10 @@ export const create: Handler = (req, res, next) => {
 
 export const update: Handler = (req, res, next) => { 
 	Table.findOneAndUpdate({ number: req.params.number }, req.body)
-	    .then(table => res.status(200).json({ table }))
-	    .catch(err => {
-	      return next({ statusCode: 400, error: true, errormessage: `DB error: ${err.errmsg}` })
-	    });
+		.then(table => res.status(200).json({ table }))
+		.catch(err => {
+			return next({ statusCode: 400, error: true, errormessage: `DB error: ${err.errmsg}` })
+		});
 }
 
 export const updatePartial: Handler = (req, res, next) => { 
