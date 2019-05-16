@@ -62,43 +62,34 @@ export const create: Handler = (req, res, next) => {
 		.then(table => res.status(200).end())
 		.catch(err => {
 			let msg = `DB error: ${err.errmsg}`
-		    return next({ statusCode: 500, error: true, errormessage: msg });
+		  	return next({ statusCode: 500, error: true, errormessage: msg });
 		});
 }
 
 export const update: Handler = (req, res, next) => {
 	let tableNumber:number = req.params.tableNumber;
 	let orderId:Schema.Types.ObjectId = req.params.orderId;
-	let updatedInfo = JSON.parse(req.body).updatedInfo;
-	Table.findOne({ number: tableNumber })
-		.then(table => {
-			if (table) {
-				let orderIndex:number = table.pendingOrders.findIndex((element) => element.id == orderId);
-				if (orderIndex >= 0) {
-					if (updatedInfo.kitchen) {
-						table.pendingOrders[orderIndex].kitchen = updatedInfo.kitchen;
-					}
-					if (updatedInfo.bar) {
-						table.pendingOrders[orderIndex].bar = updatedInfo.bar;
-					} 
-					table.save()
-						.then(table => {
-							let modifiedOrder:IOrder|undefined = table.pendingOrders.find((element) => element.id == orderId);
-							return res.status(200).json({ modifiedOrder });
-						})
-						.catch(err => {
-							return next({ statusCode: 500, error: true, errormessage: err });
-						});
-				} else {
-					return next({ statusCode: 500, error: true, errormessage: "Order not found" });
-				}
-			} else {
-				return next({ statusCode: 500, error: true, errormessage: "Table not found" });
-			}		
-		})
-		.catch(err => {
-			return next({ statusCode: 500, error: true, errormessage: err });
-		});
+	let updatedInfo = JSON.parse(req.body.updatedInfo);
+	let updateBlock:any = { };
+	if (updatedInfo.kitchen) {
+		updateBlock['pendingOrders.$.kitchen'] = updatedInfo.kitchen;
+	}
+	if (updatedInfo.bar) {
+		updateBlock['pendingOrders.$.bar'] = updatedInfo.bar;
+	}
+	Table.updateOne(
+		{ number: tableNumber, 'pendingOrders._id': orderId },
+		{ $set: updateBlock },
+		(err) => {
+			if (err) {
+				let msg = `DB error: ${err}`;
+				return next({ statusCode: 500, error: true, errormessage: msg });
+			}
+		}
+	)
+	.then(table => {
+		res.status(200).json({ table });
+	});
 }
 
 export const remove: Handler = (req, res, next) => {
