@@ -14,6 +14,8 @@ tables.route('/:tableNumber')
   .patch(controller.updatePartial)
   .delete(controller.remove)
 
+tables.get('/:tableNumber/bill', controller.getBill)
+
 tables.use('/:tableNumber/orders', ordersRoutes)
 
 export default tables
