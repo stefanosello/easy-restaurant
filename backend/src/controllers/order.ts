@@ -116,14 +116,15 @@ export const emptyPendingOrdersList: Handler = (req, res, next) => {
 					$push: { pastOrders: { $each: pendingOrders } },
 					$pullAll: { pendingOrders: pendingOrders } 
 				})
-				.exec()
+				.exec(err => {
+					if (err) {
+						let msg = `DB error: ${err}`;
+						return next({ statusCode: 500, error: true, errormessage: msg });
+					}
+				})
 				.then(table => {
 					return res.status(200).json({ table });
 				})
-				.catch(err => {
-					let msg = `DB error: ${err}`;
-					return next({ statusCode: 500, error: true, errormessage: msg });
-				});
 			} else {
 				return next({ statusCode: 404, error: true, errormessage: "Table not found" });
 			}
