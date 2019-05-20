@@ -1,31 +1,31 @@
 import mongoose, { Document, Schema, model } from "mongoose";
+import Types from './item'
  
 export interface IOrder extends Document {
 	readonly _id: Schema.Types.ObjectId;
 	readonly created_at: Schema.Types.Date;
 	processed: Schema.Types.Date;
-	[key:number]: number;
-    kitchen: [{
-        food: Schema.Types.ObjectId,
-        quantity: number
-    }];
-    bar: [{
-        beverage: Schema.Types.ObjectId,
-        quantity: number
+	type: string;
+    items: [{
+        item: Schema.Types.ObjectId,
+		quantity: number,
+		cook: Schema.Types.ObjectId,
+		start: Date,
+		end: Date
     }];
 };
 
 export const OrderSchema: Schema = new Schema({
 	created_at: { type: Date, default: Date.now() },
 	processed: { type: Date, default: null },
-	kitchen: [{
-	    food: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Item" },
-	    quantity: { type: Number, required: true }
-	}],
-	bar: [{
-	    beverage: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Item" },
-	    quantity: { type: Number, required: true }
-	}],
+	type: { type: String, required: true, enum: Object.values(Types)},
+	items: [{
+	    item: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Item" },
+		quantity: { type: Number, required: true },
+		cook: { type: Schema.Types.ObjectId, ref: "User" },
+		start: Date,
+		end: Date
+	}]
 });
 
 const Order = model<IOrder>('Order', OrderSchema);

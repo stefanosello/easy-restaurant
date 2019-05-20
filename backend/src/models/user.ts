@@ -6,7 +6,8 @@ import { randomBytes } from 'crypto';
 export enum Roles {
     Cook = "cook",
     Waiter = "waiter",
-    CashDesk = "cash_desk"
+    CashDesk = "cash_desk",
+    Bartender = "bartender"
 }
 
 interface IUser extends Document {

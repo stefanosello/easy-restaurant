@@ -12,20 +12,23 @@ export const get: Handler = (req, res, next) => {
 		findBlock['number'] = req.params.tableNumber;
 	}
 	if ('orderId' in req.params) {
-		findBlock['pendingOrders._id'] = req.params.orderId;
+		findBlock['services.orders._id'] = req.params.orderId;
+	}
+	if ('orderType' in req.params) {
+		findBlock['services.orders.type'] = req.params.orderId;
 	}
 	Table.findOne(findBlock)
-		.populate('pendingOrders.kitchen.food')
-		.populate('pendingOrders.bar.beverage')
+		.populate('services.orders.items.item')
 		.then(result => {
 			if (result) {
 				let response:any = { };
-				if ('pendingOrders._id' in findBlock) {
-					response = result.pendingOrders.find((element) => element._id == findBlock['pendingOrders._id']);
+				if ('services.orders._id' in findBlock) {
+					result.services.find((element) => {
+						return element.orders.id()
+					})
 				} else {
 					response = {
-						'pendingOrders': result.pendingOrders,
-						'pastOrders': result.pastOrders
+						serv
 					}
 				}
 				return res.status(200).json(response);
@@ -111,7 +114,6 @@ export const emptyPendingOrdersList: Handler = (req, res, next) => {
 	Table.findOne({ number: req.params.tableNumber })
 		.then(table => {
 			if (table) {
-				table.emptyPendingOrdersList();
 				table.save()
 					.then(table => {
 						return res.status(200).json({ table });
