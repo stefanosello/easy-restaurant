@@ -24,12 +24,10 @@ export const get: Handler = (req, res, next) => {
 				let response:any = { };
 				if ('services.orders._id' in findBlock) {
 					result.services.find((element) => {
-						return element.orders.id()
+						return element.orders.empty
 					})
 				} else {
-					response = {
-						serv
-					}
+					response = {}
 				}
 				return res.status(200).json(response);
 			} else {
@@ -69,7 +67,7 @@ export const create: Handler = (req, res, next) => {
 		.then(table => res.status(200).end())
 		.catch(err => {
 			let msg = `DB error: ${err.errmsg}`
-		  	return next({ statusCode: 500, error: true, errormessage: msg });
+			return next({ statusCode: 500, error: true, errormessage: msg });
 		});
 }
 
@@ -114,14 +112,20 @@ export const emptyPendingOrdersList: Handler = (req, res, next) => {
 	Table.findOne({ number: req.params.tableNumber })
 		.then(table => {
 			if (table) {
-				table.save()
-					.then(table => {
-						return res.status(200).json({ table });
-					})
-					.catch(err => {
+				let pendingOrders:IOrder[] = table.pendingOrders;
+				table.update({
+					$push: { pastOrders: { $each: pendingOrders } },
+					$pullAll: { pendingOrders: pendingOrders } 
+				})
+				.exec(err => {
+					if (err) {
 						let msg = `DB error: ${err}`;
 						return next({ statusCode: 500, error: true, errormessage: msg });
-					});
+					}
+				})
+				.then(table => {
+					return res.status(200).json({ table });
+				})
 			} else {
 				return next({ statusCode: 404, error: true, errormessage: "Table not found" });
 			}
