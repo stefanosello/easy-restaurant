@@ -15,16 +15,16 @@ export const get: Handler = (req, res, next) => {
 		findBlock['services.orders._id'] = req.params.orderId;
 	}
 	if ('orderType' in req.params) {
-		findBlock['services.orders.type'] = req.params.orderId;
+		findBlock['services.orders.type'] = req.query.orderType;
 	}
-	Table.findOne(findBlock)
+	Table.find(findBlock)
 		.populate('services.orders.items.item')
 		.then(result => {
 			if (result) {
 				let response:any = { };
 				if ('services.orders._id' in findBlock) {
 					result.services.find((element) => {
-						return element.orders.empty
+						return element.orders
 					})
 				} else {
 					response = {}

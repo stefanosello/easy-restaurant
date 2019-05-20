@@ -1,5 +1,20 @@
 import { Document, Schema, model } from "mongoose";
-import { IService, ServiceSchema } from "./service";
+import { IOrder, OrderSchema } from "./order";
+
+export interface IService extends Document {
+    readonly _id: Schema.Types.ObjectId,
+    covers: number,
+    orders: [IOrder],
+    timestamp: Date,
+    done: boolean
+}
+
+export const ServiceSchema: Schema = new Schema({
+    covers: { type: Number, required: true },
+    orders: [OrderSchema],
+    timestamp: { type: Date },
+    done: { type: Boolean, default: false }
+});
 
 export interface ITable extends Document {
 	readonly _id: Schema.Types.ObjectId;
