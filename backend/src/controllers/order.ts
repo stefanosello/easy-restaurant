@@ -27,7 +27,7 @@ export const get: Handler = (req, res, next) => {
 	}
 
 	Table.findOne(findBlock)
-		.populate('services.orders.items.item')
+    .populate('services.orders.items.item')
 		.then(result => {
 			if (result) {
 				let response:any = { } 
@@ -48,7 +48,6 @@ export const get: Handler = (req, res, next) => {
 			} else {
 				return next({statusCode: 500, error: true, errormessage: "Table not found"});
 			}
-			
 		})
 		.catch(err => {
 			return next({statusCode: 500, error: true, errormessage: err});
@@ -72,8 +71,7 @@ export const get: Handler = (req, res, next) => {
 export const create: Handler = (req, res, next) => {
 	let tableNumber:number = req.params.tableNumber;
 	let order:IOrder = new Order({ 
-		kitchen: JSON.parse(req.body.order).kitchen, 
-		bar: JSON.parse(req.body.order).bar
+		items: JSON.parse(req.body.order).items, 
 	});
 	Table.findOneAndUpdate(
 		{ number: tableNumber }, 

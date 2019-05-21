@@ -1,39 +1,48 @@
 import { Handler } from 'express'
 import  Table from '../models/table'
 
-export const getAll: Handler = (req, res, next) => {
-  	Table.find()
-	    .then(tables => {
-	      return res.status(200).json({ tables })
-	    })
-	    .catch(err => {
-	      return next({ statusCode: 404, error: true, errormessage: `DB error: ${err}` });
-	    })
-}
-
 export const get: Handler = (req, res, next) => {
-	let tableNumber = req.params.tableNumber;
-	Table.findOne({ number: tableNumber})
-		.then(table => {
-			return res.status(200).json({ table });
+	let findBlock:any = { };
+
+	if ('tableNumber' in req.params) {
+		findBlock['number'] = req.params.tableNumber;
+	}
+	if ('free' in req.query) {
+		findBlock['busy'] = !req.query.free;
+	}
+	if ('numberOfSeats' in req.query) {
+		findBlock['seats'] = !req.query.numberOfSeats;
+	}
+	Table.find(findBlock)
+		.then(tables => {
+			if (tables.length > 1 || (tables.length == 1 && findBlock['number'] == undefined)) {
+				return res.status(200).json({ tables });
+			} else if (tables.length == 1 && 'number' in findBlock) {
+				return res.status(200).json({ table: tables[0] });
+			} else {
+				return next({ statusCode: 404, error: true, errormessage: "Table not found"})
+			}	
 		})
 		.catch(err => {
-			return next({ statusCode: 404, error: true, errormessage: `DB error: ${err}`})
-		})
+			return next({ statusCode: 500, error: true, errormessage: `DB error: ${err}`});
+		});
 }
 
 export const create: Handler = (req, res, next) => {
-	let tableNumber = req.body.number;
-	Table.create({ number: tableNumber })
+	let newTable:any = {
+		number: req.body.tableNumber,
+		seats: req.body.numberOfSeats
+	}
+	Table.create(newTable)
 		.then(table => {
 			res.status(200).json({ table });
 		})
 		.catch(err => {
 			let msg = `DB error: ${err.errmsg}`
-		    if (err.code === 11000)
-		    	msg = "Table already exists"
-		    return next({ statusCode: 409, error: true, errormessage: msg });
-		})
+			if (err.code === 11000)
+				msg = "Table already exists"
+			return next({ statusCode: 409, error: true, errormessage: msg });
+		});
 }
 
 export const update: Handler = (req, res, next) => { 
@@ -62,28 +71,28 @@ export const remove: Handler = (req, res, next) => {
 		});
 }
 
-export const getBill: Handler = (req, res, next) => {
-	Table.findOne({ number: req.params.tableNumber })
-		.populate('pendingOrders.kitchen.food')
-		.populate('pendingOrders.bar.beverage')
-		.then(table => {
-			if (table) {
-				let bill:number = 0;
-				table.pendingOrders.forEach(order => {
-					order.kitchen.forEach(item => {
-						bill += item.quantity*item.food.price;
-					});
-					order.bar.forEach(item => {
-						bill += item.quantity*item.beverage.price;
-					})
-				});
-				return res.status(200).json({ bill });
-			} else {
-				return next({ statusCode: 404, error: true, errormessage: "Table not found" });
-			}
-		})
-		.catch(err => {
-			let msg = `DB error: ${err}`;
-			return next({ statusCode: 500, error: true, errormessage: msg });
-		});
-}
+// export const getBill: Handler = (req, res, next) => {
+// 	Table.findOne({ number: req.params.tableNumber })
+// 		.populate('pendingOrders.kitchen.food')
+// 		.populate('pendingOrders.bar.beverage')
+// 		.then(table => {
+// 			if (table) {
+// 				let bill:number = 0;
+// 				table.pendingOrders.forEach(order => {
+// 					order.kitchen.forEach(item => {
+// 						bill += item.quantity*item.food.price;
+// 					});
+// 					order.bar.forEach(item => {
+// 						bill += item.quantity*item.beverage.price;
+// 					})
+// 				});
+// 				return res.status(200).json({ bill });
+// 			} else {
+// 				return next({ statusCode: 404, error: true, errormessage: "Table not found" });
+// 			}
+// 		})
+// 		.catch(err => {
+// 			let msg = `DB error: ${err}`;
+// 			return next({ statusCode: 500, error: true, errormessage: msg });
+// 		});
+// }

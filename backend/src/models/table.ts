@@ -3,14 +3,16 @@ import { IOrder, OrderSchema } from "./order";
 
 export interface IService extends Document {
     readonly _id: Schema.Types.ObjectId,
-    covers: number,
+	covers: number,
+	waiter: Schema.Types.ObjectId,
     orders: [IOrder],
     timestamp: Date,
     done: boolean
 }
 
 export const ServiceSchema: Schema = new Schema({
-    covers: { type: Number, required: true },
+	covers: { type: Number, required: true },
+	waiter: { type: Schema.Types.ObjectId, required: true, ref: "User" },
     orders: [OrderSchema],
     timestamp: { type: Date },
     done: { type: Boolean, default: false }
@@ -20,7 +22,6 @@ export interface ITable extends Document {
 	readonly _id: Schema.Types.ObjectId;
 	number: number;
 	seats: number,
-	waiter: Schema.Types.ObjectId,
 	busy: boolean;
 	services: [IService];
 }
@@ -28,7 +29,6 @@ export interface ITable extends Document {
 const TableSchema: Schema = new Schema({
 	number: { type: Number, required: true, unique: true },
 	seats: { type: Number, required: true },
-	waiter: { type: Schema.Types.ObjectId, required: true, ref: "User" },
 	busy: { type: Boolean, default: false },
 	services: [ServiceSchema]
 });
