@@ -8,26 +8,41 @@ import { Roles } from '../models/user'
 // it was decided to allow searching an order by Id only in the pending orders list of a table
 export const get: Handler = (req, res, next) => {
 	let findBlock:any = { };
+
+	// table number, always present
 	if ('tableNumber' in req.params) {
 		findBlock['number'] = req.params.tableNumber;
 	}
+	// order id
 	if ('orderId' in req.params) {
 		findBlock['services.orders._id'] = req.params.orderId;
 	}
-	if ('orderType' in req.params) {
+	// order type (food | beverage), from query string
+	if ('orderType' in req.query) {
 		findBlock['services.orders.type'] = req.query.orderType;
 	}
-	Table.find(findBlock)
+	// is the service already done? from query string
+	if ('serviceDone' in req.query) {
+		findBlock['services.done'] = req.query.serviceDone;
+	}
+
+	Table.findOne(findBlock)
 		.populate('services.orders.items.item')
 		.then(result => {
 			if (result) {
-				let response:any = { };
+				let response:any = { } 
+				let orders:IOrder[] = [];
+				result.services.forEach(service => {
+					service.orders.forEach(order => {
+						orders.push(order);
+					})
+				})
 				if ('services.orders._id' in findBlock) {
-					result.services.find((element) => {
-						return element.orders
+					response = orders.find(element => {
+						return element._id === findBlock['services.orders._id'];
 					})
 				} else {
-					response = {}
+					response = orders;
 				}
 				return res.status(200).json(response);
 			} else {
