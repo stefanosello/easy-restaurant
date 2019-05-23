@@ -1,56 +1,50 @@
 import { Handler } from 'express'
 import { Schema } from 'mongoose'
 import  Order, { IOrder } from '../models/order'
-import  Table from '../models/table'
+import  Table, { ITable } from '../models/table'
 import User, { Roles } from '../models/user'
 
-// After analyzed the context in which this kind of controller could be used
-// it was decided to allow searching an order by Id only in the pending orders list of a table
+/**
+ * This controller does a lot of things. It can return a single object (if 'orderId' is specified in route params) or an array of object otherwise.
+ * This controller allows to specify via querystring some params to filter the results:
+ * **route params**
+ * - orderId: the id of the desidered order, makes the controller to return a single order
+ * - tableNumber: specifies the number in wich orders should be searched (excludes other table's orders)
+ * **query params**
+ * - serviceDone: [Boolean] allows to search orders only in those services with the specified status (done or not done)
+ * - type: [String] searchs for orders of a certain type (food or beverage)
+ * - processed: [Boolean] searchs for orders processed or not already processed (as specified by the param) 
+ */
 export const get: Handler = (req, res, next) => {
-	let findBlock:any = { };
-
-	// table number, always present
-	if ('tableNumber' in req.params) {
+	let findBlock:any = { }
+	let queryParams:any = req.query;
+	if ('tableNumber' in req.params)
 		findBlock['number'] = req.params.tableNumber;
-	}
-	// order id
-	if ('orderId' in req.params) {
-		findBlock['services.orders._id'] = req.params.orderId;
-	}
-	// order type (food | beverage), from query string
-	if ('orderType' in req.query) {
-		findBlock['services.orders.type'] = req.query.orderType;
-	}
-	// is the service already done? from query string
-	if ('serviceDone' in req.query) {
-		findBlock['services.done'] = req.query.serviceDone;
-	}
-
-	Table.findOne(findBlock)
-    .populate('services.orders.items.item')
-		.then(result => {
-			if (result) {
-				let response:any = { } 
-				let orders:IOrder[] = [];
-				result.services.forEach(service => {
-					service.orders.forEach((order: IOrder) => {
-						orders.push(order);
-					})
+	Table.find(findBlock)
+		.then((tables:ITable[]) => {
+			let response:any;
+			let orders: IOrder[] = [ ];
+			tables.forEach((table:ITable) => {
+				table.services.forEach((service:any) => {
+					if (!('serviceDone' in queryParams) || ('serviceDone' in queryParams && service.done == queryParams.serviceDone)) {
+						orders = orders.concat(service.orders.filter((order:IOrder) => {
+							let ok:boolean = true;
+							ok = ok && !('type' in queryParams && order.type != queryParams.type)
+							ok = ok && !('processed' in queryParams && ((!Boolean(queryParams.processed) && order.processed != null) || (Boolean(queryParams.processed) && order.processed == null)))
+							return ok;
+						}));
+					}
 				})
-				if ('services.orders._id' in findBlock) {
-					response = orders.find(element => {
-						return element._id === findBlock['services.orders._id'];
-					})
-				} else {
-					response = orders;
-				}
-				return res.status(200).json(response);
+			});
+			if ('orderId' in queryParams) {
+				response = orders.find((order:IOrder) => { return order._id == queryParams.orderId });
 			} else {
-				return next({statusCode: 500, error: true, errormessage: "Table not found"});
+				response = orders;
 			}
+			res.status(200).json(response);
 		})
 		.catch(err => {
-			return next({statusCode: 500, error: true, errormessage: err});
+			return next({ statusCode: 500, error: true, errormessage: err });
 		})
 }
 
