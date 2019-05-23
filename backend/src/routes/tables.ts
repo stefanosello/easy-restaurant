@@ -11,7 +11,7 @@ tables.route('/')
 tables.route('/:tableNumber')
   .get(controller.get)
   .put(controller.update)
-  .patch(controller.updatePartial)
+  .patch(controller.free)
   .delete(controller.remove)
 
 tables.get('/:tableNumber/bill', controller.getBill)

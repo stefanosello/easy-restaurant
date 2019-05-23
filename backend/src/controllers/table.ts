@@ -1,7 +1,6 @@
 import { Handler } from 'express'
 import  Table from '../models/table'
 import { IOrder } from '../models/order';
-import { IItem } from '../models/item';
 
 export const get: Handler = (req, res, next) => {
 	let findBlock:any = { };
@@ -47,50 +46,63 @@ export const create: Handler = (req, res, next) => {
 		});
 }
 
-export const update: Handler = (req, res, next) => { 
-	Table.findOneAndUpdate({ number: req.params.number }, req.body)
-		.then(table => res.status(200).json({ table }))
-		.catch(err => {
-			return next({ statusCode: 400, error: true, errormessage: `DB error: ${err.errmsg}` })
-		});
-}
-
-export const updatePartial: Handler = (req, res, next) => { 
-	res.status(501);
-}
-
 export const remove: Handler = (req, res, next) => {
 	Table.findOne({ number: req.params.tableNumber })
 		.then(data => {
 			if (!data) {
-        res.status(404).json({ error: true, errormessage: `Error occurred: Table ${req.params.tableNumber} number not found` });
+        return res.status(404).json({ error: true, errormessage: `Error occurred: Table ${req.params.tableNumber} number not found` });
       } else {
         if (data.services[data.services.length - 1].done) {
           data.remove()
           .then(table => {
-            res.status(200).json({ error: false, errormessage: "", result: "Table succesfully deleted" });
+            return res.status(200).json({ error: false, errormessage: "", result: "Table succesfully deleted" });
           })
         } else {
-          res.status(404).json({ error: true, errormessage: `Error occurred: Table ${req.params.tableNumber} has uncompleted services` });
+          return res.status(404).json({ error: true, errormessage: `Error occurred: Table ${req.params.tableNumber} has uncompleted services` });
         }       
       }
     })
     .catch(err => {
-      return next({ statusCode: 400, error: true, errormessage: `DB error: ${err.errmsg}` })
+      return next({ statusCode: 500, error: true, errormessage: `DB error: ${err._message | err}` });
     });
+}
+
+export const free: Handler = (req, res, next) => {
+	Table.findOne({ number: req.params.tableNumber, 'busy': false })
+	.then(table => {
+		if (table) {
+			table.busy = false;
+			table.save((err,doc) => {
+				if (err) {
+					return next({ statusCode: 500, error: true, errormessage: `DB error: ${err._message | err}` });
+				} else {
+					return res.status(200).json({ message: "Table set free" });
+				}
+			});
+		} else {
+			return res.status(200).json({ message: "Table already free" });
+		}
+	})
+	.catch(err => {
+		return next({ statusCode: 500, error: true, errormessage: `DB error: ${err._message | err}` });
+	})
 }
 
 export const getBill: Handler = (req, res, next) => {
 	Table.findOne({ number: req.params.tableNumber })
-		.populate('services.orders.items.item')
+		.populate({ 
+			path: 'services.orders.items.item',
+		})
 		.then(table => {
 			if (table) {
 				let bill:number = 0;
+				console.log(table.services[0].orders[0].items);
 				table.services.forEach(service => {
 					service.orders.forEach((order:IOrder) => {
             order.items.forEach(item => {
               // @ts-ignore -> the field is present but is populated with the 'populate' option, so at compile time it is not present
-              bill += item.quantity*item.item.price;
+							bill += item.quantity*item.item.price;
+							console.log(item);
             });
 					});
 				});
@@ -102,5 +114,13 @@ export const getBill: Handler = (req, res, next) => {
 		.catch(err => {
 			let msg = `DB error: ${err}`;
 			return next({ statusCode: 500, error: true, errormessage: msg });
+		});
+}
+
+export const update: Handler = (req, res, next) => { 
+	Table.findOneAndUpdate({ number: req.params.number }, req.body )
+		.then(table => res.status(200).json({ table }))
+		.catch(err => {
+			return next({ statusCode: 500, error: true, errormessage: `DB error: ${err._message | err}` })
 		});
 }
