@@ -74,44 +74,40 @@ export const create: Handler = (req, res, next) => {
 		type: JSON.parse(req.body.order).type
 	});
 	
-	User.findOne({ username: req.user.username}).then(user => {
-		if (user) {
-			Table.findOne({ number: tableNumber }, 'services' )
-			.then(table => {
-				if (table) {
-					if (!table.services[0] || table.services[table.services.length-1].done) {
-						let service = {
-							covers: covers | order.items.length,
-							waiter: user._id,
-							orders: [order]
-						}
-						table.services.push(service);
-						table.busy = true;
-					} else {
-						table.services[table.services.length-1].orders.push(order)
+	Table.findOne({ number: tableNumber }, 'services' )
+		.then(table => {
+			if (table) {
+				if (!table.services[0] || table.services[table.services.length-1].done) {
+					let service = {
+						covers: covers | order.items.length,
+						waiter: req.user.id,
+						orders: [order]
 					}
-					table.save().then(doc => {
-						return res.status(200).json(doc);
-					})
-					.catch(err => {
-						console.error(err)
-						let msg = `DB error: ${err._message}`;
-						return next({ statusCode: 500, error: true, errormessage: msg });
-					});
+					table.services.push(service);
+					table.busy = true;
 				} else {
-					return next({statusCode: 404, error: true, errormessage: "Table not found"});
+					table.services[table.services.length-1].orders.push(order)
 				}
-			})
-			.catch(err => {
-				let msg:String;
-				if (err._message)
-					msg = `DB error: ${err._message}`;
-				else
-					msg = err;
-				return next({ statusCode: 500, error: true, errormessage: msg });
-			});
-		}
-	})
+				table.save().then(doc => {
+					return res.status(200).json(doc);
+				})
+				.catch(err => {
+					console.error(err)
+					let msg = `DB error: ${err._message}`;
+					return next({ statusCode: 500, error: true, errormessage: msg });
+				});
+			} else {
+				return next({statusCode: 404, error: true, errormessage: "Table not found"});
+			}
+		})
+		.catch(err => {
+			let msg:String;
+			if (err._message)
+				msg = `DB error: ${err._message}`;
+			else
+				msg = err;
+			return next({ statusCode: 500, error: true, errormessage: msg });
+		});
 }
 
 // This controller should be used to update the items of an order or to mark an order as processed
