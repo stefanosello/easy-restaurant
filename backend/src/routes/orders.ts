@@ -5,6 +5,7 @@ const orders = Router({mergeParams: true});
 
 orders.route('/')
   .get(controller.get)
+  .post(controller.create)
 
 orders.route('/:orderId')
   .get(controller.get)

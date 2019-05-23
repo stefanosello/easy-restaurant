@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, model } from "mongoose";
-import Types from './item'
+import { Types } from './item'
  
 export interface IOrder extends Document {
 	readonly _id: Schema.Types.ObjectId;
@@ -15,7 +15,7 @@ export interface IOrder extends Document {
     }];
 };
 
-export const OrderSchema: Schema = new Schema({
+export const OrderSchema:Schema = new Schema({
 	created_at: { type: Date, default: Date.now() },
 	processed: { type: Date, default: null },
 	type: { type: String, required: true, enum: Object.values(Types)},

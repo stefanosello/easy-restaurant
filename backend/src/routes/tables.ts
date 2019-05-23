@@ -5,7 +5,7 @@ import ordersRoutes from './orders'
 const tables = Router();
 
 tables.route('/')
-  .get(controller.getAll)
+  .get(controller.get)
   .post(controller.create)
 
 tables.route('/:tableNumber')

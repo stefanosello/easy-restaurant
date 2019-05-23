@@ -1,5 +1,7 @@
 import { Handler } from 'express'
 import  Table from '../models/table'
+import { IOrder } from '../models/order';
+import { IItem } from '../models/item';
 
 export const get: Handler = (req, res, next) => {
 	let findBlock:any = { };
@@ -24,7 +26,7 @@ export const get: Handler = (req, res, next) => {
 			}	
 		})
 		.catch(err => {
-			return next({ statusCode: 500, error: true, errormessage: `DB error: ${err}`});
+			return next({ statusCode: 500, error: true, errormessage: `DB error: ${err._message}`});
 		});
 }
 
@@ -38,7 +40,7 @@ export const create: Handler = (req, res, next) => {
 			res.status(200).json({ table });
 		})
 		.catch(err => {
-			let msg = `DB error: ${err.errmsg}`
+			let msg = `DB error: ${err._message}`
 			if (err.code === 11000)
 				msg = "Table already exists"
 			return next({ statusCode: 409, error: true, errormessage: msg });
@@ -85,7 +87,7 @@ export const getBill: Handler = (req, res, next) => {
 			if (table) {
 				let bill:number = 0;
 				table.services.forEach(service => {
-					service.orders.forEach(order => {
+					service.orders.forEach((order:IOrder) => {
             order.items.forEach(item => {
               // @ts-ignore -> the field is present but is populated with the 'populate' option, so at compile time it is not present
               bill += item.quantity*item.item.price;
