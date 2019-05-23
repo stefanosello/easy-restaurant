@@ -12,15 +12,13 @@ import { first } from 'rxjs/operators'
 export class LoginComponent implements OnInit {
 
   form: FormGroup;
-  loading = false;
-  submitted = false;
   returnUrl: string;
 
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private authenticationService: AuthService) { }
+    private authService: AuthService) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -32,28 +30,19 @@ export class LoginComponent implements OnInit {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
-  // convenience getter for easy access to form fields
-  get f() { return this.form.controls; }
-
   login() {
-    this.submitted = true;
+    const fields = this.form.value;
 
-    // stop here if form is invalid
-    if (this.form.invalid) {
-      return;
-    }
-
-    this.loading = true;
-    this.authenticationService.login(this.f.username.value, this.f.password.value)
+    this.authService.login(fields.username, fields.password)
       .pipe(first())
       .subscribe(
         data => {
-          this.router.navigate([this.returnUrl]);
+          this.router.navigate([this.returnUrl])
         },
         error => {
-          //this.alertService.error(error);
-          this.loading = false;
-        });
+          // this.alertService.error(error);
+        }
+      );
   }
 
 }
