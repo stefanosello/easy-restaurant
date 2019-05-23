@@ -115,39 +115,59 @@ export const create: Handler = (req, res, next) => {
 }
 
 // This controller should be used to update the items of an order or to mark an order as processed
+// !!! can be used only with services not already done (what's the sense of using it with a service already done?)
 export const update: Handler = (req, res, next) => {
 	let tableNumber:number = req.params.tableNumber;
 	let orderId:Schema.Types.ObjectId = req.params.orderId;
-	let updatedInfo = JSON.parse(req.body.updatedInfo);
+	let updatedInfo:any = req.body.updatedInfo ? JSON.parse(req.body.updatedInfo) : { };
 	let updateBlock:any = { };
 	
 	// changes to order contents can be made only from Cash Desk and Waiters
 	if (req.user.role == Roles.Waiter || req.user.role == Roles.CashDesk) {
-		if ("items" in updatedInfo) {
-			updateBlock['services.orders.$.items'] = updatedInfo.items;
+		if (updatedInfo && "items" in updatedInfo) {
+			updateBlock['items'] = updatedInfo.items;
 		}
 	}
 	// changing processed status of an order can only been made from Cash Desk or Cooks
-	if ("processed" in updatedInfo && (req.user.role == Roles.CashDesk || req.user.role == Roles.Cook)) {
-		if (updatedInfo.processed) {
-			updateBlock['services.orders.$.items'] = Date.now();
+	if ("processed" in req.body && (req.user.role == Roles.CashDesk || req.user.role == Roles.Cook)) {
+		if (req.body.processed) {
+			updateBlock['processed'] = Date.now();
 		} else {
-			updateBlock['services.orders.$.items'] = null;
+			updateBlock['processed'] = null;
 		}
 	}
 
 	// update table
-	Table.updateOne(
-		{ number: tableNumber, 'services.orders._id': orderId },
-		{ $set: updateBlock }
-	)
+	Table.findOne({ 
+		number: tableNumber, 
+		'services.0.orders._id': orderId, 
+		'services.0.done': false 
+	})
 	.then(table => {
-		return res.status(200).json({ table });
+		if (table) {
+			// first service is the one we need to update
+			let orderIndex = table.services[table.services.length - 1].orders.findIndex((order:IOrder) => {
+				return order._id == orderId;
+			})
+			// real update for all keys contained in updateBlock
+			Object.keys(updateBlock).forEach((key:string) => {
+				table.services[table.services.length - 1].orders[orderIndex][key] = updateBlock[key];
+			});
+			table.save((err, table) => {
+				if (err) {
+					return next({ statusCode: 500, error: true, errormessage: err });
+				} else {
+					return res.status(200).json({ table });
+				}
+			});
+		} else {
+			return next({ statusCode: 400, error: true, errormessage: "Wrong params" });
+		}
 	})
 	.catch(err => {
 		let msg = `DB error: ${err}`;
 		return next({ statusCode: 500, error: true, errormessage: msg });
-	})
+	});
 }
 
 export const remove: Handler = (req, res, next) => {
