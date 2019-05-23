@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../environments/environment'
+import { environment } from 'src/environments/environment'
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { User, Roles } from './_models/user';
+import { User, Roles } from '../_models/user';
 import jwtDecode from 'jwt-decode';
 
 @Injectable({

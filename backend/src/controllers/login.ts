@@ -21,7 +21,7 @@ const login: Handler = (req, res, next) => {
     next({ statusCode: 500, error: true, errormessage: "Error generating token" })
   }
 
-  console.log({token, refresh})
+  console.log({ token, refresh })
 
   return res.status(200).json({
     error: false,

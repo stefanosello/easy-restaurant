@@ -2,11 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, switchMap, filter, take } from 'rxjs/operators';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../_services/auth.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class RequestInterceptor implements HttpInterceptor {
 
   // These parameters are needed to handle spammed requests
@@ -22,15 +20,18 @@ export class RequestInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // add authorization header with jwt token if available
     let token = JSON.parse(localStorage.getItem('token'));
-    return next.handle(this.addToken(request, token))
-      .pipe(
-        catchError(error => {
-          if (error.status == 401) {
-            return this.handle401Error(request, next);
-          } else {
-            throwError(error)
-          }
-        }))
+    if (token) {
+      return next.handle(this.addToken(request, token))
+        .pipe(
+          catchError(error => {
+            if (error.status == 401) {
+              return this.handle401Error(request, next);
+            } else {
+              throwError(error)
+            }
+          }))
+    }
+    return next.handle(request);
   }
 
   handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

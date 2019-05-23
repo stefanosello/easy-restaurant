@@ -14,4 +14,12 @@ export class Table {
 	seats: number;
 	busy: boolean;
 	services: Service[];
+
+	public toString(): string {
+		let response: string = '';
+		Object.keys(this).forEach(key => {
+			response += `${key}: ${this[key]}\n`
+		})
+		return response;
+	}
 }

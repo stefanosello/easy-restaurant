@@ -1,7 +1,7 @@
 import { Handler } from 'express'
 import { Schema } from 'mongoose'
-import  Order, { IOrder } from '../models/order'
-import  Table, { ITable } from '../models/table'
+import Order, { IOrder } from '../models/order'
+import Table, { ITable } from '../models/table'
 import User, { Roles } from '../models/user'
 
 /**
@@ -16,19 +16,19 @@ import User, { Roles } from '../models/user'
  * - processed: [Boolean] searchs for orders processed or not already processed (as specified by the param) 
  */
 export const get: Handler = (req, res, next) => {
-	let findBlock:any = { }
-	let queryParams:any = req.query;
+	let findBlock: any = {}
+	let queryParams: any = req.query;
 	if ('tableNumber' in req.params)
 		findBlock['number'] = req.params.tableNumber;
 	Table.find(findBlock)
-		.then((tables:ITable[]) => {
-			let response:any;
-			let orders: IOrder[] = [ ];
-			tables.forEach((table:ITable) => {
-				table.services.forEach((service:any) => {
+		.then((tables: ITable[]) => {
+			let response: any;
+			let orders: IOrder[] = [];
+			tables.forEach((table: ITable) => {
+				table.services.forEach((service: any) => {
 					if (!('serviceDone' in queryParams) || ('serviceDone' in queryParams && service.done == queryParams.serviceDone)) {
-						orders = orders.concat(service.orders.filter((order:IOrder) => {
-							let ok:boolean = true;
+						orders = orders.concat(service.orders.filter((order: IOrder) => {
+							let ok: boolean = true;
 							ok = ok && !('type' in queryParams && order.type != queryParams.type)
 							ok = ok && !('processed' in queryParams && ((!Boolean(queryParams.processed) && order.processed != null) || (Boolean(queryParams.processed) && order.processed == null)))
 							return ok;
@@ -37,7 +37,7 @@ export const get: Handler = (req, res, next) => {
 				})
 			});
 			if ('orderId' in queryParams) {
-				response = orders.find((order:IOrder) => { return order._id == queryParams.orderId });
+				response = orders.find((order: IOrder) => { return order._id == queryParams.orderId });
 			} else {
 				response = orders;
 			}
@@ -61,17 +61,17 @@ export const get: Handler = (req, res, next) => {
 */
 // TODO: this controller should be accessible only from waiters
 export const create: Handler = (req, res, next) => {
-	let tableNumber:number = req.params.tableNumber;
-	let covers:number = req.body.coversNumber;
-	let order:IOrder = new Order({ 
+	let tableNumber: number = req.params.tableNumber;
+	let covers: number = req.body.coversNumber;
+	let order: IOrder = new Order({
 		items: JSON.parse(req.body.order).items,
 		type: JSON.parse(req.body.order).type
 	});
-	
-	Table.findOne({ number: tableNumber }, 'services' )
+
+	Table.findOne({ number: tableNumber }, 'services')
 		.then(table => {
 			if (table) {
-				if (!table.services[0] || table.services[table.services.length-1].done) {
+				if (!table.services[0] || table.services[table.services.length - 1].done) {
 					let service = {
 						covers: covers | order.items.length,
 						waiter: req.user.id,
@@ -80,22 +80,22 @@ export const create: Handler = (req, res, next) => {
 					table.services.push(service);
 					table.busy = true;
 				} else {
-					table.services[table.services.length-1].orders.push(order)
+					table.services[table.services.length - 1].orders.push(order)
 				}
 				table.save().then(doc => {
 					return res.status(200).json(doc);
 				})
-				.catch(err => {
-					console.error(err)
-					let msg = `DB error: ${err._message}`;
-					return next({ statusCode: 500, error: true, errormessage: msg });
-				});
+					.catch(err => {
+						console.error(err)
+						let msg = `DB error: ${err._message}`;
+						return next({ statusCode: 500, error: true, errormessage: msg });
+					});
 			} else {
-				return next({statusCode: 404, error: true, errormessage: "Table not found"});
+				return next({ statusCode: 404, error: true, errormessage: "Table not found" });
 			}
 		})
 		.catch(err => {
-			let msg:String;
+			let msg: String;
 			if (err._message)
 				msg = `DB error: ${err._message}`;
 			else
@@ -107,11 +107,11 @@ export const create: Handler = (req, res, next) => {
 // This controller should be used to update the items of an order or to mark an order as processed
 // !!! can be used only with services not already done (what's the sense of using it with a service already done?)
 export const update: Handler = (req, res, next) => {
-	let tableNumber:number = req.params.tableNumber;
-	let orderId:Schema.Types.ObjectId = req.params.orderId;
-	let updatedInfo:any = req.body.updatedInfo ? JSON.parse(req.body.updatedInfo) : { };
-	let updateBlock:any = { };
-	
+	let tableNumber: number = req.params.tableNumber;
+	let orderId: Schema.Types.ObjectId = req.params.orderId;
+	let updatedInfo: any = req.body.updatedInfo ? JSON.parse(req.body.updatedInfo) : {};
+	let updateBlock: any = {};
+
 	// changes to order contents can be made only from Cash Desk and Waiters
 	if (req.user.role == Roles.Waiter || req.user.role == Roles.CashDesk) {
 		if (updatedInfo && "items" in updatedInfo) {
@@ -128,36 +128,36 @@ export const update: Handler = (req, res, next) => {
 	}
 
 	// update table
-	Table.findOne({ 
-		number: tableNumber, 
-		'services.0.orders._id': orderId, 
-		'services.0.done': false 
+	Table.findOne({
+		number: tableNumber,
+		'services.0.orders._id': orderId,
+		'services.0.done': false
 	})
-	.then(table => {
-		if (table) {
-			// first service is the one we need to update
-			let orderIndex = table.services[table.services.length - 1].orders.findIndex((order:IOrder) => {
-				return order._id == orderId;
-			})
-			// real update for all keys contained in updateBlock
-			Object.keys(updateBlock).forEach((key:string) => {
-				table.services[table.services.length - 1].orders[orderIndex][key] = updateBlock[key];
-			});
-			table.save((err, table) => {
-				if (err) {
-					return next({ statusCode: 500, error: true, errormessage: err });
-				} else {
-					return res.status(200).json({ table });
-				}
-			});
-		} else {
-			return next({ statusCode: 400, error: true, errormessage: "Wrong params" });
-		}
-	})
-	.catch(err => {
-		let msg = `DB error: ${err}`;
-		return next({ statusCode: 500, error: true, errormessage: msg });
-	});
+		.then(table => {
+			if (table) {
+				// first service is the one we need to update
+				let orderIndex = table.services[table.services.length - 1].orders.findIndex((order: IOrder) => {
+					return order._id == orderId;
+				})
+				// real update for all keys contained in updateBlock
+				Object.keys(updateBlock).forEach((key: string) => {
+					table.services[table.services.length - 1].orders[orderIndex][key] = updateBlock[key];
+				});
+				table.save((err, table) => {
+					if (err) {
+						return next({ statusCode: 500, error: true, errormessage: err });
+					} else {
+						return res.status(200).json({ table });
+					}
+				});
+			} else {
+				return next({ statusCode: 400, error: true, errormessage: "Wrong params" });
+			}
+		})
+		.catch(err => {
+			let msg = `DB error: ${err}`;
+			return next({ statusCode: 500, error: true, errormessage: msg });
+		});
 }
 
 export const remove: Handler = (req, res, next) => {

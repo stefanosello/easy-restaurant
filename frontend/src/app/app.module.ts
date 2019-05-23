@@ -8,13 +8,16 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { WaiterComponent } from './waiter/waiter.component';
+import { CashdeskComponent } from './cashdesk/cashdesk.component';
+import { RequestInterceptor } from './_helpers/request.interceptor';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     HomeComponent,
-    WaiterComponent
+    WaiterComponent,
+    CashdeskComponent
   ],
   imports: [
     BrowserModule,
@@ -22,7 +25,9 @@ import { WaiterComponent } from './waiter/waiter.component';
     HttpClientModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

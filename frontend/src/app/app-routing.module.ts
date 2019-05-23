@@ -5,12 +5,13 @@ import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './auth.guard';
 import { Roles } from './_models/user'
 import { WaiterComponent } from './waiter/waiter.component';
+import { CashdeskComponent } from './cashdesk/cashdesk.component';
 
 const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'login',
@@ -20,7 +21,13 @@ const routes: Routes = [
     path: 'waiter',
     component: WaiterComponent,
     canActivate: [AuthGuard],
-    data: { roles: [Roles.Waiter, Roles.CashDesk] }
+    data: { roles: [Roles.Waiter] }
+  },
+  {
+    path: 'cashdesk',
+    component: CashdeskComponent,
+    canActivate: [AuthGuard],
+    data: { roles: [Roles.CashDesk] }
   },
   { path: '**', redirectTo: '' }
 ];
