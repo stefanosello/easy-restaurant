@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Table } from '../_models/table';
 import { TableService } from '../_services/table.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-cashdesk',
@@ -9,16 +10,20 @@ import { TableService } from '../_services/table.service';
 })
 export class CashdeskComponent implements OnInit {
 
-  table: Table
+  tables: Table[]
 
   constructor(private tableService: TableService) { }
 
   ngOnInit() {
-    this.getTable(1);
+    this.getTables();
   }
 
-  getTable(number: number) {
-    this.tableService.get(1).subscribe(data => this.table = data.table);
+  getTables() {
+    const tableObs: Observable<any> = this.tableService.getAll();
+    tableObs.subscribe(data => {
+      this.tables = data.tables;
+      console.log(data);
+    });
   }
 
 }

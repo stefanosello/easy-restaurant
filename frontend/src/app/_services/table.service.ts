@@ -15,7 +15,7 @@ export class TableService {
 
   get(number: number) {
     let table = this.http.get<any>(`${this.baseUrl}/${number}`, { responseType: 'json' })
-    console.log(table)
+    console.log("Table observable: " + JSON.stringify(table));
     return table;
   }
 

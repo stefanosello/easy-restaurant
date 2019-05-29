@@ -19,7 +19,7 @@ export const get: Handler = (req, res, next) => {
 			if (tables.length > 1 || (tables.length == 1 && findBlock['number'] == undefined)) {
 				return res.status(200).json({ tables });
 			} else if (tables.length == 1 && 'number' in findBlock) {
-				return res.status(200).json({ tables: tables[0] });
+				return res.status(200).json({ table: tables[0] });
 			} else {
 				return next({ statusCode: 404, error: true, errormessage: "Table not found" })
 			}
