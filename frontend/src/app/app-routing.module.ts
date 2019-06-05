@@ -17,18 +17,6 @@ const routes: Routes = [
     path: 'login',
     component: LoginComponent
   },
-  {
-    path: 'waiter',
-    component: WaiterComponent,
-    canActivate: [AuthGuard],
-    data: { roles: [Roles.Waiter] }
-  },
-  {
-    path: 'cashdesk',
-    component: CashdeskComponent,
-    canActivate: [AuthGuard],
-    data: { roles: [Roles.CashDesk] }
-  },
   { path: '**', redirectTo: '' }
 ];
 

@@ -11,6 +11,7 @@ import { Roles } from '../_models/user';
 export class HomeComponent implements OnInit {
 
   currentUser = this.authService.getUserInfo();
+  roles = Roles;
 
   constructor(private router: Router,
     private authService: AuthService) { }

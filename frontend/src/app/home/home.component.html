@@ -1,3 +1,6 @@
-<p>
-  home works!
-</p>
+<div [ngSwitch]="currentUser.role">
+  <app-cashdesk *ngSwitchCase="roles.CashDesk"></app-cashdesk>
+  <app-waiter *ngSwitchCase="roles.Waiter"></app-waiter>
+  <app-bartender *ngSwitchCase="roles.Bartender"></app-bartender>
+  <app-cook *ngSwitchCase="roles.Cook"></app-cook>
+</div>

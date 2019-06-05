@@ -1,14 +1,14 @@
 .main {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
-    form {
-        padding: 1rem;
-        border: 2px solid black;
-        border-radius: .5rem;
-    }
+  form {
+    padding: 1rem;
+    border: 2px solid black;
+    border-radius: 0.5rem;
+  }
 }
