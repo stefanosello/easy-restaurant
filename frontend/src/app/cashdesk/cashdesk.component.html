@@ -1,12 +1,13 @@
-<p>
-  cashdesk works!
-</p>
-<div *ngFor="let table of tables" class="card m-5" style="width: 18rem;">
-  <div class="card-body">
-    <h5 class="card-title">Table n° {{table.number}}</h5>
-    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    <a href="#" class="card-link">Card link</a>
-    <a href="#" class="card-link">Another link</a>
+<div class="p-3 subcontainer">
+  <div *ngFor="let table of tables" class="card m-3" style="width: 18rem;" [class]="table.busy ? 'busy' : 'free'">
+    <div class="card-body">
+      <h5 class="card-title">Table n° {{table.number}}</h5>
+      <h6 class="card-subtitle mb-2 text-muted"><fa name="users mr-2"></fa>{{table.seats}}</h6>
+      <p class="card-text"><b>Waiters serving this table: </b>{{getWaiters(table)}}</p>
+      <div class="d-flex w-100">
+        <a href="#" role="button" class="btn btn-secondary mr-2 flex-fill">Bill</a>
+        <a href="#" role="button" class="btn btn-secondary ml-2 flex-fill">Ciao</a>
+      </div>
+    </div>
   </div>
 </div>

@@ -1,0 +1,34 @@
+@import "~bootstrap/scss/_functions.scss";
+@import "~bootstrap/scss/_variables.scss";
+
+/* TODO: move this in variables scss file */
+
+$theme-colors: (
+  primary: #00897B,
+  secondary: #546E7A,
+  danger: #d50000
+);
+
+@import "~bootstrap/scss/bootstrap";
+
+/* TODO: move this to global scss file */
+
+.subcontainer {
+  background-color: $gray-100;
+}
+
+.card, .btn, .form-control { 
+  border-radius: 0; 
+}
+
+.card-body {
+  background-color: $white !important;
+}
+
+.busy {
+  border-top: 5px solid lighten($danger, 20%);
+}
+
+.free {
+  border-top: 5px solid lighten($primary, 20%);
+}

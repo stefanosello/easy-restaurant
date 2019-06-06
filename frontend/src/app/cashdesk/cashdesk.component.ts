@@ -26,4 +26,8 @@ export class CashdeskComponent implements OnInit {
     });
   }
 
+  getWaiters(table: Table) {
+    return table.services.map(service => service.waiter.username).join(", ");
+  }
+
 }

@@ -15,6 +15,7 @@ export const get: Handler = (req, res, next) => {
 		findBlock['seats'] = req.query.numberOfSeats;
 	}
 	Table.find(findBlock)
+		.populate('services.waiter')
 		.then(tables => {
 			if (tables.length > 1 || (tables.length == 1 && findBlock['number'] == undefined)) {
 				return res.status(200).json({ tables });

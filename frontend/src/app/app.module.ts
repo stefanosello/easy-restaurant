@@ -12,6 +12,7 @@ import { CashdeskComponent } from './cashdesk/cashdesk.component';
 import { RequestInterceptor } from './_helpers/request.interceptor';
 import { CookComponent } from './cook/cook.component';
 import { BartenderComponent } from './bartender/bartender.component';
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { BartenderComponent } from './bartender/bartender.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AngularFontAwesomeModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true },
