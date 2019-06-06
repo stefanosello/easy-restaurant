@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { Table } from '../_models/table';
 import { TableService } from '../_services/table.service';
 import { Observable } from 'rxjs';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { jsonSyntaxHighlight } from '../_helpers/utils'
 
 @Component({
   selector: 'app-cashdesk',
@@ -10,15 +12,22 @@ import { Observable } from 'rxjs';
 })
 export class CashdeskComponent implements OnInit {
 
-  tables: Table[]
+  public tables: Table[];
+  public modalRef: BsModalRef;
+  public infoModalTable: Table;
 
-  constructor(private tableService: TableService) { }
+  constructor(private tableService: TableService, private modalService: BsModalService) { }
 
   ngOnInit() {
     this.getTables();
   }
 
-  getTables() {
+  public openModal(template: TemplateRef<any>, table: Table) {
+    this.infoModalTable = table;
+    this.modalRef = this.modalService.show(template);
+  }
+
+  public getTables() {
     const tableObs: Observable<any> = this.tableService.getAll();
     tableObs.subscribe(data => {
       this.tables = data.tables;
@@ -26,8 +35,12 @@ export class CashdeskComponent implements OnInit {
     });
   }
 
-  getWaiters(table: Table) {
+  public getWaiters(table: Table) {
     return table.services.map(service => service.waiter.username).join(", ");
+  }
+
+  public getGeneralInfo(table: Table) {
+    return jsonSyntaxHighlight(table);
   }
 
 }

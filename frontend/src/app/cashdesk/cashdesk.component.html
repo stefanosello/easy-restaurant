@@ -1,13 +1,26 @@
-<div class="p-3 subcontainer">
-  <div *ngFor="let table of tables" class="card m-3" style="width: 18rem;" [class]="table.busy ? 'busy' : 'free'">
+<div class="p-3 d-flex">
+  <div *ngFor="let table of tables" class="card m-3" style="width: 18rem;" [class.busy]="table.busy" [class.free]="!table.busy">
     <div class="card-body">
       <h5 class="card-title">Table n° {{table.number}}</h5>
-      <h6 class="card-subtitle mb-2 text-muted"><fa name="users mr-2"></fa>{{table.seats}}</h6>
+      <h6 class="card-subtitle mb-2 text-muted">
+        <i class="fas fa-users mr-2"></i>{{table.seats}}
+        <i class="fas fa-concierge-bell mx-2"></i>{{table.services.length}}
+      </h6>
       <p class="card-text"><b>Waiters serving this table: </b>{{getWaiters(table)}}</p>
       <div class="d-flex w-100">
-        <a href="#" role="button" class="btn btn-secondary mr-2 flex-fill">Bill</a>
-        <a href="#" role="button" class="btn btn-secondary ml-2 flex-fill">Ciao</a>
+        <button href="#" role="button" class="btn btn-secondary mr-2 flex-fill" data-toggle="modal" (click)="openModal(tableModal, table)">Info</button>
+        <a href="#" role="button" class="btn btn-primary ml-2 flex-fill">Bill</a>
       </div>
     </div>
   </div>
+  <!-- Modal -->
+  <ng-template #tableModal>
+    <div class="px-3 pt-3 pb-2">
+      <h4 class="modal-title pull-left">Table n° {{infoModalTable.number}}</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body px-3 pb-3 pt-2" [innerHTML]="getGeneralInfo(infoModalTable)"></div>
+  </ng-template>
 </div>

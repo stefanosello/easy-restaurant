@@ -1,0 +1,36 @@
+body {
+  background-color: $gray-100;
+}
+
+.card, .btn, .form-control { 
+  border-radius: 0; 
+  border: 0;
+}
+
+.card-body {
+  background-color: $white !important;
+}
+
+.busy {
+  border-top: 5px solid lighten($danger, 20%);
+}
+
+.free {
+  border-top: 5px solid lighten($primary, 20%);
+}
+
+.card-text {
+  height: 4.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.modal-content {
+  border-radius: 0 !important;
+  border: 0;
+  border-top: 3px solid black;
+}
+
+.modal-body {
+  overflow: scroll;
+}
