@@ -1,0 +1,29 @@
+/*$theme-colors: (
+  primary: #00897B,
+  secondary: #546E7A,
+  danger: #d50000
+);
+
+$primary: #00897B;
+$secondary: #546E7A;
+$danger: #d50000;
+*/
+
+@import '~@angular/material/theming';
+@include mat-core();
+
+$theme-primary: mat-palette($mat-teal, 600);
+$theme-accent:  mat-palette($mat-blue-gray, 600);
+$theme-warn:    mat-palette($mat-red, A700);
+
+$app-theme: mat-light-theme($theme-primary, $theme-accent, $theme-warn);
+
+$primary: mat-color($theme-primary);
+$secondary: mat-color($theme-accent);
+$danger: mat-color($theme-warn);
+
+$theme-colors: (
+  $primary: mat-color($theme-primary),
+  $secondary: mat-color($theme-accent),
+  $danger: mat-color($theme-warn)
+);

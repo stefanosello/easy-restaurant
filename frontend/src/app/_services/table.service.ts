@@ -25,4 +25,16 @@ export class TableService {
     return tables;
   }
 
+  getBill(tableNumber: number) {
+    let bill = this.http.get<any>(`${this.baseUrl}/${tableNumber}/bill`, { responseType: 'json' })
+    console.log(bill)
+    return bill;
+  }
+
+  doTablePayment(table: Table) {
+    let paymentDone = this.http.patch(`${this.baseUrl}/${table.number}`, table);
+    console.log(paymentDone);
+    return paymentDone;
+  }
+
 }

@@ -27,7 +27,9 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/scss/material-theme.scss",
+              "src/styles.scss",
+              "src/../node_modules/font-awesome/scss/font-awesome.scss"
             ],
             "scripts": [],
             "es5BrowserSupport": true
@@ -84,7 +86,9 @@
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
             "styles": [
-              "src/styles.scss"
+              "src/scss/material-theme.scss",
+              "src/styles.scss",
+              "src/../node_modules/font-awesome/scss/font-awesome.scss"
             ],
             "scripts": [],
             "assets": [
