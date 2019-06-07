@@ -69,7 +69,7 @@ export const remove: Handler = (req, res, next) => {
 }
 
 export const free: Handler = (req, res, next) => {
-	Table.findOne({ number: req.params.tableNumber, 'busy': false })
+	Table.findOne({ number: req.params.tableNumber, 'busy': true })
 		.then(table => {
 			if (table) {
 				table.busy = false;
@@ -97,6 +97,7 @@ export const getBill: Handler = (req, res, next) => {
 		.then(table => {
 			if (table) {
 				let bill: number = 0;
+				let items: any[] = [];
 				console.log(table.services[0].orders[0].items);
 				table.services.forEach(service => {
 					service.orders.forEach((order: IOrder) => {
@@ -104,10 +105,17 @@ export const getBill: Handler = (req, res, next) => {
 							// @ts-ignore -> the field is present but is populated with the 'populate' option, so at compile time it is not present
 							bill += item.quantity * item.item.price;
 							console.log(item);
+							items.push({
+								quantity: item.quantity,
+								// @ts-ignore
+								name: item.item.name,
+								// @ts-ignore
+								price: item.item.price
+							})
 						});
 					});
 				});
-				return res.status(200).json({ bill });
+				return res.status(200).json({ items: items, total: bill });
 			} else {
 				res.status(404).json({ error: true, errormessage: `Error occurred: Table ${req.params.tableNumber} number not found` });
 			}

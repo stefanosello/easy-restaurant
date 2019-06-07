@@ -1,26 +1,62 @@
-<div class="p-3 d-flex">
+<div class="p-3 d-flex flex-column flex-md-row">
   <div *ngFor="let table of tables" class="card m-3" style="width: 18rem;" [class.busy]="table.busy" [class.free]="!table.busy">
     <div class="card-body">
       <h5 class="card-title">Table n° {{table.number}}</h5>
-      <h6 class="card-subtitle mb-2 text-muted">
-        <i class="fas fa-users mr-2"></i>{{table.seats}}
-        <i class="fas fa-concierge-bell mx-2"></i>{{table.services.length}}
+      <h6 class="card-subtitle mb-2 text-muted d-flex w-100 justify-content-around">
+        <div class="flex-fill">
+          <i class="fas fa-users mr-2"></i>{{activeService(table).covers}}/{{table.seats}}
+        </div>
+        <div class="flex-fill">
+          <i class="fas fa-concierge-bell mx-2"></i>{{processedFoodOrders(table).length}}/{{foodOrders(table).length}}
+        </div>
+        <div class="flex-fill">
+          <i class="fas fa-beer mx-2"></i>{{processedBeverageOrders(table).length}}/{{beverageOrders(table).length}}
+        </div>
       </h6>
-      <p class="card-text"><b>Waiters serving this table: </b>{{getWaiters(table)}}</p>
+      <p class="card-text"><b>Waiters serving this table: </b>{{activeService(table).waiter}}</p>
       <div class="d-flex w-100">
-        <button href="#" role="button" class="btn btn-secondary mr-2 flex-fill" data-toggle="modal" (click)="openModal(tableModal, table)">Info</button>
-        <a href="#" role="button" class="btn btn-primary ml-2 flex-fill">Bill</a>
+        <button href="#" role="button" class="btn btn-secondary mr-2 flex-fill" (click)="openModal(tableInfoModal, table)">Info</button>
+        <button href="#" role="button" class="btn btn-primary ml-2 flex-fill" [disabled]="activeService(table).done === true" (click)="openModal(tableBillModal, table, true)">Bill</button>
       </div>
     </div>
   </div>
-  <!-- Modal -->
-  <ng-template #tableModal>
+  <!-- Begin Modals Section -->
+  <ng-template #tableInfoModal>
     <div class="px-3 pt-3 pb-2">
-      <h4 class="modal-title pull-left">Table n° {{infoModalTable.number}}</h4>
+      <h4 class="modal-title pull-left">Table n° {{modalTable.number}}</h4>
       <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    <div class="modal-body px-3 pb-3 pt-2" [innerHTML]="getGeneralInfo(infoModalTable)"></div>
+    <div class="modal-body px-3 pb-3 pt-2" [innerHTML]="getGeneralInfo(modalTable)"></div>
   </ng-template>
+  <ng-template #tableBillModal>
+    <div class="px-3 pt-3 pb-2">
+      <h4 class="modal-title pull-left">Bill of table n° {{modalTable.number}}</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body px-3 pb-3 pt-2" *ngIf="modalTableBill">
+      <div class="bill m-3 p-3">
+        date and time: {{getCurrentTime()}}<br>
+        covers: {{activeService(modalTable).covers}}<br>
+        <div class="my-2"></div>
+        <div *ngFor="let item of modalTableBill.items" class="d-flex">
+          <div class="flex-fill">{{item.quantity}} x {{item.name}}</div>
+          <div class="flex-fill text-right">{{item.quantity * item.price}}</div>
+        </div>
+        <div class="text-right">
+          Total: {{modalTableBill.total}}
+        </div>
+      </div>
+      <div class="p-3">
+        <button class="btn btn-primary w-100" (click)="tablePayment(modalTable)">Payment</button>
+      </div>
+    </div>
+    <div *ngIf="!modalTableBill" class="d-flex flex-column justify-content-center align-items-center w-100">
+      <img src="../../assets/img/loader.svg">
+    </div>
+  </ng-template>
+  <!-- End Modals Section -->
 </div>
