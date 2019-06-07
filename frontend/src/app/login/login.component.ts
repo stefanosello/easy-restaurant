@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../_services/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators'
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -12,16 +12,18 @@ import { first } from 'rxjs/operators'
 export class LoginComponent implements OnInit {
 
   form: FormGroup;
+  submitted: boolean = false;
+  invalid: boolean = false;
   returnUrl: string;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService) { }
 
   ngOnInit() {
-    this.form = this.formBuilder.group({
+    this.form = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
@@ -30,19 +32,25 @@ export class LoginComponent implements OnInit {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
-  login() {
-    const fields = this.form.value;
+  get username() { return this.form.get('username'); }
+  get password() { return this.form.get('password'); }
 
-    this.authService.login(fields.username, fields.password)
-      .pipe(first())
-      .subscribe(
-        data => {
-          this.router.navigate([this.returnUrl])
-        },
-        error => {
-          // this.alertService.error(error);
-        }
-      );
+  onSubmit() {
+    const fields = this.form.value;
+    this.submitted = true;
+
+    if (fields.username && fields.password) {
+      this.authService.login(fields.username, fields.password)
+        .pipe(first())
+        .subscribe(
+          data => {
+            this.router.navigate([this.returnUrl])
+          },
+          error => {
+            this.invalid = true;
+          }
+        );
+    }
   }
 
 }

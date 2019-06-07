@@ -1,14 +1,39 @@
-<div class="main">
-  <form [formGroup]="form">
-    <h2>Login</h2>
-    <div class="form-group">
-      <label for="username">Username:</label>
-      <input name="username" id="username" class="form-control" formControlName="username">
-    </div>
-    <div class="form-group">
-      <label for="password">Password:</label>
-      <input name="password" id="password" class="form-control" formControlName="password" type="password">
-    </div>
-    <button class="btn btn-primary" (click)="login()">Login</button>
-  </form>
+<div class="main mat-app-background">
+  <mat-card color="secondary">
+    <form [formGroup]="form">
+      <mat-card-header>
+        <mat-card-title>Login</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div>
+          <mat-form-field appearance="standard">
+            <mat-label>Username</mat-label>
+            <input matInput name="username" id="username" formControlName="username" required>
+            <mat-icon matSuffix color="primary">person</mat-icon>
+            <mat-error *ngIf="username.hasError('required')">
+              Please enter your username.
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field appearance="standard">
+            <mat-label>Password</mat-label>
+            <input matInput name="password" id="password" formControlName="password" required>
+            <mat-icon matSuffix color="primary">lock</mat-icon>
+            <mat-error *ngIf="password.hasError('required')">
+              Please enter your password.
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="onSubmit()">Login</button>
+      </mat-card-actions>
+      <mat-card-footer>
+        <mat-error *ngIf="invalid">
+          Bad credentials.
+        </mat-error>
+      </mat-card-footer>
+    </form>
+  </mat-card>
 </div>
