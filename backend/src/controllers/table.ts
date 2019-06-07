@@ -16,6 +16,7 @@ export const get: Handler = (req, res, next) => {
 	}
 	Table.find(findBlock)
 		.populate('services.waiter')
+		.populate('services.orders.items.item')
 		.then(tables => {
 			if (tables.length > 1 || (tables.length == 1 && findBlock['number'] == undefined)) {
 				return res.status(200).json({ tables });
@@ -73,6 +74,9 @@ export const free: Handler = (req, res, next) => {
 		.then(table => {
 			if (table) {
 				table.busy = false;
+				table.services.forEach(service => {
+					service.done = true;
+				});
 				table.save((err, doc) => {
 					if (err) {
 						return next({ statusCode: 500, error: true, errormessage: `DB error: ${err._message | err}` });

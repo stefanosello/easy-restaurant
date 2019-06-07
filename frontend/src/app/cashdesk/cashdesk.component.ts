@@ -79,6 +79,16 @@ export class CashdeskComponent implements OnInit {
     return this.beverageOrders(table).filter(order => order.processed != null);
   }
 
+  public pendingFoodOrders(table: Table) {
+    return this.foodOrders(table).filter(order => order.processed == null);
+  }
+
+  public pendingBeverageOrders(table: Table) {
+    return this.beverageOrders(table).filter(order => order.processed == null);
+  }
+
+  
+
   public getCurrentTime() {
     let now: Date = new Date(Date.now())
     return `${now.getMonth()}/${now.getDate()}/${now.getFullYear()}, ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
@@ -108,6 +118,13 @@ export class CashdeskComponent implements OnInit {
         component.getTables();
       }
     )
+  }
+
+  public parseDate(date: string) {
+    let d = new Date(date);
+    let hours: string = d.getHours()/10 >= 1 ? `${d.getHours()}` : `0${d.getHours()}`;
+    let minutes: string = d.getMinutes()/10 >= 1 ? `${d.getMinutes()}` : `0${d.getMinutes()}`;
+    return `${hours}:${minutes}`
   }
 
 }
