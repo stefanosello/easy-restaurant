@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment'
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -17,7 +17,7 @@ export class AuthService {
     private router: Router) { }
 
   login(username: string, password: string) {
-    let endpoint = this.baseUrl + '/login'
+    let endpoint = this.baseUrl + '/login';
     let headers = new HttpHeaders();
     headers = headers.append("Authorization", "Basic " + btoa(`${username}:${password}`));
     headers = headers.append("Content-Type", "application/x-www-form-urlencoded");
@@ -38,8 +38,19 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('session');
+    let endpoint = this.baseUrl + '/logout';
+    let refresh = JSON.parse(localStorage.getItem('session'));
+    this.http.post<any>(endpoint, { token: refresh }).toPromise()
+      .then(response => {
+        if (response && !response.error) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('session');
+          this.router.navigate(['/login']);
+        }
+        else {
+          console.log("ERRORE")
+        }
+      })
   }
 
   refreshToken() {

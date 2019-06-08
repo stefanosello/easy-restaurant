@@ -4,12 +4,6 @@ import User from '../models/user';
 
 const renew: Handler = async (req, res, next) => {
 
-  // If we reach this point, the user is successfully authenticated and
-  // has been injected into req.user
-
-  // We now generate a JWT with the useful user data
-  // and return it as response
-
   let newToken: string;
 
   let session = req.headers!['authorization']!.split(" ")[1];

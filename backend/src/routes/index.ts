@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import loginController from '../controllers/login'
+import logoutController from '../controllers/logout'
 import renewController from '../controllers/renew'
 import * as authController from '../controllers/auth'
 import * as userController from '../controllers/user'
@@ -26,6 +27,7 @@ router
   .use(authController.token)
 
   // Routes
+  .post('/logout', logoutController)
   .use('/users', usersRoutes)
   .use('/tables', tablesRoutes)
   .use('/orders', ordersRoutes)
