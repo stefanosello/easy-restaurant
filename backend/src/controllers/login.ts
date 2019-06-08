@@ -1,7 +1,7 @@
 import { Handler } from 'express'
 import User from '../models/user'
 
-const login: Handler = (req, res, next) => {
+const login: Handler = async (req, res, next) => {
 
   // If we reach this point, the user is successfully authenticated and
   // has been injected into req.user
@@ -15,13 +15,11 @@ const login: Handler = (req, res, next) => {
 
   try {
     token = user.generateToken();
-    refresh = user.generateRefreshToken(req.ip);
+    refresh = await user.generateRefreshToken(req.ip);
   }
   catch (error) {
     next({ statusCode: 500, error: true, errormessage: "Error generating token" })
   }
-
-  console.log({ token, refresh })
 
   return res.status(200).json({
     error: false,

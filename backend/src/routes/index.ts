@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import loginController from '../controllers/login'
+import renewController from '../controllers/renew'
 import * as authController from '../controllers/auth'
 import * as userController from '../controllers/user'
 import usersRoutes from './users'
@@ -19,6 +20,7 @@ router
   ))
   .post('/register', userController.create)
   .post('/login', authController.credentials, loginController)
+  .post('/renew', renewController)
 
   // Every other page requires access
   .use(authController.token)

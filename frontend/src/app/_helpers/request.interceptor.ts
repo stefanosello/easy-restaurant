@@ -19,19 +19,22 @@ export class RequestInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // add authorization header with jwt token if available
-    let token = JSON.parse(localStorage.getItem('token'));
-    if (token) {
-      return next.handle(this.addToken(request, token))
-        .pipe(
-          catchError(error => {
-            if (error.status == 401) {
-              return this.handle401Error(request, next);
-            } else {
-              throwError(error)
-            }
-          }))
+
+    if (!this.isRefreshing) {
+      let token = JSON.parse(localStorage.getItem('token'));
+      if (token)
+        request = this.addToken(request, token);
     }
-    return next.handle(request);
+
+    return next.handle(request)
+      .pipe(
+        catchError(error => {
+          if (error.status == 401) {
+            return this.handle401Error(request, next);
+          } else {
+            throwError(error)
+          }
+        }));
   }
 
   handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -41,9 +44,14 @@ export class RequestInterceptor implements HttpInterceptor {
 
       return this.authService.refreshToken().pipe(
         switchMap(token => {
-          this.isRefreshing = false;
-          this.refreshTokenSubject.next(token);
-          return next.handle(this.addToken(request, token));
+          if (token) {
+            this.isRefreshing = false;
+            this.refreshTokenSubject.next(token);
+            // refresh page with new access token
+            return next.handle(this.addToken(request, token));
+          }
+          this.authService.logout();
+          return next.handle(request);
         })
       )
     }
