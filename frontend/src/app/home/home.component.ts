@@ -23,4 +23,9 @@ export class HomeComponent {
   constructor(private breakpointObserver: BreakpointObserver,
     private authService: AuthService) { }
 
+  public logOut() {
+    localStorage.removeItem('session');
+    localStorage.removeItem('token');
+  }
+
 }

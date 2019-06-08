@@ -1,10 +1,11 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { Table, Service } from '../_models/table';
+import { Table} from '../_models/table';
 import { TableService } from '../_services/table.service';
 import { Observable } from 'rxjs';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { jsonSyntaxHighlight } from '../_helpers/utils'
-import { Order, Item } from '../_models/order';
+import { activeService, foodOrders, beverageOrders, pendingBeverageOrders, pendingFoodOrders, processedFoodOrders, processedBeverageOrders } from '../_helpers/table-helper';
+
 
 @Component({
   selector: 'app-cashdesk',
@@ -18,23 +19,27 @@ export class CashdeskComponent implements OnInit {
   public modalRef: BsModalRef;
   public modalTable: Table;
   public modalTableBill: any;
-  private nullService: Service;
+  public activeService = activeService;
+  public foodOrders = foodOrders;
+  public beverageOrders = beverageOrders;
+  public processedFoodOrders = processedFoodOrders;
+  public processedBeverageOrders = processedBeverageOrders;
+  public pendingFoodOrders = pendingFoodOrders;
+  public pendingBeverageOrders = pendingBeverageOrders;
 
-  constructor(private tableService: TableService, private modalService: BsModalService) { }
+  constructor(
+    private tableService: TableService, 
+    private modalService: BsModalService) { }
 
   ngOnInit() {
-    this.nullService = new Service;
-    this.nullService.covers = 0;
-    this.nullService.orders = []; 
-    this.nullService.done = true;
     this.getTables();
   }
 
-  public openModal(template: TemplateRef<any>, table: Table, bill: Boolean) {
-    this.modalTable = table;
+  public openModal(template: TemplateRef<any>, $event: Table, bill: Boolean) {
+    this.modalTable = $event;
     // if the opening modal is the bill one, let's retrieve the bill info
     if (bill === true) {
-      this.getBill(table);
+      this.getBill($event);
     }
     this.modalRef = this.modalService.show(template);
   }
@@ -50,44 +55,6 @@ export class CashdeskComponent implements OnInit {
   public getGeneralInfo(table: Table) {
     return jsonSyntaxHighlight(table);
   }
-
-  public activeService(table: Table) {
-    if (!table.busy) {
-      return this.nullService;
-    } else {
-      return table.services.find(service => service.done == false);
-    }
-  }
-
-  public foodOrders(table: Table) {
-    let service: Service = this.activeService(table);
-    let foodOrders = service.orders.filter(order => order.type === "food");
-    return foodOrders;
-  }
-
-  public beverageOrders(table: Table) {
-    let service: Service = this.activeService(table);
-    let beverageOrders = service.orders.filter(order => order.type === "beverage");
-    return beverageOrders;
-  }
-
-  public processedFoodOrders(table: Table) {
-    return this.foodOrders(table).filter(order => order.processed != null);
-  }
-
-  public processedBeverageOrders(table: Table) {
-    return this.beverageOrders(table).filter(order => order.processed != null);
-  }
-
-  public pendingFoodOrders(table: Table) {
-    return this.foodOrders(table).filter(order => order.processed == null);
-  }
-
-  public pendingBeverageOrders(table: Table) {
-    return this.beverageOrders(table).filter(order => order.processed == null);
-  }
-
-  
 
   public getCurrentTime() {
     let now: Date = new Date(Date.now())

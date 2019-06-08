@@ -1,0 +1,25 @@
+<mat-card class="m-3" style="width: 18rem;">
+  <div class="w-100 mb-3" [class.busy]="table.busy" [class.free]="!table.busy"></div>
+  <mat-card-header>
+    <mat-card-title>Table n° {{table.number}}</mat-card-title>
+    <mat-card-subtitle class="d-flex justify-content-around">
+      <div class="flex-fill">
+        <i class="fas fa-users mr-2"></i>{{activeService(table).covers}}/{{table.seats}}
+      </div>
+      <div class="flex-fill">
+        <i class="fas fa-concierge-bell mx-2"></i>{{processedFoodOrders(table).length}}/{{foodOrders(table).length}}
+      </div>
+      <div class="flex-fill">
+        <i class="fas fa-beer mx-2"></i>{{processedBeverageOrders(table).length}}/{{beverageOrders(table).length}}
+      </div>
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <b>Waiter serving this table:
+    </b><br>{{activeService(table).waiter ? activeService(table).waiter.username : 'none'}}
+  </mat-card-content>
+  <mat-card-actions class="d-flex w-100 m-0">
+    <button mat-flat-button color="accent" href="javascript:void(0)" class="py-2 mr-2 flex-fill" (click)="openInfoHandler()">Info</button>
+    <button mat-flat-button color="primary" href="javascript:void(0)" [disabled]="activeService(table).done" class="py-2 ml-2 flex-fill" (click)="openBillHandler()">Bill</button>
+  </mat-card-actions>
+</mat-card>

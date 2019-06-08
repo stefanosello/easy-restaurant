@@ -18,6 +18,7 @@ import { BartenderComponent } from './bartender/bartender.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule } from '@angular/material';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
+import { CashdeskTableCardComponent } from './cashdesk/cashdesk-table-card/cashdesk-table-card.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
     CashdeskComponent,
     CookComponent,
     BartenderComponent,
-    HomeComponent
+    HomeComponent,
+    CashdeskTableCardComponent
   ],
   imports: [
     BrowserModule,

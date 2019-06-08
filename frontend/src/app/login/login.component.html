@@ -26,7 +26,7 @@
           </mat-form-field>
         </div>
       </mat-card-content>
-      <mat-card-actions>
+      <mat-card-actions class="mx-0">
         <button mat-raised-button color="primary" (click)="onSubmit()">Login</button>
       </mat-card-actions>
       <mat-card-footer>
@@ -37,20 +37,3 @@
     </form>
   </mat-card>
 </div>
-
-<!--  
-<div class="main2">
-  <form [formGroup]="form">
-    <h2>Login</h2>
-    <div class="form-group">
-      <label for="username">Username:</label>
-      <input name="username" id="username" class="form-control" formControlName="username">
-    </div>
-    <div class="form-group">
-      <label for="password">Password:</label>
-      <input name="password" id="password" class="form-control" formControlName="password" type="password">
-    </div>
-    <button class="btn btn-primary" (click)="onSubmit()">Login</button>
-  </form>
-</div>
- -->

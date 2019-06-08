@@ -3,8 +3,8 @@ body {
   //background-color: $gray-100;
 }
 
-.card, .btn, .form-control { 
-  border-radius: 0; 
+mat-card, button, .form-control { 
+  border-radius: 0 !important; 
   border: 0;
 }
 
@@ -20,8 +20,8 @@ body {
   border-top: 5px solid lighten($primary, 20%);
 }
 
-.card-text {
-  height: 4.5rem;
+mat-card-content .table-card {
+  height: 3rem;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -30,4 +30,8 @@ body {
   border-radius: 0 !important;
   border: 0;
   border-top: 3px solid black;
+}
+
+.sidenav-container {
+  min-height: 100vh;
 }

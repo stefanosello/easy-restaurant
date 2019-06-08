@@ -1,14 +1,3 @@
-/*$theme-colors: (
-  primary: #00897B,
-  secondary: #546E7A,
-  danger: #d50000
-);
-
-$primary: #00897B;
-$secondary: #546E7A;
-$danger: #d50000;
-*/
-
 @import '~@angular/material/theming';
 @include mat-core();
 

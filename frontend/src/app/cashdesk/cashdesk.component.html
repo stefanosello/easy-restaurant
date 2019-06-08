@@ -1,25 +1,10 @@
-<div class="p-3 d-flex flex-column flex-md-row">
-  <div *ngFor="let table of tables" class="card m-3" style="width: 18rem;" [class.busy]="table.busy" [class.free]="!table.busy">
-    <div class="card-body">
-      <h5 class="card-title mb-4">Table n° {{table.number}}</h5>
-      <h6 class="card-subtitle mb-2 text-muted d-flex w-100 justify-content-around">
-        <div class="flex-fill">
-          <i class="fas fa-users mr-2"></i>{{activeService(table).covers}}/{{table.seats}}
-        </div>
-        <div class="flex-fill">
-          <i class="fas fa-concierge-bell mx-2"></i>{{processedFoodOrders(table).length}}/{{foodOrders(table).length}}
-        </div>
-        <div class="flex-fill">
-          <i class="fas fa-beer mx-2"></i>{{processedBeverageOrders(table).length}}/{{beverageOrders(table).length}}
-        </div>
-      </h6>
-      <p class="card-text"><b>Waiter serving this table: </b><br>{{activeService(table).waiter ? activeService(table).waiter.username : 'none'}}</p>
-      <div class="d-flex w-100">
-        <button href="#" role="button" class="btn btn-secondary mr-2 flex-fill" (click)="openModal(tableInfoModal, table)">Info</button>
-        <button href="#" role="button" class="btn btn-primary ml-2 flex-fill" [disabled]="activeService(table).done === true" (click)="openModal(tableBillModal, table, true)">Bill</button>
-      </div>
-    </div>
-  </div>
+<div class="d-flex flex-column flex-md-row">
+  <app-cashdesk-table-card 
+    *ngFor="let table of tables" 
+    [table]="table"
+    (openInfoModal)="openModal(tableInfoModal,$event)"
+    (openBillModal)="openModal(tableBillModal,$event,true)"
+  ></app-cashdesk-table-card>
   <!-- Begin Modals Section -->
   <ng-template #tableInfoModal>
     <div class="px-3 pt-3 pb-2">
