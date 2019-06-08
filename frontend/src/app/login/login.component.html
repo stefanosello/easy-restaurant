@@ -18,7 +18,7 @@
         <div>
           <mat-form-field appearance="standard">
             <mat-label>Password</mat-label>
-            <input matInput name="password" id="password" formControlName="password" required>
+            <input matInput name="password" id="password" formControlName="password" type="password" required>
             <mat-icon matSuffix color="primary">lock</mat-icon>
             <mat-error *ngIf="password.hasError('required')">
               Please enter your password.

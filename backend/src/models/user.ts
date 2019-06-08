@@ -56,7 +56,7 @@ UserSchema.methods.validatePassword = function (pwd: string): boolean {
   return bcrypt.compareSync(pwd, this.password);
 }
 
-UserSchema.methods.generateToken = function (exp: string = '1m'): string {
+UserSchema.methods.generateToken = function (exp: string = '1h'): string {
   return jsonwebtoken.sign({
     username: this.username,
     role: this.role,
