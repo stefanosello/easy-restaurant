@@ -19,6 +19,8 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule } from '@angular/material';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { CashdeskTableCardComponent } from './cashdesk/cashdesk-table-card/cashdesk-table-card.component';
+import { CashdeskInfoModalComponent } from './cashdesk/cashdesk-info-modal/cashdesk-info-modal.component';
+import { CashdeskBillModalComponent } from './cashdesk/cashdesk-bill-modal/cashdesk-bill-modal.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import { CashdeskTableCardComponent } from './cashdesk/cashdesk-table-card/cashd
     CookComponent,
     BartenderComponent,
     HomeComponent,
-    CashdeskTableCardComponent
+    CashdeskTableCardComponent,
+    CashdeskInfoModalComponent,
+    CashdeskBillModalComponent
   ],
   imports: [
     BrowserModule,
@@ -51,6 +55,10 @@ import { CashdeskTableCardComponent } from './cashdesk/cashdesk-table-card/cashd
   exports: [ModalModule],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true },
+  ],
+  entryComponents: [
+    CashdeskInfoModalComponent,
+    CashdeskBillModalComponent
   ],
   bootstrap: [AppComponent]
 })

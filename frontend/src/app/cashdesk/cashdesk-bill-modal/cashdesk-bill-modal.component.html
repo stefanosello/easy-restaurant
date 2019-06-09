@@ -1,0 +1,24 @@
+<button mat-dialog-close type="button" class="close pull-right" aria-label="Close">
+  <span aria-hidden="true">&times;</span>
+</button>
+<h1 mat-dialog-title>Bill of table n° {{table.number}}</h1>
+<mat-dialog-content *ngIf="bill">
+  <div class="bill m-3 p-3">
+    date and time: {{getCurrentTime()}}<br>
+    covers: {{activeService(table).covers}}<br>
+    <div class="my-2"></div>
+    <div *ngFor="let item of bill.items" class="d-flex">
+      <div class="flex-fill">{{item.quantity}} x {{item.name}}</div>
+      <div class="flex-fill text-right">{{item.quantity * item.price}}</div>
+    </div>
+    <div class="text-right">
+      Total: {{bill.total}}
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions *ngIf="bill" class="d-flex w-100 m-0 px-3 py-0">
+  <button mat-flat-button color="warn" class="py-2 flex-fill" (click)="tablePayment()">Payment</button>
+</mat-dialog-actions>
+<div *ngIf="!bill" class="d-flex flex-column justify-content-center align-items-center w-100">
+  <img src="../../assets/img/loader.svg">
+</div>
