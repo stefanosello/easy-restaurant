@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { TableService } from '../_services/table.service';
+import { Table } from '../_models/table';
 
 @Component({
   selector: 'app-waiter',
@@ -7,9 +10,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WaiterComponent implements OnInit {
 
-  constructor() { }
+  private tables: Table[];
+
+  constructor( private tableService: TableService) { }
 
   ngOnInit() {
+    this.getTables();
+  }
+
+  public getTables() {
+    const tableObs: Observable<any> = this.tableService.getAll();
+    tableObs.subscribe(data => {
+      this.tables = data.tables;
+      console.log(data);
+    });
   }
 
 }

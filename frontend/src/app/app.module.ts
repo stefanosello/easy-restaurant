@@ -21,6 +21,7 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { CashdeskTableCardComponent } from './cashdesk/cashdesk-table-card/cashdesk-table-card.component';
 import { CashdeskInfoModalComponent } from './cashdesk/cashdesk-info-modal/cashdesk-info-modal.component';
 import { CashdeskBillModalComponent } from './cashdesk/cashdesk-bill-modal/cashdesk-bill-modal.component';
+import { WaiterTableCardComponent } from './waiter/waiter-table-card/waiter-table-card.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { CashdeskBillModalComponent } from './cashdesk/cashdesk-bill-modal/cashd
     HomeComponent,
     CashdeskTableCardComponent,
     CashdeskInfoModalComponent,
-    CashdeskBillModalComponent
+    CashdeskBillModalComponent,
+    WaiterTableCardComponent
   ],
   imports: [
     BrowserModule,

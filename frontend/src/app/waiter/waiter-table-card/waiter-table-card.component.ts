@@ -3,15 +3,13 @@ import { Table } from 'src/app/_models/table';
 import { activeService, foodOrders, beverageOrders, pendingBeverageOrders, pendingFoodOrders, processedFoodOrders, processedBeverageOrders } from '../../_helpers/table-helper';
 
 @Component({
-  selector: 'app-cashdesk-table-card',
-  templateUrl: './cashdesk-table-card.component.html',
-  styleUrls: ['./cashdesk-table-card.component.scss']
+  selector: 'app-waiter-table-card',
+  templateUrl: './waiter-table-card.component.html',
+  styleUrls: ['./waiter-table-card.component.scss']
 })
-export class CashdeskTableCardComponent implements OnInit {
+export class WaiterTableCardComponent implements OnInit {
 
   @Input('table') table: Table;
-  @Output() openInfoModal = new EventEmitter<Table>();
-  @Output() openBillModal = new EventEmitter<Table>();
   public activeService = activeService;
   public foodOrders = foodOrders;
   public beverageOrders = beverageOrders;
@@ -23,14 +21,6 @@ export class CashdeskTableCardComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-  }
-
-  public openInfoHandler() {
-    this.openInfoModal.emit(this.table);
-  }
-
-  public openBillHandler() {
-    this.openBillModal.emit(this.table);
   }
 
 }

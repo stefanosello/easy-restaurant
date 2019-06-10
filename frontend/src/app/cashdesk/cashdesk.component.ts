@@ -1,9 +1,8 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
-import { Table} from '../_models/table';
+import { Component, OnInit } from '@angular/core';
+import { Table } from '../_models/table';
 import { TableService } from '../_services/table.service';
 import { Observable } from 'rxjs';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { activeService, foodOrders, beverageOrders, pendingBeverageOrders, pendingFoodOrders, processedFoodOrders, processedBeverageOrders } from '../_helpers/table-helper';
+import { MatDialog } from '@angular/material/dialog';
 import { CashdeskInfoModalComponent } from './cashdesk-info-modal/cashdesk-info-modal.component';
 import { CashdeskBillModalComponent } from './cashdesk-bill-modal/cashdesk-bill-modal.component';
 
@@ -19,13 +18,6 @@ export class CashdeskComponent implements OnInit {
   public tables: Table[];
   public modalTable: Table;
   public modalTableBill: any;
-  public activeService = activeService;
-  public foodOrders = foodOrders;
-  public beverageOrders = beverageOrders;
-  public processedFoodOrders = processedFoodOrders;
-  public processedBeverageOrders = processedBeverageOrders;
-  public pendingFoodOrders = pendingFoodOrders;
-  public pendingBeverageOrders = pendingBeverageOrders;
 
   constructor(
     private tableService: TableService, 
