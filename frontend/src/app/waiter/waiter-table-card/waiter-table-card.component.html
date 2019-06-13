@@ -19,8 +19,7 @@
     </b><br>{{activeService(table).waiter ? activeService(table).waiter.username : 'none'}}
   </mat-card-content>
   <mat-card-actions class="d-flex w-100 m-0">
-    <button mat-flat-button color="accent" class="py-2 mr-2 flex-fill h-100" (click)="openInfoHandler()">Info</button>
-    <button mat-flat-button color="primary" [disabled]="activeService(table).done" class="py-2 ml-2 flex-fill h-100"
-      (click)="openBillHandler()">Bill</button>
+    <button mat-flat-button color="accent" class="py-2 mr-2 flex-fill h-100">Info</button>
+    <button mat-flat-button color="primary" [disabled]="activeService(table).done" class="py-2 ml-2 flex-fill h-100">Bill</button>
   </mat-card-actions>
 </mat-card>

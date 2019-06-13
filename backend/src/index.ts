@@ -34,6 +34,9 @@ app
     // Mount routes
     .use(routes)
 
+    // Frontend files
+    .use(express.static('./locals'))
+
     // Error handling
     .use(errorHandler)
     .use((req, res, next) => {

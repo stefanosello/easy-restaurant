@@ -10,7 +10,7 @@ import { Table } from '../_models/table';
 })
 export class WaiterComponent implements OnInit {
 
-  private tables: Table[];
+  public tables: Table[];
 
   constructor( private tableService: TableService) { }
 
