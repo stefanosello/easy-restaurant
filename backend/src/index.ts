@@ -8,6 +8,7 @@ import https from 'https'
 import fs from 'fs'
 import routes from './routes'
 import User from './models/user'
+let path = require('path');
 
 if (setup.error) {
     console.log("Unable to load \".env\" file. Please provide one to store the JWT secret key");
@@ -31,11 +32,14 @@ app
     .use(bodyparser.urlencoded({ extended: true }))
     .use(bodyparser.json())
 
+    .use(express.static(path.join(__dirname, './locals')))
+
+    .get('/client', function (req, res) {
+        res.sendFile(path.join(__dirname, './locals/index.html'));
+    })
+
     // Mount routes
     .use(routes)
-
-    // Frontend files
-    .use('/client', express.static('./locals'))
 
     // Error handling
     .use(errorHandler)

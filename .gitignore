@@ -65,6 +65,9 @@
 # compiled output
 /backend/dist
 
+# backend static files
+/backend/src/locals
+
 # !!! ANGULAR FRONTEND !!!
 
 # compiled output
