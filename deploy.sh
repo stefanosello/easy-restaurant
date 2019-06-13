@@ -14,5 +14,9 @@ ng build --prod
 cp -r ./dist/easy-restaurant-frontend/* ../backend/src/locals
 # back to backend
 cd ../backend
+# remove old env file
+rm .env
+# inject new .env file
+echo -e "JWT_SECRET=secret\nHTTP_PORT=8080\nMONGODB_URI=mongodb://127.0.0.1:27017/easy-restaurant?gssapiServiceName=mongodb" > .env
 # start server
-npm serve
+npm run serve

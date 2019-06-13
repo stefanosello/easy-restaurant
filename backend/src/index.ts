@@ -35,7 +35,7 @@ app
     .use(routes)
 
     // Frontend files
-    .use(express.static('./locals'))
+    .use('/client', express.static('./locals'))
 
     // Error handling
     .use(errorHandler)
