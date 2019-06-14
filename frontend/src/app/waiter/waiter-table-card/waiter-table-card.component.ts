@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Table } from 'src/app/_models/table';
 import { activeService, foodOrders, beverageOrders, pendingBeverageOrders, pendingFoodOrders, processedFoodOrders, processedBeverageOrders } from '../../_helpers/table-helper';
+import { User } from 'src/app/_models/user';
+import { AuthService } from 'src/app/_services/auth.service';
 
 @Component({
   selector: 'app-waiter-table-card',
@@ -17,10 +19,12 @@ export class WaiterTableCardComponent implements OnInit {
   public processedBeverageOrders = processedBeverageOrders;
   public pendingFoodOrders = pendingFoodOrders;
   public pendingBeverageOrders = pendingBeverageOrders;
+  public user: User;
 
-  constructor() { }
+  constructor(private AuthService: AuthService) { }
 
   ngOnInit() {
+    this.user = this.AuthService.getUserInfo();
   }
 
 }

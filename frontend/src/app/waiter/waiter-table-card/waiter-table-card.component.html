@@ -15,11 +15,20 @@
     </mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <b>Waiter serving this table:
-    </b><br>{{activeService(table).waiter ? activeService(table).waiter.username : 'none'}}
+    <mat-chip-list aria-label="Fish selection">
+      <mat-chip color="warn" selected *ngIf="activeService(table).waiter && user.username == activeService(table).waiter.username">
+        Served by you
+      </mat-chip>
+      <mat-chip color="primary" selected *ngIf="activeService(table).waiter && user.username != activeService(table).waiter.username">
+        Served by {{activeService(table).waiter.username}}
+      </mat-chip>
+      <mat-chip color="accent" selected *ngIf="!activeService(table).waiter">
+        Served by none
+      </mat-chip>
+    </mat-chip-list>
   </mat-card-content>
   <mat-card-actions class="d-flex w-100 m-0">
-    <button mat-flat-button color="accent" class="py-2 mr-2 flex-fill h-100">Info</button>
-    <button mat-flat-button color="primary" [disabled]="activeService(table).done" class="py-2 ml-2 flex-fill h-100">Bill</button>
+    <button mat-flat-button color="accent" [disabled]="table.busy" class="py-2 mr-2 flex-fill h-100">Mark as busy</button>
+    <button mat-flat-button color="primary" [disabled]="!table.busy" class="py-2 ml-2 flex-fill h-100">Add order</button>
   </mat-card-actions>
 </mat-card>

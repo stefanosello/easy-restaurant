@@ -34,12 +34,12 @@ app
 
     .use(express.static(path.join(__dirname, './locals')))
 
-    .get('/client', function (req, res) {
+    .get('/', function (req, res) {
         res.sendFile(path.join(__dirname, './locals/index.html'));
     })
 
     // Mount routes
-    .use(routes)
+    .use('/api/v1', routes)
 
     // Error handling
     .use(errorHandler)

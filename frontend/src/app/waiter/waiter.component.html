@@ -1,3 +1,7 @@
 <div class="d-flex flex-column flex-md-row">
-  <app-waiter-table-card *ngFor="let table of tables" [table]="table"></app-waiter-table-card>
+  <app-waiter-table-card 
+    *ngFor="let table of tables" 
+    [table]="table"
+    (openStatusModal)=openStatusModal()
+  ></app-waiter-table-card>
 </div>
