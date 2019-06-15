@@ -24,6 +24,7 @@ import { CashdeskBillModalComponent } from './cashdesk/cashdesk-bill-modal/cashd
 import { WaiterTableCardComponent } from './waiter/waiter-table-card/waiter-table-card.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { WaiterStatusModalComponent } from './waiter/waiter-status-modal/waiter-status-modal.component';
+import { WaiterOrderModalComponent } from './waiter/waiter-order-modal/waiter-order-modal.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { WaiterStatusModalComponent } from './waiter/waiter-status-modal/waiter-
     CashdeskInfoModalComponent,
     CashdeskBillModalComponent,
     WaiterTableCardComponent,
-    WaiterStatusModalComponent
+    WaiterStatusModalComponent,
+    WaiterOrderModalComponent
   ],
   imports: [
     BrowserModule,
@@ -64,7 +66,9 @@ import { WaiterStatusModalComponent } from './waiter/waiter-status-modal/waiter-
   ],
   entryComponents: [
     CashdeskInfoModalComponent,
-    CashdeskBillModalComponent
+    CashdeskBillModalComponent,
+    WaiterStatusModalComponent,
+    WaiterOrderModalComponent
   ],
   bootstrap: [AppComponent]
 })

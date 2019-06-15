@@ -2,7 +2,7 @@
   <app-waiter-table-card 
     *ngFor="let table of tables" 
     [table]="table"
-    (openStatusModal)="openStatusModal($event)"
-    (openOrderModal)="openOrderModal($event)"
+    (openStatusModal)="openStatusModal(table)"
+    (openOrderModal)="openOrderModal(table)"
   ></app-waiter-table-card>
 </div>

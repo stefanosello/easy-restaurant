@@ -30,11 +30,11 @@ export class WaiterTableCardComponent implements OnInit {
   }
 
   public openStatusHandler() {
-    this.openStatusModal.emit(this.table);
+    this.openStatusModal.emit();
   }
 
   public openOrderHandler() {
-    this.openOrderModal.emit(this.table);
+    this.openOrderModal.emit();
   }
 
 }
