@@ -1,0 +1,17 @@
+<div class="p-3">
+  <h1 mat-dialog-title class="text-primary mb-3"><i class="fas fa-edit mr-2"></i> Fill the inputs below to create a new table</h1>
+  <div mat-dialog-content>
+    <p><i class="fas fa-database mr-3"></i>Id number of new table:</p>
+    <mat-form-field>
+      <input matInput [(ngModel)]="idNumber" type="number">
+    </mat-form-field>
+    <p><i class="fas fa-chair mr-3"></i>Number of seats:</p>
+    <mat-form-field>
+      <input matInput [(ngModel)]="seatsNumber" type="number">
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions class="w-100 d-flex">
+    <button mat-flat-button class="flex-fill mr-3" color="accent" (click)="onNoClick()">No Thanks</button>
+    <button mat-flat-button class="flex-fill" color="primary" (click)="addTable()" cdkFocusInitial>Ok</button>
+  </div>
+</div>

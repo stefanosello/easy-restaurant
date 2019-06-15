@@ -1,0 +1,16 @@
+@import '../../styles.scss';
+
+.add-table-card {
+  background-color: transparent;
+  height: 15.1875rem;
+  cursor: pointer;
+
+  & > div {
+    border: 2px dashed $gray-400;
+  }
+
+  i {
+    font-size: 4rem;
+    color: rgba($gray-600, .5);
+  }
+}

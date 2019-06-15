@@ -37,4 +37,10 @@ export class TableService {
     return paymentDone;
   }
 
+  addTable(data: any) {
+    let tableAdded = this.http.post(`${this.baseUrl}/`, data);
+    console.log(tableAdded);
+    return tableAdded;
+  }
+
 }

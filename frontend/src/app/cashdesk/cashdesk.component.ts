@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { CashdeskInfoModalComponent } from './cashdesk-info-modal/cashdesk-info-modal.component';
 import { CashdeskBillModalComponent } from './cashdesk-bill-modal/cashdesk-bill-modal.component';
+import { CashdeskAddCardModalComponent } from './cashdesk-add-card-modal/cashdesk-add-card-modal.component';
 
 
 @Component({
@@ -42,6 +43,16 @@ export class CashdeskComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === "paid") {
+        this.getTables();
+      }
+      console.log('The dialog was closed with result: ' + result);
+    });
+  }
+
+  public openAddCardModal(): void {
+    const dialogRef = this.dialog.open(CashdeskAddCardModalComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === "done") {
         this.getTables();
       }
       console.log('The dialog was closed with result: ' + result);
