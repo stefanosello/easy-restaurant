@@ -32,11 +32,7 @@ app
     .use(bodyparser.urlencoded({ extended: true }))
     .use(bodyparser.json())
 
-    .use(express.static(path.join(__dirname, './locals')))
-
-    .get('/', function (req, res) {
-        res.sendFile(path.join(__dirname, './locals/index.html'));
-    })
+    .use('/', express.static(path.join(__dirname, '/locals')))
 
     // Mount routes
     .use('/api/v1', routes)

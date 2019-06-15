@@ -28,7 +28,22 @@
     </mat-chip-list>
   </mat-card-content>
   <mat-card-actions class="d-flex w-100 m-0">
-    <button mat-flat-button color="accent" [disabled]="table.busy" class="py-2 mr-2 flex-fill h-100">Mark as busy</button>
-    <button mat-flat-button color="primary" [disabled]="!table.busy" class="py-2 ml-2 flex-fill h-100">Add order</button>
+    <button mat-flat-button 
+      *ngIf="!table.busy"
+      color="accent" 
+      [disabled]="table.busy" 
+      (click)="openStatusHandler()" 
+      class="py-2 mr-2 flex-fill h-100"
+    >
+      <i class="fas fa-ban mr-2"></i>{{table.busy ? "occupied" : "occupy"}}
+    </button>
+    <button mat-flat-button 
+      *ngIf="table.busy"
+      color="primary" 
+      [disabled]="!table.busy" 
+      (click)="openOrderHandler()" 
+      class="py-2 flex-fill h-100"
+    > <i class="fas fa-plus mr-2"></i>order
+    </button>
   </mat-card-actions>
 </mat-card>

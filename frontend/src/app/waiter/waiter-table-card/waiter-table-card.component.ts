@@ -12,6 +12,8 @@ import { AuthService } from 'src/app/_services/auth.service';
 export class WaiterTableCardComponent implements OnInit {
 
   @Input('table') table: Table;
+  @Output() openStatusModal = new EventEmitter<Table>();
+  @Output() openOrderModal = new EventEmitter<Table>();
   public activeService = activeService;
   public foodOrders = foodOrders;
   public beverageOrders = beverageOrders;
@@ -25,6 +27,14 @@ export class WaiterTableCardComponent implements OnInit {
 
   ngOnInit() {
     this.user = this.AuthService.getUserInfo();
+  }
+
+  public openStatusHandler() {
+    this.openStatusModal.emit(this.table);
+  }
+
+  public openOrderHandler() {
+    this.openOrderModal.emit(this.table);
   }
 
 }
