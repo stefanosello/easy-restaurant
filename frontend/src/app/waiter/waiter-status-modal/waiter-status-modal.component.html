@@ -1,3 +1,19 @@
-<p>
-  waiter-status-modal works!
-</p>
+<div class="p-3">
+  <h1 mat-dialog-title class="text-primary mb-3"><i class="fas fa-edit mr-2"></i> Fill the input below to mark this table as busy</h1>
+  <div mat-dialog-content>>
+    <mat-form-field appearance="outline">
+      <mat-label>Id number of new table</mat-label>
+      <input matInput type="number" [(ngModel)]="idNumber">
+      <mat-icon><i class="fas fa-database mr-3"></i></mat-icon>
+      <mat-hint>New table number cannot be already associated to any existing table</mat-hint>
+    </mat-form-field>
+    <p><i class="fas fa-chair mr-3"></i>Number of seats:</p>
+    <mat-form-field>
+      <input matInput [(ngModel)]="seatsNumber" type="number">
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions class="w-100 d-flex">
+    <button mat-flat-button class="flex-fill mr-3" color="accent" (click)="onNoClick()">No Thanks</button>
+    <button mat-flat-button class="flex-fill" color="primary" (click)="addTable()" cdkFocusInitial>Ok</button>
+  </div>
+</div>

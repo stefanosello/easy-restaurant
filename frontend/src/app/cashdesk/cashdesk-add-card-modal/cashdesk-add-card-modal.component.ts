@@ -12,6 +12,7 @@ export class CashdeskAddCardModalComponent implements OnInit {
 
   public idNumber: number;
   public seatsNumber: number;
+  public errorMessage: string = null;
 
   constructor(public dialogRef: MatDialogRef<CashdeskAddCardModalComponent>, private tableService: TableService) { }
 
@@ -32,7 +33,9 @@ export class CashdeskAddCardModalComponent implements OnInit {
     addTableObs.subscribe(
       data => { console.log(data) },
       err => {
-        console.error(err);
+        console.log("Error!!!!");
+        console.error("error:", err);
+        component.errorMessage = err.errormessage;
       },
       () => {
         component.dialogRef.close("done");

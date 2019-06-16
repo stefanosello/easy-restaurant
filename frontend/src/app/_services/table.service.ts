@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Table } from '../_models/table';
 import { HttpClient } from '@angular/common/http';
+import { throwError } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -38,9 +40,8 @@ export class TableService {
   }
 
   addTable(data: any) {
-    let tableAdded = this.http.post(`${this.baseUrl}/`, data);
-    console.log(tableAdded);
-    return tableAdded;
+    console.log("I.m callsing klwejhdfkd");
+    return this.http.post(`${this.baseUrl}/`, data);
   }
 
 }
