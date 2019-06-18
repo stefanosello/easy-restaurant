@@ -43,9 +43,7 @@ export const get: Handler = (req, res, next) => {
 			}
 			res.status(200).json(response);
 		})
-		.catch(err => {
-			return next({ statusCode: 500, error: true, errormessage: err });
-		})
+		.catch(err => next({ statusCode: 500, error: true, errormessage: err }))
 }
 
 /* This method should handle a request with req.body containing an object like:
@@ -70,29 +68,27 @@ export const create: Handler = (req, res, next) => {
 
 	Table.findOne({ number: tableNumber }, 'services')
 		.then(table => {
-			if (table) {
-				if (!table.services[0] || table.services[table.services.length - 1].done) {
-					let service = {
-						covers: covers | order.items.length,
-						waiter: req.user.id,
-						orders: [order]
-					}
-					table.services.push(service);
-					table.busy = true;
-				} else {
-					table.services[table.services.length - 1].orders.push(order)
-				}
-				table.save().then(doc => {
-					return res.status(200).json(doc);
-				})
-					.catch(err => {
-						console.error(err)
-						let msg = `DB error: ${err._message}`;
-						return next({ statusCode: 500, error: true, errormessage: msg });
-					});
-			} else {
+			if (!table)
 				return next({ statusCode: 404, error: true, errormessage: "Table not found" });
+
+			if (!table.services[0] || table.services[table.services.length - 1].done) {
+				let service = {
+					covers: covers | order.items.length,
+					waiter: req.user.id,
+					orders: [order]
+				}
+				table.services.push(service);
+				table.busy = true;
+			} else {
+				table.services[table.services.length - 1].orders.push(order)
 			}
+			table.save()
+				.then(doc => res.status(200).json(doc))
+				.catch(err => {
+					// console.error(err)
+					let msg = `DB error: ${err._message}`;
+					next({ statusCode: 500, error: true, errormessage: msg });
+				});
 		})
 		.catch(err => {
 			let msg: String;
@@ -100,7 +96,7 @@ export const create: Handler = (req, res, next) => {
 				msg = `DB error: ${err._message}`;
 			else
 				msg = err;
-			return next({ statusCode: 500, error: true, errormessage: msg });
+			next({ statusCode: 500, error: true, errormessage: msg });
 		});
 }
 
@@ -134,29 +130,27 @@ export const update: Handler = (req, res, next) => {
 		'services.0.done': false
 	})
 		.then(table => {
-			if (table) {
-				// first service is the one we need to update
-				let orderIndex = table.services[table.services.length - 1].orders.findIndex((order: IOrder) => {
-					return order._id == orderId;
-				})
-				// real update for all keys contained in updateBlock
-				Object.keys(updateBlock).forEach((key: string) => {
-					table.services[table.services.length - 1].orders[orderIndex][key] = updateBlock[key];
-				});
-				table.save((err, table) => {
-					if (err) {
-						return next({ statusCode: 500, error: true, errormessage: err });
-					} else {
-						return res.status(200).json({ table });
-					}
-				});
-			} else {
+			if (!table)
 				return next({ statusCode: 400, error: true, errormessage: "Wrong params" });
-			}
+
+			// first service is the one we need to update
+			let orderIndex = table.services[table.services.length - 1].orders.findIndex((order: IOrder) => {
+				return order._id == orderId;
+			})
+			// real update for all keys contained in updateBlock
+			Object.keys(updateBlock).forEach((key: string) => {
+				table.services[table.services.length - 1].orders[orderIndex][key] = updateBlock[key];
+			});
+			table.save((err, table) => {
+				if (err) {
+					return next({ statusCode: 500, error: true, errormessage: err });
+				}
+				res.status(200).json({ table });
+			});
 		})
 		.catch(err => {
 			let msg = `DB error: ${err}`;
-			return next({ statusCode: 500, error: true, errormessage: msg });
+			next({ statusCode: 500, error: true, errormessage: msg });
 		});
 }
 

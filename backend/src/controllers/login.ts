@@ -18,10 +18,10 @@ const login: Handler = async (req, res, next) => {
     refresh = await user.generateRefreshToken(req.ip);
   }
   catch (error) {
-    next({ statusCode: 500, error: true, errormessage: "Error generating token" })
+    return next({ statusCode: 500, error: true, errormessage: "Error generating token" })
   }
 
-  return res.status(200).json({
+  res.status(200).json({
     error: false,
     errormessage: "",
     token: token,
