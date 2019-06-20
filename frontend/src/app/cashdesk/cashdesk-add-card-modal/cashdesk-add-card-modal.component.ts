@@ -13,7 +13,6 @@ export class CashdeskAddCardModalComponent implements OnInit {
 
   public tableNumber = new FormControl('', [Validators.required], ValidateTableNumberNotTaken.createValidator(this.tableService));
   public seatsNumber = new FormControl('', [Validators.required, Validators.min(1)]);
-  public errorMessage: string = null;
 
 
   constructor(public dialogRef: MatDialogRef<CashdeskAddCardModalComponent>, private tableService: TableService) { }
@@ -47,8 +46,6 @@ export class CashdeskAddCardModalComponent implements OnInit {
       data => { console.log("add table data: ", data) },
       err => {
         console.error(err);
-        component.errorMessage = err.message;
-        console.log(component.errorMessage);
       },
       () => {
         component.dialogRef.close("done");

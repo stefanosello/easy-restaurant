@@ -12,7 +12,7 @@ import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { WaiterComponent } from './waiter/waiter.component';
 import { CashdeskComponent } from './cashdesk/cashdesk.component';
-import { RequestInterceptor } from './_helpers/request.interceptor';
+import { RequestInterceptor } from './_interceptors/request.interceptor';
 import { CookComponent } from './cook/cook.component';
 import { BartenderComponent } from './bartender/bartender.component';
 import { LayoutModule } from '@angular/cdk/layout';

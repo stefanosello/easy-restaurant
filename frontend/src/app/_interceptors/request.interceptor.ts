@@ -29,7 +29,7 @@ export class RequestInterceptor implements HttpInterceptor {
     return next.handle(request)
       .pipe(
         catchError(error => {
-          if (error.status == 401) {
+          if (error.status == 401 && this.authService.getUserInfo()) {
             return this.handle401Error(request, next);
           } else {
             return throwError(error)
