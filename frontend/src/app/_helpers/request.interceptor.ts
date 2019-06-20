@@ -32,7 +32,7 @@ export class RequestInterceptor implements HttpInterceptor {
           if (error.status == 401) {
             return this.handle401Error(request, next);
           } else {
-            throwError(error)
+            return throwError(error)
           }
         }));
   }

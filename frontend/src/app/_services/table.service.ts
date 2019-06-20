@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Table } from '../_models/table';
 import { HttpClient } from '@angular/common/http';
-import { throwError } from 'rxjs';
+import { throwError, Observable } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
+import { createOfflineCompileUrlResolver } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root'
@@ -40,8 +41,11 @@ export class TableService {
   }
 
   addTable(data: any) {
-    console.log("I.m callsing klwejhdfkd");
     return this.http.post(`${this.baseUrl}/`, data);
+  }
+
+  isTableAlreadyPresent(number: number) {
+    return this.http.get(`${this.baseUrl}/validate?tableNumber=${number}`);
   }
 
 }

@@ -1,17 +1,19 @@
 <div class="px-2 pt-2">
   <h1 mat-dialog-title class="text-primary mb-3"><i class="fas fa-edit mr-2"></i> Add a new table</h1>
   <div mat-dialog-content>
-    <mat-form-field appearance="outline" [color]="errorMessage ? 'warn' : 'none'">
+    <mat-form-field appearance="outline">
       <mat-label>Id number of new table</mat-label>
-      <input matInput type="number" [(ngModel)]="idNumber" required>
+      <input matInput type="number" [formControl]="tableNumber" required>
       <mat-icon matSuffix fontSet="fas" fontIcon="fa-database" class="mx-2 text-small"></mat-icon>
       <mat-hint>New table number cannot be already associated to any existing table</mat-hint>
+      <mat-error *ngIf="tableNumber.invalid">{{getNumberErrorMessage()}}</mat-error>
     </mat-form-field>
     <br><br>
     <mat-form-field appearance="outline">
       <mat-label>Number of seats</mat-label>
-      <input matInput type="number" [(ngModel)]="seatsNumber" required>
+      <input matInput type="number" [formControl]="seatsNumber" required>
       <mat-icon matSuffix fontSet="fas" fontIcon="fa-chair" class="mx-2 text-small"></mat-icon>
+      <mat-error *ngIf="seatsNumber.invalid">{{getSeatsErrorMessage()}}</mat-error>
     </mat-form-field>
   </div>
   <div mat-dialog-actions class="w-100 d-flex mb-0">

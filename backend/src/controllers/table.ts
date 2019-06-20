@@ -2,6 +2,23 @@ import { Handler } from 'express'
 import Table from '../models/table'
 import { IOrder } from '../models/order';
 
+export const findOneForValidation: Handler = (req, res, next) => {
+	if ('tableNumber' in req.query) {
+		let n:number = req.query.tableNumber;
+		Table.findOne({number: n})
+			.then(table => {
+				if (table) {
+					return res.status(200).json({ tableFound: true });
+				} else {
+					return res.status(200).json({ tableFound: false });
+				}
+			})
+			.catch(err => {
+				return next({ statusCode: 500, error: true, errormessage: `Server error: ${err._message}` });
+			})
+	}
+}
+
 export const get: Handler = (req, res, next) => {
 	let findBlock: any = {};
 

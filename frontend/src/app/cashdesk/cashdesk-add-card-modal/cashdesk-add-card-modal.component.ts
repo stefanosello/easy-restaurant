@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
-import { Observable } from 'rxjs';
+import { FormControl, AsyncValidator, Validators } from '@angular/forms';
 import { TableService } from 'src/app/_services/table.service';
+import { ValidateTableNumberNotTaken } from '../../_validators/async-table-number-not-taken.validator'
 
 @Component({
   selector: 'app-cashdesk-add-card-modal',
@@ -10,9 +11,10 @@ import { TableService } from 'src/app/_services/table.service';
 })
 export class CashdeskAddCardModalComponent implements OnInit {
 
-  public idNumber: number;
-  public seatsNumber: number;
+  public tableNumber = new FormControl('', [Validators.required], ValidateTableNumberNotTaken.createValidator(this.tableService));
+  public seatsNumber = new FormControl('', [Validators.required, Validators.min(1)]);
   public errorMessage: string = null;
+
 
   constructor(public dialogRef: MatDialogRef<CashdeskAddCardModalComponent>, private tableService: TableService) { }
 
@@ -23,19 +25,30 @@ export class CashdeskAddCardModalComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  getNumberErrorMessage() {
+    return this.tableNumber.hasError('required') ? 'You must enter a value' :
+      this.tableNumber.hasError('tableNumberTaken') ? 'Table number already taken' :
+        '';
+  }
+
+  getSeatsErrorMessage() {
+    return this.tableNumber.hasError('required') ? 'You must enter a value' :
+      this.tableNumber.hasError('min') ? 'Number of seats must be at least 1' :
+        '';
+  }
+
   public addTable() {
     const data: any = {
-      tableNumber: this.idNumber,
-      numberOfSeats: this.seatsNumber
+      tableNumber: this.tableNumber.value,
+      numberOfSeats: this.seatsNumber.value
     }
-    const addTableObs: Observable<any> = this.tableService.addTable(data);
     let component = this;
-    addTableObs.subscribe(
-      data => { console.log(data) },
+    this.tableService.addTable(data).subscribe(
+      data => { console.log("add table data: ", data) },
       err => {
-        console.log("Error!!!!");
-        console.error("error:", err);
-        component.errorMessage = err.errormessage;
+        console.error(err);
+        component.errorMessage = err.message;
+        console.log(component.errorMessage);
       },
       () => {
         component.dialogRef.close("done");

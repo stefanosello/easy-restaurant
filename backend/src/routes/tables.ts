@@ -8,6 +8,9 @@ tables.route('/')
   .get(controller.get)
   .post(controller.create)
 
+tables.route('/validate')
+  .get(controller.findOneForValidation)
+
 tables.route('/:tableNumber')
   .get(controller.get)
   .put(controller.update)
