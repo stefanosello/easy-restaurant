@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, model } from "mongoose";
+import { Document, Schema, model } from "mongoose";
 import { Types } from './item'
 
 export interface IOrder extends Document {
@@ -20,7 +20,7 @@ export const OrderSchema: Schema = new Schema({
 	processed: { type: Date, default: null },
 	type: { type: String, required: true, enum: Object.values(Types) },
 	items: [{
-		item: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Item" },
+		item: { type: Schema.Types.ObjectId, required: true, ref: "Item" },
 		quantity: { type: Number, required: true },
 		cook: { type: Schema.Types.ObjectId, ref: "User" },
 		start: Date,
