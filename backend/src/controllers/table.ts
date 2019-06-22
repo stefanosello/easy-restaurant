@@ -1,5 +1,5 @@
 import { Handler } from 'express'
-import Table from '../models/table'
+import Table, { ITable } from '../models/table'
 import { IOrder } from '../models/order';
 
 export const findOneForValidation: Handler = (req, res, next) => {
@@ -90,8 +90,9 @@ export const free: Handler = (req, res, next) => {
 				service.done = true;
 			});
 			table.save((err, doc) => {
-				if (err)
-					return next({ statusCode: 500, error: true, errormessage: `DB error: ${err._message | err}` });
+				if (err) {
+					return next({ statusCode: 500, error: true, errormessage: `DB error 2: ${ err}` });
+				}
 				res.status(200).json({ message: "Table set free" })
 			});
 		})
@@ -106,7 +107,6 @@ export const getBill: Handler = (req, res, next) => {
 		.then(table => {
 			if (!table)
 				return res.status(404).json({ error: true, errormessage: `Error occurred: Table ${req.params.tableNumber} number not found` });
-
 			let bill: number = 0;
 			let items: any[] = [];
 			// console.log(table.services[0].orders[0].items);
@@ -135,7 +135,11 @@ export const getBill: Handler = (req, res, next) => {
 }
 
 export const update: Handler = (req, res, next) => {
-	Table.findOneAndUpdate({ number: req.params.number }, req.body)
+	let updateBlock: any = req.body;
+	if ('services' in req.body) {
+		updateBlock['$set'] = {services: req.body.services}
+	}
+	Table.findOneAndUpdate({ number: req.params.tableNumber }, updateBlock)
 		.then(table => res.status(200).json({ table }))
 		.catch(err => next({ statusCode: 500, error: true, errormessage: `DB error: ${err._message | err}` }));
 }

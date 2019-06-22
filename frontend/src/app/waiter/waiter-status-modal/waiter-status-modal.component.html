@@ -9,8 +9,8 @@
       <mat-error *ngIf="numberOfCovers.invalid">{{getCoversErrorMessage()}}</mat-error>
     </mat-form-field>
   </div>
-  <div mat-dialog-actions class="w-100 d-flex">
-    <button mat-flat-button class="flex-fill mr-3" color="accent" (click)="onNoClick()">No Thanks</button>
-    <button mat-flat-button class="flex-fill" color="primary" (click)="markAsBusy()" cdkFocusInitial>Ok</button>
+  <div mat-dialog-actions class="w-100 my-0 d-flex">
+    <button mat-flat-button class="flex-fill py-2 mr-2" color="accent" (click)="onNoClick()">No Thanks</button>
+    <button mat-flat-button class="flex-fill py-2" color="primary" (click)="markAsBusy()" cdkFocusInitial>Ok</button>
   </div>
 </div>

@@ -73,15 +73,15 @@ export class AuthService {
   }
 
   getUserInfo(): User {
-    let token = localStorage.getItem('token')
+    const token = localStorage.getItem('token')
     try {
-      let payload = jwtDecode(token);
-      let user = new User();
+      const payload = jwtDecode(token);
+      const user = new User();
       user.username = payload.username;
-      user.role = payload.role
+      user.role = payload.role;
+      user._id = payload.id;
       return user;
-    }
-    catch (Error) {
+    } catch (Error) {
       return null;
     }
   }

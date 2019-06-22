@@ -1,9 +1,9 @@
-import { Order } from './order'
+import { Order } from './order';
 import { User } from './user';
 
 export class Service {
 	covers: number;
-	waiter: User;
+	waiter: User | string;
 	orders: Order[];
 	timestamp: Date;
 	done: boolean;

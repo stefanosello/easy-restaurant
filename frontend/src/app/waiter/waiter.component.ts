@@ -34,7 +34,9 @@ export class WaiterComponent implements OnInit {
       data: table
     });
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed with result: ' + result);
+      if (result.status && result.status === 'updated') {
+        this.getTables();
+      }
     });
   }
 

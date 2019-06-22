@@ -44,6 +44,10 @@ export class TableService {
     return this.http.post(`${this.baseUrl}/`, data);
   }
 
+  updateTable(table: Table) {
+    return this.http.put(`${this.baseUrl}/${table.number}`, table);
+  }
+
   isTableAlreadyPresent(number: number) {
     return this.http.get(`${this.baseUrl}/validate?tableNumber=${number}`);
   }
