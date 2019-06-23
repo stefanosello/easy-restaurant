@@ -16,7 +16,7 @@ import { RequestInterceptor } from './_interceptors/request.interceptor';
 import { CookComponent } from './cook/cook.component';
 import { BartenderComponent } from './bartender/bartender.component';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule } from '@angular/material';
+import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatTabsModule, MatTreeModule } from '@angular/material';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { CashdeskTableCardComponent } from './cashdesk/cashdesk-table-card/cashdesk-table-card.component';
 import { CashdeskInfoModalComponent } from './cashdesk/cashdesk-info-modal/cashdesk-info-modal.component';
@@ -27,6 +27,7 @@ import { WaiterStatusModalComponent } from './waiter/waiter-status-modal/waiter-
 import { WaiterOrderModalComponent } from './waiter/waiter-order-modal/waiter-order-modal.component';
 import { CashdeskAddCardModalComponent } from './cashdesk/cashdesk-add-card-modal/cashdesk-add-card-modal.component';
 import { FormsModule } from '@angular/forms';
+import { OrderTreeComponent } from './waiter/waiter-order-modal/order-tree/order-tree.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { FormsModule } from '@angular/forms';
     WaiterTableCardComponent,
     WaiterStatusModalComponent,
     WaiterOrderModalComponent,
-    CashdeskAddCardModalComponent
+    CashdeskAddCardModalComponent,
+    OrderTreeComponent
   ],
   imports: [
     BrowserModule,
@@ -62,7 +64,9 @@ import { FormsModule } from '@angular/forms';
     AngularFontAwesomeModule,
     ModalModule.forRoot(),
     MatChipsModule,
-    FormsModule
+    FormsModule,
+    MatTabsModule,
+    MatTreeModule
   ],
   exports: [ModalModule],
   providers: [
