@@ -1,12 +1,7 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-
-interface ItemNode {
-  name: string;
-  quantity: number;
-  children?: ItemNode[];
-}
+import { ItemNode } from '../waiter-order-modal.component';
 
 const TREE_DATA: ItemNode[] = [
   {
@@ -47,16 +42,19 @@ const TREE_DATA: ItemNode[] = [
 })
 export class OrderTreeComponent implements OnInit {
 
+  @Input('tree') tree: ItemNode;
+
   treeControl = new NestedTreeControl<ItemNode>(node => node.children);
   dataSource = new MatTreeNestedDataSource<ItemNode>();
 
   constructor() {
-    this.dataSource.data = TREE_DATA;
   }
 
   hasChild = (_: number, node: ItemNode) => !!node.children && node.children.length > 0;
 
   ngOnInit() {
+    console.log(this.tree);
+    this.dataSource.data = this.tree.children;
   }
 
 }

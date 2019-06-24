@@ -1,5 +1,5 @@
 export class Item {
-	item: string;
+	item: string | any;
 	quantity: number;
 	cook: string;
 	start: Date;

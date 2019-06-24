@@ -3,15 +3,15 @@
   <div mat-dialog-content>
     <mat-tab-group>
       <mat-tab label="Food Orders">
-        <app-order-tree></app-order-tree>
+        <app-order-tree [tree]="formattedFoodOrders"></app-order-tree>
       </mat-tab>
       <mat-tab label="Beverage Orders">
-        <app-order-tree></app-order-tree>
+        <app-order-tree [tree]="formattedBeverageOrders"></app-order-tree>
       </mat-tab>
     </mat-tab-group>
   </div>
   <div mat-dialog-actions class="w-100 d-flex mb-0">
     <button mat-flat-button class="flex-fill mr-3" color="accent" (click)="onNoClick()">No Thanks</button>
-    <button mat-flat-button class="flex-fill" color="primary" (click)="addTable()" type="submit">Ok</button>
+    <button mat-flat-button class="flex-fill" color="primary" type="submit">Ok</button>
   </div>
 </div>
