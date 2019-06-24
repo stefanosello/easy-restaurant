@@ -20,7 +20,13 @@ export const get: Handler = (req, res, next) => {
 	let queryParams: any = req.query;
 	if ('tableNumber' in req.params)
 		findBlock['number'] = req.params.tableNumber;
-	Table.find(findBlock)
+
+	let query = Table.find(findBlock)
+
+	if ('populate' in queryParams && queryParams.populate == 'true')
+		query.populate('services.orders.items.item')
+
+	query
 		.then((tables: ITable[]) => {
 			let response: any;
 			let orders: IOrder[] = [];
@@ -28,10 +34,11 @@ export const get: Handler = (req, res, next) => {
 				table.services.forEach((service: any) => {
 					if (!('serviceDone' in queryParams) || ('serviceDone' in queryParams && service.done == queryParams.serviceDone)) {
 						orders = orders.concat(service.orders.filter((order: IOrder) => {
-							let ok: boolean = true;
-							ok = ok && !('type' in queryParams && order.type != queryParams.type)
-							ok = ok && !('processed' in queryParams && ((!Boolean(queryParams.processed) && order.processed != null) || (Boolean(queryParams.processed) && order.processed == null)))
-							return ok;
+							let processed = queryParams.processed != 'false';
+							return (
+								!('type' in queryParams && order.type != queryParams.type)
+								&& !('processed' in queryParams && processed != Boolean(order.processed))
+							)
 						}));
 					}
 				})

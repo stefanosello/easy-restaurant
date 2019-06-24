@@ -10,7 +10,7 @@ export enum Roles {
   Bartender = "bartender"
 }
 
-interface IUser extends Document {
+export interface IUser extends Document {
   readonly _id: Schema.Types.ObjectId,
   username: string,
   password: string,

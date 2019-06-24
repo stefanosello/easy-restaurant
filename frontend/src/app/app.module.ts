@@ -28,6 +28,7 @@ import { WaiterOrderModalComponent } from './waiter/waiter-order-modal/waiter-or
 import { CashdeskAddCardModalComponent } from './cashdesk/cashdesk-add-card-modal/cashdesk-add-card-modal.component';
 import { FormsModule } from '@angular/forms';
 import { OrderTreeComponent } from './waiter/waiter-order-modal/order-tree/order-tree.component';
+import { BartenderOrderCardComponent } from './bartender/bartender-order-card/bartender-order-card.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { OrderTreeComponent } from './waiter/waiter-order-modal/order-tree/order
     WaiterStatusModalComponent,
     WaiterOrderModalComponent,
     CashdeskAddCardModalComponent,
-    OrderTreeComponent
+    OrderTreeComponent,
+    BartenderOrderCardComponent
   ],
   imports: [
     BrowserModule,
