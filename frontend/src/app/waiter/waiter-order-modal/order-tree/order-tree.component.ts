@@ -2,40 +2,41 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 
-/**
- * Food data with nested structure.
- * Each node has a name and an optiona list of children.
- */
-interface FoodNode {
+interface ItemNode {
   name: string;
-  children?: FoodNode[];
+  quantity: number;
+  children?: ItemNode[];
 }
 
-const TREE_DATA: FoodNode[] = [
+const TREE_DATA: ItemNode[] = [
   {
     name: 'Fruit',
     children: [
-      { name: 'Apple' },
-      { name: 'Banana' },
-      { name: 'Fruit loops' },
-    ]
+      { name: 'Apple', quantity: 3 },
+      { name: 'Banana', quantity: 3 },
+      { name: 'Fruit loops', quantity: 3 },
+    ],
+    quantity: 9
   }, {
     name: 'Vegetables',
     children: [
       {
         name: 'Green',
         children: [
-          { name: 'Broccoli' },
-          { name: 'Brussel sprouts' },
-        ]
+          { name: 'Broccoli', quantity: 7 },
+          { name: 'Brussel sprouts', quantity: 7 },
+        ],
+        quantity: 14
       }, {
         name: 'Orange',
         children: [
-          { name: 'Pumpkins' },
-          { name: 'Carrots' },
-        ]
+          { name: 'Pumpkins', quantity: 8 },
+          { name: 'Carrots', quantity: 8 },
+        ],
+        quantity: 16
       },
-    ]
+    ],
+    quantity: 32
   },
 ];
 
@@ -46,14 +47,14 @@ const TREE_DATA: FoodNode[] = [
 })
 export class OrderTreeComponent implements OnInit {
 
-  treeControl = new NestedTreeControl<FoodNode>(node => node.children);
-  dataSource = new MatTreeNestedDataSource<FoodNode>();
+  treeControl = new NestedTreeControl<ItemNode>(node => node.children);
+  dataSource = new MatTreeNestedDataSource<ItemNode>();
 
   constructor() {
     this.dataSource.data = TREE_DATA;
   }
 
-  hasChild = (_: number, node: FoodNode) => !!node.children && node.children.length > 0;
+  hasChild = (_: number, node: ItemNode) => !!node.children && node.children.length > 0;
 
   ngOnInit() {
   }
