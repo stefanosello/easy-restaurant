@@ -15,32 +15,32 @@
   </div>
   <div class="my-2" *ngIf="activeService(table).waiter">
     <b><i class="fas fa-user mr-3"></i>WAITER: </b>
-    <span class="mx-3">{{activeService(table).waiter.username}}</span>
+    <span class="mx-3">{{activeService(table).waiter['username']}}</span>
   </div>
   <div *ngIf="table.busy">
     <h5 *ngIf="pendingFoodOrders(table).length > 0" class="text-danger mt-4">Pending food orders</h5>
     <ul *ngFor="let order of pendingFoodOrders(table)">
       <li *ngFor="let item of order.items">
-        {{item.quantity}} x {{item.item.name}}, <b>ordered at:</b> {{parseDate(order.created_at)}}
+        {{item.quantity}} x {{item.item.name}}, <b>ordered at:</b> {{order.created_at | date:"HH:mm"}}
       </li>
     </ul>
     <h5 *ngIf="pendingBeverageOrders(table).length > 0" class="text-danger mt-4">Pending beverage orders</h5>
     <ul *ngFor="let order of pendingBeverageOrders(table)">
       <li *ngFor="let item of order.items">
-        {{item.quantity}} x {{item.item.name}}, <b>ordered at:</b> {{parseDate(order.created_at)}}
+        {{item.quantity}} x {{item.item.name}}, <b>ordered at:</b> {{order.created_at | date:"HH:mm"}}
       </li>
     </ul>
     <h5 *ngIf="processedFoodOrders(table).length > 0" class="text-primary mt-4">Processed food orders</h5>
     <ul *ngFor="let order of processedFoodOrders(table)">
       <li *ngFor="let item of order.items">
-        {{item.quantity}} x {{item.item.name}}, <b>processed at:</b> {{parseDate(order.processed)}}
+        {{item.quantity}} x {{item.item.name}}, <b>processed at:</b> {{order.processed | date:"HH:mm"}}
       </li>
     </ul>
     <h5 *ngIf="processedBeverageOrders(table).length > 0" class="text-danger mt-4">Processed beverage orders
     </h5>
     <ul *ngFor="let order of processedBeverageOrders(table)">
       <li *ngFor="let item of order.items">
-        {{item.quantity}} x {{item.item.name}}, <b>processed at:</b> {{parseDate(order.processed)}}
+        {{item.quantity}} x {{item.item.name}}, <b>processed at:</b> {{order.processed | date:"HH:mm"}}
       </li>
     </ul>
   </div>

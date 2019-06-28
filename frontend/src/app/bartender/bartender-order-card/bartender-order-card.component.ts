@@ -8,11 +8,12 @@ import { Order } from 'src/app/_models/order';
 })
 export class BartenderOrderCardComponent implements OnInit {
 
-  @Input('order') order: Object;
+  @Input('order') order: Order;
 
   constructor() { }
 
   ngOnInit() {
   }
 
+  serveOrder(){}
 }

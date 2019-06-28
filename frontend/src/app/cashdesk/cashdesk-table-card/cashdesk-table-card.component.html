@@ -16,7 +16,7 @@
   </mat-card-header>
   <mat-card-content>
     <b>Waiter serving this table:
-    </b><br>{{activeService(table).waiter ? activeService(table).waiter.username : 'none'}}
+    </b><br>{{activeService(table).waiter ? activeService(table).waiter['username'] : 'none'}}
   </mat-card-content>
   <mat-card-actions class="d-flex w-100 m-0">
     <button mat-flat-button color="accent" class="py-2 mr-2 flex-fill" (click)="openInfoHandler()">Info</button>

@@ -48,7 +48,7 @@ export const get: Handler = (req, res, next) => {
 			} else {
 				response = orders;
 			}
-			res.status(200).json(response);
+			res.status(200).json({ orders: response });
 		})
 		.catch(err => next({ statusCode: 500, error: true, errormessage: err }))
 }

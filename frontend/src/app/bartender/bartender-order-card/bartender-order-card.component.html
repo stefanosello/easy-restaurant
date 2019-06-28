@@ -1,5 +1,18 @@
 <mat-card class="m-3" style="width: 18rem;">
+  <mat-card-header>
+    <mat-card-title>Table n° {{order.table}}</mat-card-title>
+    <mat-card-subtitle class="d-flex justify-content-around">
+      {{order.created_at | date:"HH:mm"}}
+    </mat-card-subtitle>
+  </mat-card-header>
   <mat-card-content>
-    {{order['_id']}}
+    <ul>
+      <li *ngFor="let item of order.items">
+        {{item.item.name}} x{{item.quantity}}
+      </li>
+    </ul>
   </mat-card-content>
+  <mat-card-actions class="d-flex w-100 m-0">
+    <button mat-flat-button color="accent" class="py-2 mr-2 flex-fill" (click)="serveOrder()">Serve</button>
+  </mat-card-actions>
 </mat-card>

@@ -20,7 +20,6 @@ export class OrderService {
   getAll(params: { type: string, processed: boolean, populate: boolean }) {
     let query = `type=${params.type}&processed=${params.processed}&populate=${params.populate}`;
     let orders = this.http.get<any>(`${this.baseUrl}?${query}`, { responseType: 'json' })
-    console.log(orders)
     return orders;
   }
 }

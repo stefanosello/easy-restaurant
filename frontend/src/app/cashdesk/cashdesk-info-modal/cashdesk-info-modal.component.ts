@@ -33,11 +33,4 @@ export class CashdeskInfoModalComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  public parseDate(date: string) {
-    let d = new Date(date);
-    let hours: string = d.getHours() / 10 >= 1 ? `${d.getHours()}` : `0${d.getHours()}`;
-    let minutes: string = d.getMinutes() / 10 >= 1 ? `${d.getMinutes()}` : `0${d.getMinutes()}`;
-    return `${hours}:${minutes}`
-  }
-
 }

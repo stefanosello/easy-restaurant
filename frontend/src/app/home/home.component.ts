@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Roles } from '../_models/user';
 import { AuthService } from '../_services/auth.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -21,9 +20,9 @@ export class HomeComponent {
       map(result => result.matches)
     );
 
-  constructor(private breakpointObserver: BreakpointObserver,
-    private authService: AuthService,
-    private router: Router) { }
+  constructor(
+    private breakpointObserver: BreakpointObserver,
+    private authService: AuthService) { }
 
   public logOut() {
     this.authService.logout();

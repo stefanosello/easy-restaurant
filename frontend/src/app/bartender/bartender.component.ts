@@ -10,8 +10,8 @@ import { Observable } from 'rxjs';
 })
 export class BartenderComponent implements OnInit {
 
-  bartenderId: string;
-  orders: Object[];
+  public bartenderId: string;
+  public orders: Object[];
 
   constructor(
     private orderService: OrderService
