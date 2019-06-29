@@ -39,6 +39,12 @@ export const get: Handler = (req, res, next) => {
 								!('type' in queryParams && order.type != queryParams.type)
 								&& !('processed' in queryParams && processed != Boolean(order.processed))
 							)
+						}).map((order: IOrder) => {
+							Object.defineProperty(order, 'table', {
+								value: table.number,
+								writable: false
+							});
+							return order;
 						}));
 					}
 				})
