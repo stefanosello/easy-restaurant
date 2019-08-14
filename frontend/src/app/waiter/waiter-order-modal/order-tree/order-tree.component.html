@@ -7,7 +7,7 @@
       </button>
       {{node.name}}
       <mat-form-field class="ml-md-3" style="width: 2rem;">
-        <input matInput type="number" [(ngModel)]="node.quantity" [ngModelOptions]="{standalone: true}">
+        <input matInput type="number" min="0" max="12" [(ngModel)]="node.quantity" [ngModelOptions]="{standalone: true}">
       </mat-form-field>
       <div class="d-flex flex-column ml-3">
           <button mat-icon-button (click)="node.quantity = node.quantity + 1" class="more-less-button d-flex justify-content-center align-items-center">
@@ -44,7 +44,7 @@
               <input matInput type="text" [(ngModel)]="newItem.name" [ngModelOptions]="{standalone: true}" placeholder="item name">
             </mat-form-field>
             <mat-form-field class="ml-md-3" style="width: 2rem;">
-              <input matInput type="number" [(ngModel)]="newItem.quantity" [ngModelOptions]="{standalone: true}">
+              <input matInput type="number" min="0" max="12" [(ngModel)]="newItem.quantity" [ngModelOptions]="{standalone: true}">
             </mat-form-field>
             <div class="d-flex flex-column ml-3">
               <button mat-icon-button (click)="newItem.quantity = newItem.quantity + 1" class="more-less-button d-flex justify-content-center align-items-center">

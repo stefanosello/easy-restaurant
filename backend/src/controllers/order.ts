@@ -81,9 +81,9 @@ export const create: Handler = (req, res, next) => {
 
 	Table.findOne({ number: tableNumber }, 'services')
 		.then(table => {
-			if (!table)
-				return next({ statusCode: 404, error: true, errormessage: "Table not found" });
-
+			if (!table) {
+        return next({ statusCode: 404, error: true, errormessage: "Table not found" });
+      }
 			if (!table.services[0] || table.services[table.services.length - 1].done) {
 				let service = {
 					covers: covers | order.items.length,
@@ -116,14 +116,19 @@ export const create: Handler = (req, res, next) => {
 // This controller should be used to update the items of an order or to mark an order as processed
 // !!! can be used only with services not already done (what's the sense of using it with a service already done?)
 export const update: Handler = (req, res, next) => {
-	let tableNumber: number = req.params.tableNumber;
-	let orderId: Schema.Types.ObjectId = req.params.orderId;
-	let updatedInfo: any = req.body.updatedInfo ? JSON.parse(req.body.updatedInfo) : {};
-	let updateBlock: any = {};
+	const tableNumber: number = req.params.tableNumber;
+  const endpointOrderId: Schema.Types.ObjectId = req.params.orderId;
+	const updatedInfo: any = req.body.updatedInfo ? JSON.parse(req.body.updatedInfo) : {};
+  let orderIds: Schema.Types.ObjectId[] = req.body.orderIds ? JSON.parse(req.body.orderIds) : [];  
+  let updateBlock: any = {};
+
+  if (endpointOrderId && !orderIds.includes(endpointOrderId)) {
+    orderIds.push(endpointOrderId);
+  }
 
 	// changes to order contents can be made only from Cash Desk and Waiters
 	if (req.user.role == Roles.Waiter || req.user.role == Roles.CashDesk) {
-		if (updatedInfo && "items" in updatedInfo) {
+		if (updatedInfo && 'items' in updatedInfo) {
 			updateBlock['items'] = updatedInfo.items;
 		}
 	}
@@ -139,27 +144,31 @@ export const update: Handler = (req, res, next) => {
 	// update table
 	Table.findOne({
 		number: tableNumber,
-		'services.0.orders._id': orderId,
+		'services.0.orders._id': orderIds,
 		'services.0.done': false
 	})
 		.then(table => {
-			if (!table)
+			if (!table) {
 				return next({ statusCode: 400, error: true, errormessage: "Wrong params" });
-
-			// first service is the one we need to update
-			let orderIndex = table.services[table.services.length - 1].orders.findIndex((order: IOrder) => {
-				return order._id == orderId;
-			})
-			// real update for all keys contained in updateBlock
-			Object.keys(updateBlock).forEach((key: string) => {
-				table.services[table.services.length - 1].orders[orderIndex][key] = updateBlock[key];
-			});
-			table.save((err, table) => {
-				if (err) {
-					return next({ statusCode: 500, error: true, errormessage: err });
-				}
-				res.status(200).json({ table });
-			});
+      }
+      // active (first) service is the one we need to update
+      const activeServiceOrders = table.services[table.services.length - 1].orders;
+      // for each order id in params let's update it
+      orderIds.forEach((orderId: Schema.Types.ObjectId) => {
+        let orderIndex = activeServiceOrders.findIndex((order: IOrder) => {
+          return order._id ==  orderId;
+        });  
+        // real update for all keys contained in updateBlock
+        Object.keys(updateBlock).forEach((key: string) => {
+          table.services[table.services.length - 1].orders[orderIndex][key] = updateBlock[key];
+        });
+        table.save((err, table) => {
+          if (err) {
+            return next({ statusCode: 500, error: true, errormessage: err });
+          }
+          res.status(200).json({ table });
+        });
+      });
 		})
 		.catch(err => {
 			let msg = `DB error: ${err}`;

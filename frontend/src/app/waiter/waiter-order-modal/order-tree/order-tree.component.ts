@@ -1,7 +1,7 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, OnInit, Input } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { ItemNode } from '../waiter-order-modal.component';
+import { ItemNode } from 'src/app/_helpers/order-tree-helper';
 
 @Component({
   selector: 'app-order-tree',

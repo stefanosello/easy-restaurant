@@ -7,12 +7,7 @@ import { AuthService } from 'src/app/_services/auth.service';
 // tslint:disable-next-line: max-line-length
 import { foodOrders, beverageOrders, pendingBeverageOrders, pendingFoodOrders, processedFoodOrders, processedBeverageOrders } from '../../_helpers/table-helper';
 import { Item } from 'src/app/_models/order';
-
-export interface ItemNode {
-  name: string;
-  quantity: number;
-  children?: ItemNode[];
-}
+import { ItemNode, formatOrdersForTree } from 'src/app/_helpers/order-tree-helper';
 
 @Component({
   selector: 'app-waiter-order-modal',
@@ -21,6 +16,7 @@ export interface ItemNode {
 })
 export class WaiterOrderModalComponent implements OnInit {
 
+  private formatOrdersForTree = formatOrdersForTree;
   public numberOfCovers = new FormControl('', [Validators.required, Validators.min(1)]);
   public table: Table;
   public foodOrders = foodOrders;
@@ -41,54 +37,14 @@ export class WaiterOrderModalComponent implements OnInit {
 
   ngOnInit() {
     this.table = this.data;
-    this.formattedFoodOrders = this.formatOrdersForTree().foodOrders;
-    this.formattedBeverageOrders = this.formatOrdersForTree().beverageOrders;
+    this.formattedFoodOrders = this.formatOrdersForTree(this.foodOrders(this.table), 'Food Orders');
+    this.formattedBeverageOrders = this.formatOrdersForTree(this.beverageOrders(this.table), 'Beverage Orders');
+    console.log(this.table);
   }
 
   public onNoClick(): void {
+    console.log(this.formattedFoodOrders);
     this.dialogRef.close();
-  }
-
-  private formatOrdersForTree(): { foodOrders: ItemNode, beverageOrders: ItemNode } {
-    const foodOrders: ItemNode = {
-      name: 'Food Orders',
-      quantity: this.foodOrders(this.table).length,
-      children: []
-    };
-    this.foodOrders(this.table).forEach((order, index) => {
-      const formattedOrder: ItemNode = {
-        name: `Order #${index}`,
-        quantity: order.items.length,
-        children: []
-      };
-      order.items.forEach((item: Item) => {
-        formattedOrder.children.push({
-          name: item.item.name,
-          quantity: item.quantity
-        });
-      });
-      foodOrders.children.push(formattedOrder);
-    });
-    const beverageOrders: ItemNode = {
-      name: 'Beverage Orders',
-      quantity: this.beverageOrders(this.table).length,
-      children: []
-    };
-    this.beverageOrders(this.table).forEach((order, index) => {
-      const formattedOrder: ItemNode = {
-        name: `Order #${index}`,
-        quantity: order.items.length,
-        children: []
-      };
-      order.items.forEach((item: Item) => {
-        formattedOrder.children.push({
-          name: item.item.name,
-          quantity: item.quantity
-        });
-      });
-      beverageOrders.children.push(formattedOrder);
-    });
-    return { foodOrders, beverageOrders };
   }
 
 }
