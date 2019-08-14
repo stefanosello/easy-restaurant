@@ -114,3 +114,7 @@
 # System Files
 /frontend/.DS_Store
 /frontend/Thumbs.db
+
+# package json
+backend/package-lock.json
+frontend/package-lock.json
