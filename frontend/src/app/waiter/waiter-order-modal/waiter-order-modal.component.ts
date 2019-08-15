@@ -4,10 +4,9 @@ import { TableService } from 'src/app/_services/table.service';
 import { FormControl, Validators } from '@angular/forms';
 import { Table } from 'src/app/_models/table';
 import { AuthService } from 'src/app/_services/auth.service';
-// tslint:disable-next-line: max-line-length
-import { foodOrders, beverageOrders, pendingBeverageOrders, pendingFoodOrders, processedFoodOrders, processedBeverageOrders } from '../../_helpers/table-helper';
-import { Item } from 'src/app/_models/order';
-import { ItemNode, formatOrdersForTree } from 'src/app/_helpers/order-tree-helper';
+import { pendingBeverageOrders, pendingFoodOrders } from '../../_helpers/table-helper';
+import { formatOrdersForTree, formatTreeForDB, formatOrderNodeForTree } from 'src/app/_helpers/order-tree-helper';
+import { OrderService } from 'src/app/_services/order.service';
 
 @Component({
   selector: 'app-waiter-order-modal',
@@ -19,10 +18,6 @@ export class WaiterOrderModalComponent implements OnInit {
   private formatOrdersForTree = formatOrdersForTree;
   public numberOfCovers = new FormControl('', [Validators.required, Validators.min(1)]);
   public table: Table;
-  public foodOrders = foodOrders;
-  public beverageOrders = beverageOrders;
-  public processedFoodOrders = processedFoodOrders;
-  public processedBeverageOrders = processedBeverageOrders;
   public pendingFoodOrders = pendingFoodOrders;
   public pendingBeverageOrders = pendingBeverageOrders;
   public formattedFoodOrders: any;
@@ -32,19 +27,37 @@ export class WaiterOrderModalComponent implements OnInit {
     public dialogRef: MatDialogRef<WaiterOrderModalComponent>,
     private tableService: TableService,
     private authService: AuthService,
+    private orderService: OrderService,
     @Inject(MAT_DIALOG_DATA) public data: Table
   ) { }
 
   ngOnInit() {
     this.table = this.data;
-    this.formattedFoodOrders = this.formatOrdersForTree(this.foodOrders(this.table), 'Food Orders');
-    this.formattedBeverageOrders = this.formatOrdersForTree(this.beverageOrders(this.table), 'Beverage Orders');
+    this.formattedFoodOrders = this.formatOrdersForTree(this.pendingFoodOrders(this.table), 'Food Orders');
+    this.formattedBeverageOrders = this.formatOrdersForTree(this.pendingBeverageOrders(this.table), 'Beverage Orders');
     console.log(this.table);
   }
 
   public onNoClick(): void {
-    console.log(this.formattedFoodOrders);
+    console.log(formatTreeForDB(this.formattedFoodOrders));
     this.dialogRef.close();
+  }
+
+  public addOrder(orderType): void {
+    this.orderService.createEmpty(orderType, this.table.number).subscribe(
+      newOrder => {
+        console.log(newOrder);
+        if (orderType === this.formattedFoodOrders) {
+          const index = this.formattedFoodOrders.children.length;
+          this.formattedFoodOrders.children.push(formatOrderNodeForTree(newOrder, index));
+        } else if (orderType === 'beverage') {
+          const index = this.formattedBeverageOrders.children.length;
+          this.formattedBeverageOrders.children.push(formatOrderNodeForTree(newOrder, index));
+        }
+      },
+      err => { console.error(err); },
+      () => { console.log('done'); }
+    );
   }
 
 }

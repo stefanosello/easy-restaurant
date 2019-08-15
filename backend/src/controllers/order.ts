@@ -2,7 +2,7 @@ import { Handler } from 'express'
 import { Schema } from 'mongoose'
 import Order, { IOrder } from '../models/order'
 import Table, { ITable } from '../models/table'
-import User, { Roles } from '../models/user'
+import { IItem } from '../models/item';
 
 /**
  * This controller does a lot of things. It can return a single object (if 'orderId' is specified in route params) or an array of object otherwise.
@@ -75,8 +75,8 @@ export const create: Handler = (req, res, next) => {
 	let tableNumber: number = req.params.tableNumber;
 	let covers: number = req.body.coversNumber;
 	let order: IOrder = new Order({
-		items: JSON.parse(req.body.order).items,
-		type: JSON.parse(req.body.order).type
+		items: req.body.order.items,
+		type: req.body.order.type
 	});
 
 	Table.findOne({ number: tableNumber }, 'services')
@@ -98,7 +98,6 @@ export const create: Handler = (req, res, next) => {
 			table.save()
 				.then(doc => res.status(200).json(doc))
 				.catch(err => {
-					// console.error(err)
 					let msg = `DB error: ${err._message}`;
 					next({ statusCode: 500, error: true, errormessage: msg });
 				});
@@ -113,27 +112,23 @@ export const create: Handler = (req, res, next) => {
 		});
 }
 
-// This controller should be used to update the items of an order or to mark an order as processed
-// !!! can be used only with services not already done (what's the sense of using it with a service already done?)
+// This controller should be used to mark an order as processed or to log preparation time of an item
+// WARN: can be used only with services not already done (what's the sense of using it with a service already done?)
+// UPDATE: this controller should be now accesible only by cooks and cashdesks
+//         In order to add items or to update item quantity, waiter should be use "updateMany" controller
 export const update: Handler = (req, res, next) => {
 	const tableNumber: number = req.params.tableNumber;
-  const endpointOrderId: Schema.Types.ObjectId = req.params.orderId;
+  const orderId: Schema.Types.ObjectId = req.params.orderId;
 	const updatedInfo: any = req.body.updatedInfo ? JSON.parse(req.body.updatedInfo) : {};
-  let orderIds: Schema.Types.ObjectId[] = req.body.orderIds ? JSON.parse(req.body.orderIds) : [];  
   let updateBlock: any = {};
 
-  if (endpointOrderId && !orderIds.includes(endpointOrderId)) {
-    orderIds.push(endpointOrderId);
-  }
-
 	// changes to order contents can be made only from Cash Desk and Waiters
-	if (req.user.role == Roles.Waiter || req.user.role == Roles.CashDesk) {
-		if (updatedInfo && 'items' in updatedInfo) {
-			updateBlock['items'] = updatedInfo.items;
-		}
+	if (updatedInfo && 'items' in updatedInfo) {
+		updateBlock['items'] = updatedInfo.items.map(parseItemsForUpdate);
 	}
+	
 	// changing processed status of an order can only been made from Cash Desk or Cooks
-	if ("processed" in req.body && (req.user.role == Roles.CashDesk || req.user.role == Roles.Cook)) {
+	if ("processed" in req.body) {
 		if (req.body.processed) {
 			updateBlock['processed'] = Date.now();
 		} else {
@@ -143,32 +138,75 @@ export const update: Handler = (req, res, next) => {
 
 	// update table
 	Table.findOne({
-		number: tableNumber,
-		'services.0.orders._id': orderIds,
-		'services.0.done': false
+		number: tableNumber
 	})
 		.then(table => {
-			if (!table) {
+			if (table && table.services && table.services.length > 0) {
+				const lastServiceIndex = table.services.length - 1;
+				// all updates should be made only if last service is not already done
+				if (!table.services[lastServiceIndex].done) {
+					const activeServiceOrders = table.services[lastServiceIndex].orders;
+					const orderIndex = activeServiceOrders.findIndex((order: IOrder) => order._id ==  orderId);
+					// real update for all keys contained in updateBlock
+					Object.keys(updateBlock).forEach((key: string) => {
+						table.services[lastServiceIndex].orders[orderIndex][key] = updateBlock[key];
+					});
+					table.save((err, table) => {
+						return err ? next({ statusCode: 500, error: true, errormessage: err }) : res.status(200).json({ table });
+					});
+				} else {
+					return next({ statusCode: 400, error: true, errormessage: `There is no updatable service for table ${table.number}` });
+				}
+			} else {
 				return next({ statusCode: 400, error: true, errormessage: "Wrong params" });
-      }
-      // active (first) service is the one we need to update
-      const activeServiceOrders = table.services[table.services.length - 1].orders;
-      // for each order id in params let's update it
-      orderIds.forEach((orderId: Schema.Types.ObjectId) => {
-        let orderIndex = activeServiceOrders.findIndex((order: IOrder) => {
-          return order._id ==  orderId;
-        });  
-        // real update for all keys contained in updateBlock
-        Object.keys(updateBlock).forEach((key: string) => {
-          table.services[table.services.length - 1].orders[orderIndex][key] = updateBlock[key];
-        });
-        table.save((err, table) => {
-          if (err) {
-            return next({ statusCode: 500, error: true, errormessage: err });
-          }
-          res.status(200).json({ table });
-        });
-      });
+			}
+		})
+		.catch(err => {
+			let msg = `DB error: ${err}`;
+			next({ statusCode: 500, error: true, errormessage: msg });
+		});
+}
+
+// This controller should be used to add items or to update item quantity
+export const updateMany: Handler = (req, res, next) => {
+
+	// updateInfo should be a map with order Ids as keys
+	const updatedInfo: any = req.body.updatedInfo;
+	const tableNumber: number = req.params.tableNumber;
+
+	// update table
+	Table.findOne({
+		number: tableNumber
+	})
+		.then(table => {
+			if (table && table.services && table.services.length > 0) {
+				const lastServiceIndex = table.services.length - 1;
+				// all updates should be made only if last service is not already done
+				if (!table.services[lastServiceIndex].done) {
+					Object.keys(updatedInfo).forEach(key => {
+						const orderId = new Schema.Types.ObjectId(key);
+						const activeServiceOrders = table.services[lastServiceIndex].orders;
+						const orderIndex = activeServiceOrders.findIndex((order: IOrder) => order._id ==  orderId);
+						updatedInfo[key].forEach((element:any) => {
+							const itemId = new Schema.Types.ObjectId(element.item);
+							const itemIndex = activeServiceOrders[orderIndex].items.findIndex((item: any) => item.item == itemId);
+							if (itemIndex >= 0) {
+								table.services[lastServiceIndex].orders[orderIndex].items[itemIndex].quantity = element.quantity;
+							} else {
+								table.services[lastServiceIndex].orders[orderIndex].items.push({
+									item: itemId,
+									quantity: element.quantity
+								});
+							}
+						});
+					});
+					table.save((err, table) => {
+						return err ? next({ statusCode: 500, error: true, errormessage: "BD error" }) : res.status(200).json(table);
+					})
+				}
+				return next({ statusCode: 400, error: true, errormessage: `There is no updatable service for table ${table.number}` });
+			}
+			return next({ statusCode: 400, error: true, errormessage: "Wrong params" });
 		})
 		.catch(err => {
 			let msg = `DB error: ${err}`;
@@ -178,4 +216,15 @@ export const update: Handler = (req, res, next) => {
 
 export const remove: Handler = (req, res, next) => {
 	res.status(501).end();
+}
+
+function parseItemsForUpdate(item:any) {
+	const allowedItemParams = ["cook", "start", "end"];
+	let response:any;
+	allowedItemParams.forEach(key => {
+		if (item[key]) {
+			response[key] = item[key];
+		}
+	});
+	return response;
 }

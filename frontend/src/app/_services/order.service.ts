@@ -18,8 +18,18 @@ export class OrderService {
 
   // TODO: must return populated items?
   getAll(params: { type: string, processed: boolean, populate: boolean }) {
-    let query = `type=${params.type}&processed=${params.processed}&populate=${params.populate}`;
-    let orders = this.http.get<any>(`${this.baseUrl}?${query}`, { responseType: 'json' })
+    const query = `type=${params.type}&processed=${params.processed}&populate=${params.populate}`;
+    const orders = this.http.get<any>(`${this.baseUrl}?${query}`, { responseType: 'json' })
     return orders;
   }
+
+  createEmpty(orderType: string, tableNumber: number) {
+    return this.http.post<any>(`${environment.api}/tables/${tableNumber}/orders`, {
+      order: {
+        items: [],
+        type: orderType
+      }
+    });
+  }
+
 }

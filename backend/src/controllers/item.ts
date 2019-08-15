@@ -1,6 +1,6 @@
 import { Handler } from 'express'
 import { Query } from 'mongoose'
-import Item from '../models/item'
+import Item, { IItem } from '../models/item'
 
 export const get: Handler = (req, res, next) => {
   let type: string = req.query.itemType ? req.query.itemType : undefined;
@@ -32,11 +32,14 @@ export const create: Handler = (req, res, next) => {
   Item.create({
     name: req.body.itemName,
     price: req.body.itemPrice,
-    type: req.body.itemType,
-    subtype: req.body.item.itemSubtype
-  })
-    .then(item => res.status(200).json({ item }))
-    .catch(err => res.json({ statusCode: 500, error: true, errormesage: err }))
+    type: req.body.itemType
+  }, (err: any, item: IItem) => {
+    if (err) {
+      return next({ statusCode: 500, error: true, errormessage: "DB Error" });
+    } else {
+      return res.status(200).json({ item });
+    }
+  });
 }
 
 export const update: Handler = (req, res, next) => {

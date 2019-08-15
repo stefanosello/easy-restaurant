@@ -19,24 +19,44 @@ export function formatOrdersForTree(source: Order[], treeName: string) {
     children: []
   };
   source.forEach((order, index) => {
-    const formattedOrder: IdItemNode = {
-      name: `Order #${index}`,
-      quantity: order.items.length,
-      children: [],
-      _id: order._id
-    };
-    order.items.forEach((item: Item) => {
-      formattedOrder.children.push({
-        name: item.item.name,
-        quantity: item.quantity,
-        _id: item.item._id
-      });
-    });
+    const formattedOrder: IdItemNode = formatOrderNodeForTree(order, index);
     orders.children.push(formattedOrder);
   });
   return orders;
 }
 
-export function formatTreeForOrders(tree: ItemNode, table: Table) {
-  return -1;
+export function formatTreeForDB(tree: ItemNode) {
+  if (tree.children) {
+    const result: any = {};
+    tree.children.forEach((order: IdItemNode) => {
+      result[order._id] = [];
+      if (order.children) {
+        order.children.forEach((item: IdItemNode) => {
+          result[order._id].push({
+            item: item._id,
+            quantity: item.quantity
+          });
+        });
+      }
+    });
+    return result;
+  }
+  return {};
+}
+
+export function formatOrderNodeForTree(order: Order, index) {
+  const formattedOrder: IdItemNode = {
+    name: `Order #${index}`,
+    quantity: order.items.length,
+    children: [],
+    _id: order._id
+  };
+  order.items.forEach((item: Item) => {
+    formattedOrder.children.push({
+      name: item.item.name,
+      quantity: item.quantity,
+      _id: item.item._id
+    });
+  });
+  return formattedOrder;
 }

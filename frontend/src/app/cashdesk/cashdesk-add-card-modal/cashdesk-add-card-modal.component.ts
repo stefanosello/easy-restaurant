@@ -40,17 +40,17 @@ export class CashdeskAddCardModalComponent implements OnInit {
     const data: any = {
       tableNumber: this.tableNumber.value,
       numberOfSeats: this.seatsNumber.value
-    }
-    let component = this;
+    };
+    const component = this;
     this.tableService.addTable(data).subscribe(
-      data => { console.log("add table data: ", data) },
+      newData => { console.log('add table data: ', newData); },
       err => {
         console.error(err);
       },
       () => {
-        component.dialogRef.close("done");
+        component.dialogRef.close('done');
       }
-    )
+    );
   }
 
 }
