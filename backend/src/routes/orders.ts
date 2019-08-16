@@ -1,19 +1,26 @@
 import { Router } from 'express'
-import * as controller from '../controllers/order'
+import * as ordersController from '../controllers/order'
+import * as itemsController from '../controllers/item'
 
 const orders = Router({mergeParams: true});
 
 orders.route('/')
-  .get(controller.get)
-  .post(controller.create)
-  .put(controller.updateMany)
+  .get(ordersController.get)
+  .post(ordersController.create)
+  .put(ordersController.updateMany)
 
 orders.route('/:orderId')
-  .get(controller.get)
-  .put(controller.update)
-  .delete(controller.remove)
+  .get(ordersController.get)
+  .put(ordersController.update)
+  .delete(ordersController.remove)
 
 orders.route('/:orderId/done')
-  .put(controller.update)
+  .put(ordersController.update)
+
+orders.route('/:orderId/items')
+  .post(itemsController.addToOrder)
+
+orders.route('/:orderId/items/:itemId')
+  .delete(itemsController.removeFromOrder)
 
 export default orders

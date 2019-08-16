@@ -80,7 +80,7 @@ export const create: Handler = (req, res, next) => {
 		type: req.body.order.type
 	});
 
-	Table.findOne({ number: tableNumber }, 'services')
+	Table.findOne({ number: tableNumber })
 		.then(table => {
 			if (!table) {
         return next({ statusCode: 404, error: true, errormessage: "Table not found" });
@@ -96,12 +96,14 @@ export const create: Handler = (req, res, next) => {
 			} else {
 				table.services[table.services.length - 1].orders.push(order)
 			}
-			table.save()
-				.then(table => res.status(200).json({order, table}))
-				.catch(err => {
+			table.save((err, table: ITable) => {
+				console.log(table);
+				if (err) {
 					let msg = `DB error: ${err._message}`;
 					next({ statusCode: 500, error: true, errormessage: msg });
-				});
+				}
+				res.status(200).json({ table })
+			});
 		})
 		.catch(err => {
 			let msg: String;
@@ -231,6 +233,7 @@ export const remove: Handler = (req, res, next) => {
 						let msg = `DB error: ${err}`;
 						return next({ statusCode: 500, error: true, errormessage: msg });
 					}
+					console.log(table);
 					return res.status(200).json({ table });
 				})
 			} else {

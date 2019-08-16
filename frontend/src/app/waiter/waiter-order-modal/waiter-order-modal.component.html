@@ -5,13 +5,13 @@
       <mat-tab label="Food Orders">
         <div class="w-100 px-2 pt-4 pb-3">
           <mat-accordion *ngIf="showAccordion">
-            <mat-expansion-panel *ngFor="let order of pendingFoodOrders(table); let i = index" data-index="#i">
+            <mat-expansion-panel *ngFor="let order of getOrders(table, 'food'); let i = index" data-index="#i" [disabled]="order.processed">
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   Order No̲ {{ i }}
                 </mat-panel-title>
               </mat-expansion-panel-header>
-              <button mat-flat-button class="mr-3" color="accent" title="add an item" (click)="addOrder('food')">
+              <button mat-flat-button class="mr-3" color="accent" title="add an item">
                 <mat-icon>add</mat-icon>
               </button>
               <button mat-flat-button color="accent" title="delete order" (click)="deleteOrder(order._id)">
@@ -19,18 +19,21 @@
               </button>
             </mat-expansion-panel>
           </mat-accordion>
+          <div class="py-3">
+            <a href="javascript:void(0)" (click)="addOrder('food')">Add an order...</a>
+          </div>
         </div>
       </mat-tab>
       <mat-tab label="Beverage Orders">
         <div class="w-100 px-2 pt-4 pb-3">
           <mat-accordion *ngIf="showAccordion">
-            <mat-expansion-panel *ngFor="let order of pendingBeverageOrders(table); let i = index" data-index="#i">
+            <mat-expansion-panel *ngFor="let order of getOrders(table, 'beverage'); let i = index" data-index="#i">
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   Order No̲ {{ i }}
                 </mat-panel-title>
               </mat-expansion-panel-header>
-              <button mat-flat-button class="mr-3" color="accent" title="add an item" (click)="addOrder('beverage')">
+              <button mat-flat-button class="mr-3" color="accent" title="add an item">
                 <mat-icon>add</mat-icon>
               </button>
               <button mat-flat-button color="accent" title="delete order" (click)="deleteOrder(order._id)">
@@ -38,6 +41,9 @@
               </button>
             </mat-expansion-panel>
           </mat-accordion>
+          <div class="py-3">
+            <a href="javascript:void(0)" (click)="addOrder('beverage')">Add an order...</a>
+          </div>
         </div>
       </mat-tab>
     </mat-tab-group>

@@ -1,6 +1,8 @@
 import { Handler } from 'express'
 import { Query } from 'mongoose'
 import Item, { IItem } from '../models/item'
+import Table, { ITable } from '../models/table';
+import { IOrder } from '../models/order';
 
 export const get: Handler = (req, res, next) => {
   let type: string = req.query.itemType ? req.query.itemType : undefined;
@@ -50,4 +52,53 @@ export const remove: Handler = (req, res, next) => {
   Item.findOneAndDelete({ name: req.params.itemName })
     .then(item => res.status(200).json({ item }))
     .catch(err => res.json({ statusCode: 500, error: true, errormesage: err }));
+}
+
+export const addToOrder: Handler = (req, res, next) => {
+  const item = req.body.item;
+  const tableNumber = req.params.tableNumber;
+  const orderId = req.params.orderId;
+  Table.findOne({number: tableNumber}) 
+    .then(table => {
+      if (table && table.services && table.services.length > 0) {
+        const lastServiceIndex = table.services.length - 1;
+        const orderIndex = table.services[lastServiceIndex].orders.findIndex((order: IOrder) => `${order._id}` == orderId);
+        table.services[lastServiceIndex].orders[orderIndex].items.push({
+          item: item._id,
+          quantity: item.quantity
+        });
+        table.save((err, table: ITable) => {
+          if (err) {
+            let msg = `DB error: ${err}`;
+			      return next({ statusCode: 500, error: true, errormessage: msg });
+          }
+          return res.status(200).json({ table });
+        });
+      } else {
+        return next({ statusCode: 404, error: true, errormessage: "Table or order not found" });
+      }
+    });
+}
+
+export const removeFromOrder: Handler = (req, res, next) => {
+  const itemId = req.params.itemId;
+  const tableNumber = req.params.tableNumber;
+  const orderId = req.params.orderId;
+  Table.findOne({number: tableNumber}) 
+    .then(table => {
+      if (table && table.services && table.services.length > 0) {
+        const lastServiceIndex = table.services.length - 1;
+        const orderIndex = table.services[lastServiceIndex].orders.findIndex((order: IOrder) => `${order._id}` == orderId);
+        table.services[lastServiceIndex].orders[orderIndex].items.filter((item: any) => `${item.item}` != itemId);
+        table.save((err, table: ITable) => {
+          if (err) {
+            let msg = `DB error: ${err}`;
+			      return next({ statusCode: 500, error: true, errormessage: msg });
+          }
+          return res.status(200).json({ table });
+        });
+      } else {
+        return next({ statusCode: 404, error: true, errormessage: "Table or order not found" });
+      }
+    });
 }

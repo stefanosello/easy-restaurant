@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { TableService } from 'src/app/_services/table.service';
 import { FormControl, Validators } from '@angular/forms';
 import { Table } from 'src/app/_models/table';
-import { pendingBeverageOrders, pendingFoodOrders } from '../../_helpers/table-helper';
+import { pendingBeverageOrders, pendingFoodOrders, foodOrders, beverageOrders, getOrders } from '../../_helpers/table-helper';
 import { OrderService } from 'src/app/_services/order.service';
 import { Observable } from 'rxjs';
 
@@ -16,8 +16,7 @@ export class WaiterOrderModalComponent implements OnInit {
 
   public numberOfCovers = new FormControl('', [Validators.required, Validators.min(1)]);
   public table: Table;
-  public pendingFoodOrders = pendingFoodOrders;
-  public pendingBeverageOrders = pendingBeverageOrders;
+  public getOrders = getOrders;
   public showAccordion = false;
   panelOpenState = false;
 
@@ -30,7 +29,7 @@ export class WaiterOrderModalComponent implements OnInit {
 
   ngOnInit() {
     this.table = this.data;
-    // this timeout is a workaround to make accordion work into tab
+    // this timeout is a workaround to make accordion works into tab
     setTimeout(() => {
       this.showAccordion = true;
     }, 1);
@@ -46,7 +45,7 @@ export class WaiterOrderModalComponent implements OnInit {
         this.table = data.table;
       },
       err => { console.error(err); },
-      () => { console.log('order created'); }
+      () => { console.log('order created', this.table); }
     );
   }
 
