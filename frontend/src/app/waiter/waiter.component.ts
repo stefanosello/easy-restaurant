@@ -25,7 +25,6 @@ export class WaiterComponent implements OnInit {
     const tableObs: Observable<any> = this.tableService.getAll();
     tableObs.subscribe(data => {
       this.tables = data.tables;
-      console.log(data);
     });
   }
 
@@ -45,7 +44,9 @@ export class WaiterComponent implements OnInit {
       data: table
     });
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed with result: ' + result);
+      if (result && result.status === 'updated') {
+        this.getTables();
+      }
     });
   }
 

@@ -3,6 +3,7 @@ import { Schema } from 'mongoose'
 import Order, { IOrder } from '../models/order'
 import Table, { ITable } from '../models/table'
 import { IItem } from '../models/item';
+import mongoose from 'mongoose';
 
 /**
  * This controller does a lot of things. It can return a single object (if 'orderId' is specified in route params) or an array of object otherwise.
@@ -96,7 +97,7 @@ export const create: Handler = (req, res, next) => {
 				table.services[table.services.length - 1].orders.push(order)
 			}
 			table.save()
-				.then(doc => res.status(200).json(doc))
+				.then(table => res.status(200).json({order, table}))
 				.catch(err => {
 					let msg = `DB error: ${err._message}`;
 					next({ statusCode: 500, error: true, errormessage: msg });
@@ -188,8 +189,8 @@ export const updateMany: Handler = (req, res, next) => {
 						const activeServiceOrders = table.services[lastServiceIndex].orders;
 						const orderIndex = activeServiceOrders.findIndex((order: IOrder) => order._id ==  orderId);
 						updatedInfo[key].forEach((element:any) => {
-							const itemId = new Schema.Types.ObjectId(element.item);
-							const itemIndex = activeServiceOrders[orderIndex].items.findIndex((item: any) => item.item == itemId);
+							const itemId = element.item;
+							const itemIndex = activeServiceOrders[orderIndex].items.findIndex((item: any) => `${item.item}` == itemId);
 							if (itemIndex >= 0) {
 								table.services[lastServiceIndex].orders[orderIndex].items[itemIndex].quantity = element.quantity;
 							} else {
@@ -210,12 +211,32 @@ export const updateMany: Handler = (req, res, next) => {
 		})
 		.catch(err => {
 			let msg = `DB error: ${err}`;
-			next({ statusCode: 500, error: true, errormessage: msg });
+			return next({ statusCode: 500, error: true, errormessage: msg });
 		});
 }
 
 export const remove: Handler = (req, res, next) => {
-	res.status(501).end();
+	const tableNumber = req.params.tableNumber;
+	const orderId = req.params.orderId;
+
+	Table.findOne({number: tableNumber})
+		.then(table => {
+			if (table && table.services && table.services.length > 0) {
+				const lastServiceIndex = table.services.length - 1;
+				table.services[lastServiceIndex].orders = table.services[lastServiceIndex].orders.filter((order: IOrder) => {
+					return `${order._id}` !== orderId;
+				});
+				table.save((err, table) => {
+					if (err) {
+						let msg = `DB error: ${err}`;
+						return next({ statusCode: 500, error: true, errormessage: msg });
+					}
+					return res.status(200).json({ table });
+				})
+			} else {
+				return next({ statusCode: 404, error: true, errormessage: "Table or order not found" });
+			}
+		});
 }
 
 function parseItemsForUpdate(item:any) {

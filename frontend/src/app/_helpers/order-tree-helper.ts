@@ -45,6 +45,7 @@ export function formatTreeForDB(tree: ItemNode) {
 }
 
 export function formatOrderNodeForTree(order: Order, index) {
+  console.log(order);
   const formattedOrder: IdItemNode = {
     name: `Order #${index}`,
     quantity: order.items.length,

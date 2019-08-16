@@ -32,4 +32,8 @@ export class OrderService {
     });
   }
 
+  delete(orderId: string, tableNumber: number) {
+    return this.http.delete<any>(`${environment.api}/tables/${tableNumber}/orders/${orderId}`);
+  }
+
 }

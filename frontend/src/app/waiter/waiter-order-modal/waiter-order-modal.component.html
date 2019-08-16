@@ -3,25 +3,46 @@
   <div mat-dialog-content>
     <mat-tab-group>
       <mat-tab label="Food Orders">
-        <app-order-tree [tree]="formattedFoodOrders"></app-order-tree>
-        <div class="w-100 p-2">
-          <button mat-stroked-button class="w-100" (click)="addOrder('food')">
-            <mat-icon class="mr-3">add</mat-icon> Food Order
-          </button>
+        <div class="w-100 px-2 pt-4 pb-3">
+          <mat-accordion *ngIf="showAccordion">
+            <mat-expansion-panel *ngFor="let order of pendingFoodOrders(table); let i = index" data-index="#i">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Order No̲ {{ i }}
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <button mat-flat-button class="mr-3" color="accent" title="add an item" (click)="addOrder('food')">
+                <mat-icon>add</mat-icon>
+              </button>
+              <button mat-flat-button color="accent" title="delete order" (click)="deleteOrder(order._id)">
+                <mat-icon>delete_forever</mat-icon>
+              </button>
+            </mat-expansion-panel>
+          </mat-accordion>
         </div>
       </mat-tab>
       <mat-tab label="Beverage Orders">
-        <app-order-tree [tree]="formattedBeverageOrders"></app-order-tree>
-        <div class="w-100 p-2">
-          <button mat-stroked-button class="w-100" (click)="addOrder('beverage')">
-            <mat-icon class="mr-3">add</mat-icon> Beverage Order
-          </button>
+        <div class="w-100 px-2 pt-4 pb-3">
+          <mat-accordion *ngIf="showAccordion">
+            <mat-expansion-panel *ngFor="let order of pendingBeverageOrders(table); let i = index" data-index="#i">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Order No̲ {{ i }}
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <button mat-flat-button class="mr-3" color="accent" title="add an item" (click)="addOrder('beverage')">
+                <mat-icon>add</mat-icon>
+              </button>
+              <button mat-flat-button color="accent" title="delete order" (click)="deleteOrder(order._id)">
+                <mat-icon>delete_forever</mat-icon>
+              </button>
+            </mat-expansion-panel>
+          </mat-accordion>
         </div>
       </mat-tab>
     </mat-tab-group>
   </div>
-  <div mat-dialog-actions class="w-100 d-flex mb-0">
-    <button mat-flat-button class="flex-fill mr-3" color="accent" (click)="onNoClick()">Discard Updates</button>
-    <button mat-flat-button class="flex-fill" color="primary" type="submit">Update</button>
+  <div mat-dialog-actions class="w-100 d-flex justify-content-center mb-0 px-2">
+    <button mat-flat-button class="w-100" color="primary" (click)="closeClick()">Done</button>
   </div>
 </div>

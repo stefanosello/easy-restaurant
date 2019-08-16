@@ -16,7 +16,8 @@ import { RequestInterceptor } from './_interceptors/request.interceptor';
 import { CookComponent } from './cook/cook.component';
 import { BartenderComponent } from './bartender/bartender.component';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatTabsModule, MatTreeModule } from '@angular/material';
+// tslint:disable-next-line: max-line-length
+import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatTabsModule, MatExpansionModule } from '@angular/material';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { CashdeskTableCardComponent } from './cashdesk/cashdesk-table-card/cashdesk-table-card.component';
 import { CashdeskInfoModalComponent } from './cashdesk/cashdesk-info-modal/cashdesk-info-modal.component';
@@ -27,7 +28,6 @@ import { WaiterStatusModalComponent } from './waiter/waiter-status-modal/waiter-
 import { WaiterOrderModalComponent } from './waiter/waiter-order-modal/waiter-order-modal.component';
 import { CashdeskAddCardModalComponent } from './cashdesk/cashdesk-add-card-modal/cashdesk-add-card-modal.component';
 import { FormsModule } from '@angular/forms';
-import { OrderTreeComponent } from './waiter/waiter-order-modal/order-tree/order-tree.component';
 import { BartenderOrderCardComponent } from './bartender/bartender-order-card/bartender-order-card.component';
 
 @NgModule({
@@ -47,8 +47,7 @@ import { BartenderOrderCardComponent } from './bartender/bartender-order-card/ba
     WaiterStatusModalComponent,
     WaiterOrderModalComponent,
     CashdeskAddCardModalComponent,
-    OrderTreeComponent,
-    BartenderOrderCardComponent
+    BartenderOrderCardComponent,
   ],
   imports: [
     BrowserModule,
@@ -68,7 +67,7 @@ import { BartenderOrderCardComponent } from './bartender/bartender-order-card/ba
     MatChipsModule,
     FormsModule,
     MatTabsModule,
-    MatTreeModule
+    MatExpansionModule
   ],
   exports: [ModalModule],
   providers: [
