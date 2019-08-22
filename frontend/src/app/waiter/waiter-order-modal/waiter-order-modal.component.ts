@@ -27,7 +27,7 @@ export class WaiterOrderModalComponent implements OnInit {
   filteredFoodOptions: Observable<Item[]>;
   beverageOptions: Item[] = [];
   filteredBeverageOptions: Observable<Item[]>;
-  newItemQuantity = 0;
+  newItemQuantity: number = undefined;
 
   constructor(
     public dialogRef: MatDialogRef<WaiterOrderModalComponent>,
@@ -121,7 +121,9 @@ export class WaiterOrderModalComponent implements OnInit {
         console.error(err);
       },
       () => {
-        console.log('Item added');
+        this.foodAutocomplete.setValue('');
+        this.beverageAutocomplete.setValue('');
+        this.newItemQuantity = undefined;
       }
     );
   }
