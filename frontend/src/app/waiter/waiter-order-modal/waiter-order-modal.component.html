@@ -115,11 +115,87 @@
                   Order No̲ {{ i }}
                 </mat-panel-title>
               </mat-expansion-panel-header>
-              <button mat-flat-button class="mr-3" color="accent" title="add an item">
-                <mat-icon>add</mat-icon>
+              <div class="pb-3">
+                <div class="my-2 d-flex align-items-center justify-content-between w-100" *ngFor="let item of order.items">
+                  <span>{{item.item.name}} &times; {{item.quantity}}</span>
+                  <button 
+                    mat-flat-button 
+                    color="control-button" 
+                    title="delete item"
+                    color="warn"
+                    class="control-button ml-3"
+                    (click)="removeItemFromOrder(item.item, order)"
+                  ><mat-icon>delete_forever</mat-icon>
+                  </button>
+                </div>
+              </div>
+              <div *ngIf="order.addingItem">
+                <table cellspacing="0">
+                  <tr>
+                    <td>
+                      <mat-form-field class="example-full-width">
+                        <input 
+                          type="text" 
+                          placeholder="Beverage" 
+                          aria-label="Beverage" 
+                          matInput 
+                          [formControl]="beverageAutocomplete" 
+                          [matAutocomplete]="auto"
+                        >
+                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                          <mat-option *ngFor="let option of filteredBeverageOptions | async" [value]="option">
+                            {{option.name}}
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-form-field>
+                    </td>
+                    <td>
+                      <mat-form-field class="number-form-field">
+                        <input 
+                          matInput 
+                          placeholder="Quantity" 
+                          type="number" 
+                          [(ngModel)]="newItemQuantity"
+                        >
+                      </mat-form-field>
+                    </td>
+                    <td>
+                      <button 
+                        mat-flat-button 
+                        class="ml-3 control-button" 
+                        color="warn" 
+                        title="drop this item" 
+                        (click)="order.addingItem = false"
+                      ><mat-icon>remove</mat-icon>
+                      </button>
+                    </td>
+                    <td>
+                      <button 
+                        mat-flat-button 
+                        class="ml-2 control-button" 
+                        color="primary" 
+                        title="drop this item" 
+                        (click)="addItemHandler(beverageAutocomplete.value, order); order.addingItem = false;"
+                      ><mat-icon>save_alt</mat-icon>
+                      </button>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <button 
+                mat-flat-button 
+                class="mr-3" 
+                color="accent" 
+                title="add an item" 
+                (click)="order.addingItem = true"
+              ><mat-icon>add</mat-icon>
               </button>
-              <button mat-flat-button color="accent" title="delete order" (click)="deleteOrder(order._id)">
-                <mat-icon>delete_forever</mat-icon>
+              <button 
+                mat-flat-button 
+                color="accent" 
+                title="delete order" 
+                (click)="deleteOrder(order._id)"
+              ><mat-icon>delete_forever</mat-icon>
               </button>
             </mat-expansion-panel>
           </mat-accordion>
