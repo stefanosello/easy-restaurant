@@ -48,14 +48,14 @@ export function pendingBeverageOrders(table: Table) {
 }
 
 export function getOrders(table: Table, type: string, processed: boolean) {
-  const service = this.table.services.find((srv: Service) => !srv.done);
+  const service = table.services.find((srv: Service) => !srv.done);
   let filteredOrders = service.orders ? service.orders : [];
   if (filteredOrders.length > 0) {
     if (type) {
       filteredOrders = filteredOrders.filter((order: Order) => order.type === type);
     }
     if (processed) {
-      filteredOrders = filteredOrders.filter((order: Order) => processed ? filteredOrders.processed : !filteredOrders.processed);
+      filteredOrders = filteredOrders.filter((order: Order) => processed ? order.processed : !order.processed);
     }
   }
   return filteredOrders;

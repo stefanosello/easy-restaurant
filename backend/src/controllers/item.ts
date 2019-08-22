@@ -67,12 +67,23 @@ export const addToOrder: Handler = (req, res, next) => {
           item: item._id,
           quantity: item.quantity
         });
-        table.save((err, table: ITable) => {
+        table.save((err: any, table) => {
           if (err) {
             let msg = `DB error: ${err}`;
 			      return next({ statusCode: 500, error: true, errormessage: msg });
           }
-          return res.status(200).json({ table });
+          table
+            .populate('services.waiter')
+            .populate('services.orders.items.item')
+            .execPopulate()
+            .then((table) => {
+              return res.status(200).json({ table });
+            })
+            .catch(err => {
+              if (err) {
+                return next({ statusCode: 500, error: true, errormessage: "DB error on table population" });
+              }
+            });
         });
       } else {
         return next({ statusCode: 404, error: true, errormessage: "Table or order not found" });
@@ -89,13 +100,25 @@ export const removeFromOrder: Handler = (req, res, next) => {
       if (table && table.services && table.services.length > 0) {
         const lastServiceIndex = table.services.length - 1;
         const orderIndex = table.services[lastServiceIndex].orders.findIndex((order: IOrder) => `${order._id}` == orderId);
-        table.services[lastServiceIndex].orders[orderIndex].items.filter((item: any) => `${item.item}` != itemId);
+        const newItems = table.services[lastServiceIndex].orders[orderIndex].items.filter((item: any) => `${item.item}` != itemId);
+        table.services[lastServiceIndex].orders[orderIndex].items = newItems;
         table.save((err, table: ITable) => {
           if (err) {
             let msg = `DB error: ${err}`;
 			      return next({ statusCode: 500, error: true, errormessage: msg });
           }
-          return res.status(200).json({ table });
+          table
+            .populate('services.waiter')
+            .populate('services.orders.items.item')
+            .execPopulate()
+            .then((table) => {
+              return res.status(200).json({ table });
+            })
+            .catch(err => {
+              if (err) {
+                return next({ statusCode: 500, error: true, errormessage: "DB error on table population" });
+              }
+            });
         });
       } else {
         return next({ statusCode: 404, error: true, errormessage: "Table or order not found" });
