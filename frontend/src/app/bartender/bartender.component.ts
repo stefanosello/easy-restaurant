@@ -29,4 +29,14 @@ export class BartenderComponent implements OnInit {
     });
   }
 
+  serveOrder(info) {
+    this.orderService.process(info.tableNumber, info.order._id).subscribe(
+      data => console.log(data),
+      err => console.error(err),
+      () => {
+        this.getOrders();
+      }
+    );
+  }
+
 }

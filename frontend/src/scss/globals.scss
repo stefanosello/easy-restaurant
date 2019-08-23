@@ -39,3 +39,7 @@ mat-dialog-container.mat-dialog-container {
 .sidenav-container {
   min-height: 100vh;
 }
+
+button {
+  outline: none !important;
+}

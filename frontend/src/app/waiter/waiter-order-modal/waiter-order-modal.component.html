@@ -10,7 +10,7 @@
             <mat-expansion-panel 
               *ngFor="let order of getOrders(table, 'food'); let i = index" 
               data-index="#i" 
-              [disabled]="order.processed"
+              [disabled]="!!order.processed"
             >
               <mat-expansion-panel-header>
                 <mat-panel-title>
@@ -103,7 +103,11 @@
       <mat-tab label="Beverage Orders">
         <div class="w-100 px-2 pt-4 pb-3">
           <mat-accordion *ngIf="showAccordion">
-            <mat-expansion-panel *ngFor="let order of getOrders(table, 'beverage'); let i = index" data-index="#i">
+            <mat-expansion-panel 
+              *ngFor="let order of getOrders(table, 'beverage'); let i = index" 
+              data-index="#i"
+              [disabled]="!!order.processed"
+            >
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   Order No̲ {{ i }}

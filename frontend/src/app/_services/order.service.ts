@@ -16,7 +16,6 @@ export class OrderService {
   // TODO: must return populated items?
   get(id: string) { }
 
-  // TODO: must return populated items?
   getAll(params: { type: string, processed: boolean, populate: boolean }) {
     const query = `type=${params.type}&processed=${params.processed ? 1 : 0}&populate=${params.populate ? 1 : 0}`;
     const orders = this.http.get<any>(`${this.baseUrl}?${query}`, { responseType: 'json' });
@@ -30,6 +29,10 @@ export class OrderService {
         type: orderType
       }
     });
+  }
+
+  process(tableNumber: number, orderId: string) {
+    return this.http.put(`${environment.api}/tables/${tableNumber}/orders/${orderId}`, {processed: true});
   }
 
   delete(orderId: string, tableNumber: number) {

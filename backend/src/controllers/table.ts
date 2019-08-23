@@ -1,6 +1,7 @@
 import { Handler } from 'express'
 import Table, { ITable } from '../models/table'
 import { IOrder } from '../models/order';
+import { SchemaTypes } from 'mongoose';
 
 export const findOneForValidation: Handler = (req, res, next) => {
 	if ('tableNumber' in req.query) {
@@ -88,6 +89,9 @@ export const free: Handler = (req, res, next) => {
 			table.busy = false;
 			table.services.forEach(service => {
 				service.done = true;
+				service.orders.forEach((order:IOrder) => {
+					order.processed = Date.now();
+				});
 			});
 			table.save((err, doc) => {
 				if (err) {

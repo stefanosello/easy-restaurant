@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Order } from 'src/app/_models/order';
 
 @Component({
@@ -9,11 +9,14 @@ import { Order } from 'src/app/_models/order';
 export class BartenderOrderCardComponent implements OnInit {
 
   @Input('info') info: any;
+  @Output() serve = new EventEmitter();
 
   constructor() { }
 
   ngOnInit() {
   }
 
-  serveOrder(){}
+  serveOrder() {
+    this.serve.emit(this.info);
+  }
 }

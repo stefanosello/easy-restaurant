@@ -39,6 +39,7 @@ export class WaiterOrderModalComponent implements OnInit {
 
   ngOnInit() {
     this.table = this.data;
+    console.log(this.data);
     this.initAutocompleteStuffs();
     // this timeout is a workaround to make accordion works into tab
     setTimeout(() => {

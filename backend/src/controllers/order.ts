@@ -138,12 +138,10 @@ export const update: Handler = (req, res, next) => {
 	const updatedInfo: any = req.body.updatedInfo ? JSON.parse(req.body.updatedInfo) : {};
   let updateBlock: any = {};
 
-	// changes to order contents can be made only from Cash Desk and Waiters
 	if (updatedInfo && 'items' in updatedInfo) {
 		updateBlock['items'] = updatedInfo.items.map(parseItemsForUpdate);
 	}
 	
-	// changing processed status of an order can only been made from Cash Desk or Cooks
 	if ("processed" in req.body) {
 		if (req.body.processed) {
 			updateBlock['processed'] = Date.now();
