@@ -11,13 +11,15 @@ export interface IItem extends Document {
 	price: number;
 	type: string;
 	subtype: string;
+	time?: number;
 };
 
 const ItemSchema: Schema = new Schema({
 	name: { type: String, unique: true, required: true },
 	price: { type: Number, required: true },
 	type: { type: String, required: true, enum: Object.values(Types) },
-	subtype: { type: String }
+	subtype: { type: String },
+	time: { type: Number },
 });
 
 interface IItemModel extends Model<IItem> {

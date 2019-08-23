@@ -1,3 +1,4 @@
-<p>
-  cook works!
-</p>
+<div class="d-flex flex-wrap justify-content-begin">
+  <app-cook-order-card *ngFor="let info of ordersRichInfo" [info]="info" (serve)="serveOrder($event)">
+  </app-cook-order-card>
+</div>
