@@ -13,27 +13,33 @@ export class TableService {
 
   constructor(private http: HttpClient) { }
 
-  get(number: number) {
-    let table = this.http.get<any>(`${this.baseUrl}/${number}`, { responseType: 'json' })
-    console.log("Table observable: " + JSON.stringify(table));
+  get(tableNumber: number) {
+    const table = this.http.get<any>(`${this.baseUrl}/${tableNumber}`, { responseType: 'json' });
     return table;
   }
 
-  getAll() {
-    let tables = this.http.get<any>(`${this.baseUrl}`, { responseType: 'json' })
-    console.log(tables)
+  getAll(params?: any) {
+    let url = `${this.baseUrl}`;
+    if (!!params) {
+      url = `${url}?`;
+      Object.keys(params).forEach((key, index) => {
+        url = `${url}${key}=${params[key]}`;
+        if (index < (Object.keys(params).length - 1)) {
+          url = `${url}&&`;
+        }
+      });
+    }
+    const tables = this.http.get<any>(url, { responseType: 'json' });
     return tables;
   }
 
   getBill(tableNumber: number) {
-    let bill = this.http.get<any>(`${this.baseUrl}/${tableNumber}/bill`, { responseType: 'json' })
-    console.log(bill)
+    const bill = this.http.get<any>(`${this.baseUrl}/${tableNumber}/bill`, { responseType: 'json' });
     return bill;
   }
 
   doTablePayment(table: Table) {
-    let paymentDone = this.http.patch(`${this.baseUrl}/${table.number}`, table);
-    console.log(paymentDone);
+    const paymentDone = this.http.patch(`${this.baseUrl}/${table.number}`, table);
     return paymentDone;
   }
 
@@ -45,8 +51,8 @@ export class TableService {
     return this.http.put(`${this.baseUrl}/${table.number}`, table);
   }
 
-  isTableAlreadyPresent(number: number) {
-    return this.http.get(`${this.baseUrl}/validate?tableNumber=${number}`);
+  isTableAlreadyPresent(tableNumber: number) {
+    return this.http.get(`${this.baseUrl}/validate?tableNumber=${tableNumber}`);
   }
 
 }

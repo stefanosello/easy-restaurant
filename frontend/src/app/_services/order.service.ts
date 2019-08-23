@@ -18,8 +18,8 @@ export class OrderService {
 
   // TODO: must return populated items?
   getAll(params: { type: string, processed: boolean, populate: boolean }) {
-    const query = `type=${params.type}&processed=${params.processed}&populate=${params.populate}`;
-    const orders = this.http.get<any>(`${this.baseUrl}?${query}`, { responseType: 'json' })
+    const query = `type=${params.type}&processed=${params.processed ? 1 : 0}&populate=${params.populate ? 1 : 0}`;
+    const orders = this.http.get<any>(`${this.baseUrl}?${query}`, { responseType: 'json' });
     return orders;
   }
 

@@ -49,7 +49,7 @@ export function pendingBeverageOrders(table: Table) {
 
 export function getOrders(table: Table, type: string, processed: boolean) {
   const service = table.services.find((srv: Service) => !srv.done);
-  let filteredOrders = service.orders ? service.orders : [];
+  let filteredOrders = service && service.orders ? service.orders : [];
   if (filteredOrders.length > 0) {
     if (type) {
       filteredOrders = filteredOrders.filter((order: Order) => order.type === type);

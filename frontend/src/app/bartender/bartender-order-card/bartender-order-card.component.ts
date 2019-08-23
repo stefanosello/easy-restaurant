@@ -8,7 +8,7 @@ import { Order } from 'src/app/_models/order';
 })
 export class BartenderOrderCardComponent implements OnInit {
 
-  @Input('order') order: Order;
+  @Input('info') info: any;
 
   constructor() { }
 

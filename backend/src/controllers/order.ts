@@ -2,60 +2,73 @@ import { Handler } from 'express'
 import { Schema } from 'mongoose'
 import Order, { IOrder } from '../models/order'
 import Table, { ITable } from '../models/table'
-import { IItem } from '../models/item';
-import mongoose from 'mongoose';
 
 /**
- * This controller does a lot of things. It can return a single object (if 'orderId' is specified in route params) or an array of object otherwise.
+ * Controller used to retrieve orders info.
  * This controller allows to specify via querystring some params to filter the results:
  * **route params**
- * - orderId: the id of the desidered order, makes the controller to return a single order
- * - tableNumber: specifies the number in wich orders should be searched (excludes other table's orders)
+ * @param orderId: the id of the desidered order, makes the controller to return a single order
+ * @param tableNumber: specifies the number in wich orders should be searched (excludes other table's orders)
  * **query params**
- * - serviceDone: [Boolean] allows to search orders only in those services with the specified status (done or not done)
- * - type: [String] searchs for orders of a certain type (food or beverage)
- * - processed: [Boolean] searchs for orders processed or not already processed (as specified by the param) 
+ * @param serviceDone: [Boolean] allows to search orders only in those services with the specified status (done or not done) (1 for true, 0 for false)
+ * @param type: [String] searchs for orders of a certain type (food or beverage)
+ * @param processed: [Boolean] searchs for orders processed or not already processed (as specified by the param) 
+ * @param populate: [Boolean] populate option (1 for true, 0 for false)
+ * **return value**
+ * @returns {
+ * 	richInfo: array of { order: order info, tableNumber: number of the related table, waiter: waiter info },
+ * 	orders: array of IOrder
+ * }
  */
 export const get: Handler = (req, res, next) => {
 	let findBlock: any = {}
 	let queryParams: any = req.query;
-	if ('tableNumber' in req.params)
+	if ('tableNumber' in req.params) {
 		findBlock['number'] = req.params.tableNumber;
+	}
 
-	let query = Table.find(findBlock)
-
-	if ('populate' in queryParams && queryParams.populate == 'true')
-		query.populate('services.orders.items.item')
+	let query = Table.find(findBlock);
+	if ('populate' in queryParams && queryParams.populate) {
+		query
+			.populate('services.orders.items.item')
+			.populate('services.waiter', ['_id', 'username', 'role'])
+	}
 
 	query
 		.then((tables: ITable[]) => {
-			let response: any;
+			let response: any = {
+				richInfo: []
+			};
 			let orders: IOrder[] = [];
 			tables.forEach((table: ITable) => {
 				table.services.forEach((service: any) => {
+					let newOrders: IOrder[] = []
 					if (!('serviceDone' in queryParams) || ('serviceDone' in queryParams && service.done == queryParams.serviceDone)) {
-						orders = orders.concat(service.orders.filter((order: IOrder) => {
-							let processed = queryParams.processed != 'false';
+						newOrders = service.orders.filter((order: IOrder) => {
+							let processed = queryParams.processed;
 							return (
 								!('type' in queryParams && order.type != queryParams.type)
 								&& !('processed' in queryParams && processed != Boolean(order.processed))
 							)
-						}).map((order: IOrder) => {
-							Object.defineProperty(order, 'table', {
-								value: table.number,
-								writable: false
-							});
-							return order;
-						}));
+						});
 					}
-				})
+					newOrders.forEach(order => {
+						response.richInfo.push({
+							order,
+							waiter: service.waiter,
+							tableNumber: table.number
+						});
+					});
+					orders = orders.concat(newOrders);
+				});
 			});
 			if ('orderId' in queryParams) {
-				response = orders.find((order: IOrder) => { return order._id == queryParams.orderId });
+				response.richInfo = response.rinchInfo.find((info: any) => { return info.order._id == queryParams.orderId });
+				response.order = orders.find((order: IOrder) => { return order._id == queryParams.orderId });
 			} else {
-				response = orders;
+				response.orders = orders;
 			}
-			res.status(200).json({ orders: response });
+			res.status(200).json(response);
 		})
 		.catch(err => next({ statusCode: 500, error: true, errormessage: err }))
 }
@@ -170,6 +183,7 @@ export const update: Handler = (req, res, next) => {
 		});
 }
 
+// WARN: deprecated for items management, use item controller "addToOrder" or "removeFromOrder" instead
 // This controller should be used to add items or to update item quantity
 export const updateMany: Handler = (req, res, next) => {
 

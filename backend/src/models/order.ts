@@ -6,7 +6,6 @@ export interface IOrder extends Document {
 	readonly created_at: Schema.Types.Date;
 	processed: Schema.Types.Date;
 	type: string;
-	table: number;
 	items: [{
 		item: Schema.Types.ObjectId,
 		quantity: number,

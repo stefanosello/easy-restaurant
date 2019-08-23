@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 export class BartenderComponent implements OnInit {
 
   public bartenderId: string;
-  public orders: Object[];
+  public ordersRichInfo: any[];
 
   constructor(
     private orderService: OrderService
@@ -24,7 +24,7 @@ export class BartenderComponent implements OnInit {
   getOrders() {
     const orderObs: Observable<any> = this.orderService.getAll({ type: 'beverage', processed: false, populate: true });
     orderObs.subscribe(data => {
-      this.orders = data.orders;
+      this.ordersRichInfo = data.richInfo;
       console.log(data);
     });
   }
