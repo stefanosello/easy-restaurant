@@ -3,20 +3,14 @@ mat-accordion button {
 }
 
 button.control-button {
-  width: 1.5rem;
-  height: 1.5rem;
-  min-width: 1.5rem;
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
   line-height: 0px;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 0;
-  
-  & .mat-icon{
-    font-size: .85rem !important;
-    height: .85rem !important;
-    width: .85rem !important;
-  }
 }
 
 input[type=number],

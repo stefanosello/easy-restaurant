@@ -13,26 +13,32 @@
               [disabled]="!!order.processed"
             >
               <mat-expansion-panel-header>
-                <mat-panel-title>
+                <mat-panel-title class="lead">
                   Order No̲ {{ i }}
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <div class="pb-3">
-                <div class="my-2 d-flex align-items-center justify-content-between w-100" *ngFor="let item of order.items">
-                  <span>{{item.item.name}} &times; {{item.quantity}}</span>
-                  <button 
-                    mat-flat-button 
-                    color="control-button" 
-                    title="delete item"
-                    color="warn"
-                    class="control-button ml-3"
-                    (click)="removeItemFromOrder(item.item, order)"
-                  ><mat-icon>delete_forever</mat-icon>
-                  </button>
-                </div>
+                <mat-list>
+                  <mat-list-item *ngFor="let item of order.items">
+                    <mat-icon mat-list-icon>confirmation_number</mat-icon>
+                    <h4 mat-line>{{item.item.name}}</h4>
+                    <p mat-line> 
+                      <b>Quantity: </b>{{item.quantity}}
+                    </p>
+                    <button 
+                      mat-button 
+                      color="control-button"
+                      title="delete item"
+                      color="warn"
+                      class="control-button ml-3"
+                      (click)="removeItemFromOrder(item.item, order)"
+                    ><mat-icon>delete</mat-icon>
+                    </button>
+                  </mat-list-item>
+                </mat-list>
               </div>
               <div *ngIf="order.addingItem">
-                <div class="row mx-0 px-0">
+                <div class="row mx-0 px-0 align-items-center">
                   <div class="col-12 col-md-6 px-0">
                     <mat-form-field class="w-100">
                       <input 
@@ -60,15 +66,15 @@
                       >
                     </mat-form-field>
                     <button 
-                      mat-flat-button 
+                      mat-button 
                       class="ml-3 control-button" 
                       color="warn" 
                       title="drop this item" 
                       (click)="order.addingItem = false"
-                    ><mat-icon>remove</mat-icon>
+                    ><mat-icon>clear</mat-icon>
                     </button>
                     <button 
-                      mat-flat-button 
+                      mat-button 
                       class="ml-2 control-button" 
                       color="primary" 
                       title="drop this item" 
@@ -78,21 +84,22 @@
                   </div>
                 </div>
               </div>
-              <button 
-                mat-flat-button 
-                class="mr-3" 
-                color="accent" 
-                title="add an item" 
-                (click)="order.addingItem = true"
-              ><mat-icon>add</mat-icon>
-              </button>
-              <button 
-                mat-flat-button 
-                color="accent" 
-                title="delete order" 
-                (click)="deleteOrder(order._id)"
-              ><mat-icon>delete_forever</mat-icon>
-              </button>
+              <mat-action-row>
+                <button 
+                  mat-button 
+                  color="primary" 
+                  title="add an item" 
+                  (click)="order.addingItem = true"
+                ><mat-icon>add</mat-icon> Add item
+                </button>
+                <button 
+                  mat-button 
+                  color="warn" 
+                  title="delete order" 
+                  (click)="deleteOrder(order._id)"
+                ><mat-icon>delete_forever</mat-icon> Delete order
+                </button>
+              </mat-action-row>
             </mat-expansion-panel>
           </mat-accordion>
           <div class="py-3">
@@ -109,23 +116,29 @@
               [disabled]="!!order.processed"
             >
               <mat-expansion-panel-header>
-                <mat-panel-title>
+                <mat-panel-title class="lead">
                   Order No̲ {{ i }}
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <div class="pb-3">
-                <div class="my-2 d-flex align-items-center justify-content-between w-100" *ngFor="let item of order.items">
-                  <span>{{item.item.name}} &times; {{item.quantity}}</span>
-                  <button 
-                    mat-flat-button 
-                    color="control-button" 
-                    title="delete item"
-                    color="warn"
-                    class="control-button ml-3"
-                    (click)="removeItemFromOrder(item.item, order)"
-                  ><mat-icon>delete_forever</mat-icon>
-                  </button>
-                </div>
+                <mat-list>
+                  <mat-list-item *ngFor="let item of order.items">
+                    <mat-icon mat-list-icon>confirmation_number</mat-icon>
+                    <h4 mat-line>{{item.item.name}}</h4>
+                    <p mat-line> 
+                      <b>Quantity: </b>{{item.quantity}}
+                    </p>
+                    <button 
+                      mat-button 
+                      color="control-button" 
+                      title="delete item"
+                      color="warn"
+                      class="control-button ml-3"
+                      (click)="removeItemFromOrder(item.item, order)"
+                    ><mat-icon>delete</mat-icon>
+                    </button>
+                  </mat-list-item>
+                </mat-list>
               </div>
               <div *ngIf="order.addingItem">
                 <div class="row mx-0 px-0">
@@ -156,15 +169,15 @@
                       >
                     </mat-form-field>
                     <button 
-                      mat-flat-button 
+                      mat-button 
                       class="ml-3 control-button" 
                       color="warn" 
                       title="drop this item" 
                       (click)="order.addingItem = false"
-                    ><mat-icon>remove</mat-icon>
+                    ><mat-icon>clear</mat-icon>
                     </button>
                     <button 
-                      mat-flat-button 
+                      mat-button 
                       class="ml-2 control-button" 
                       color="primary" 
                       title="drop this item" 
@@ -174,21 +187,22 @@
                   </div>
                 </div>
               </div>
-              <button 
-                mat-flat-button 
-                class="mr-3" 
-                color="accent" 
-                title="add an item" 
-                (click)="order.addingItem = true"
-              ><mat-icon>add</mat-icon>
-              </button>
-              <button 
-                mat-flat-button 
-                color="accent" 
-                title="delete order" 
-                (click)="deleteOrder(order._id)"
-              ><mat-icon>delete_forever</mat-icon>
-              </button>
+              <mat-action-row>
+                <button 
+                  mat-button 
+                  color="primary" 
+                  title="add an item" 
+                  (click)="order.addingItem = true"
+                ><mat-icon>add</mat-icon> Add item
+                </button>
+                <button 
+                  mat-button 
+                  color="warn" 
+                  title="delete order" 
+                  (click)="deleteOrder(order._id)"
+                ><mat-icon>delete_forever</mat-icon> Delete order
+                </button>
+              </mat-action-row>
             </mat-expansion-panel>
           </mat-accordion>
           <div class="py-3">

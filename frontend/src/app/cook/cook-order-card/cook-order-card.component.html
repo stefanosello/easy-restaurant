@@ -6,13 +6,58 @@
     </mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <ul>
-      <li *ngFor="let item of info.order.items">
-        {{item.item.name}} &times; {{item.quantity}}
-      </li>
-    </ul>
+    <mat-accordion>
+      <mat-expansion-panel *ngFor="let item of info.order.items; let i = index" data-index="#i">
+        <mat-expansion-panel-header >
+          <mat-panel-title>
+            <span class="lead">{{item.item.name}}</span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <p mat-line> <b>Quantity: </b>{{item.quantity}} </p>
+        <p mat-line> <b>Start time: </b>{{item.start | date:"HH:mm"}} </p>
+        <p mat-line class="mb-0"> <b>End time: </b>{{item.end | date:"HH:mm"}} </p>
+        <mat-action-row>
+            <button 
+            mat-button 
+            color="control-button" 
+            title="start preparation"
+            color="primary"
+            (click)="startItemPreparation(item, i);"
+            [disabled]="item.start"
+          >Start</button>
+          <button 
+            mat-button 
+            color="control-button" 
+            title="end preparation"
+            color="warn"
+            (click)="endItemPreparation(item, i);"
+            [disabled]="item.end"
+          >End</button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <!-- <mat-list>
+      <h3 mat-subheader>Food</h3>
+      <mat-list-item *ngFor="let item of info.order.items; let i = index" data-index="#i">
+        <h4 mat-line>{{item.item.name}}</h4>
+        <p mat-line> <b>Quantity: </b>{{item.quantity}} </p>
+        <button 
+          mat-button 
+          color="control-button" 
+          title="start preparation"
+          color="primary"
+          (click)="startItemPreparation(item, i);"
+          [disabled]="item.start"
+        >Start</button>
+        <button 
+          mat-button 
+          color="control-button" 
+          title="end preparation"
+          color="warn"
+          (click)="endItemPreparation(item, i);"
+          [disabled]="item.end"
+        >End</button>
+      </mat-list-item>
+    </mat-list> -->
   </mat-card-content>
-  <mat-card-actions class="d-flex w-100 m-0">
-    <button mat-flat-button color="accent" class="py-2 mr-2 flex-fill" (click)="serveOrder()">Serve</button>
-  </mat-card-actions>
 </mat-card>

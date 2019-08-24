@@ -6,11 +6,14 @@
     </mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <ul>
-      <li *ngFor="let item of info.order.items">
-        {{item.item.name}} &times; {{item.quantity}}
-      </li>
-    </ul>
+    <mat-list>
+      <h3 mat-subheader>Drinks</h3>
+      <mat-list-item *ngFor="let item of info.order.items">
+        <mat-icon mat-list-icon>confirmation_number</mat-icon>
+        <h4 mat-line>{{item.item.name}}</h4>
+        <p mat-line> <b>Quantity: </b>{{item.quantity}} </p>
+      </mat-list-item>
+    </mat-list>
   </mat-card-content>
   <mat-card-actions class="d-flex w-100 m-0">
     <button mat-flat-button color="accent" class="py-2 mr-2 flex-fill" (click)="serveOrder()">Serve</button>

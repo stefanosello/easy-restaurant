@@ -30,5 +30,13 @@ export class ItemService {
     return this.http.delete(`${environment.api}/tables/${tableNumber}/orders/${order._id}/items/${item._id}`);
   }
 
+  startPreparation(item, order, tableNumber) {
+    return this.http.post(`${environment.api}/tables/${tableNumber}/orders/${order._id}/items/${item._id}`, { time: Date.now() });
+  }
+
+  endPreparation(item, order, tableNumber) {
+    return this.http.put(`${environment.api}/tables/${tableNumber}/orders/${order._id}/items/${item._id}`, { time: Date.now() });
+  }
+
 
 }

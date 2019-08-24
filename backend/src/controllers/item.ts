@@ -45,7 +45,7 @@ export const create: Handler = (req, res, next) => {
 }
 
 export const update: Handler = (req, res, next) => {
-  res.status(501);
+  res.status(501).end();
 }
 
 export const remove: Handler = (req, res, next) => {
@@ -119,6 +119,56 @@ export const removeFromOrder: Handler = (req, res, next) => {
                 return next({ statusCode: 500, error: true, errormessage: "DB error on table population" });
               }
             });
+        });
+      } else {
+        return next({ statusCode: 404, error: true, errormessage: "Table or order not found" });
+      }
+    });
+}
+
+export const startPreparation: Handler = (req, res, next) => {
+  const tableNumber = req.params.tableNumber;
+  const orderId = req.params.orderId;
+  const itemId = req.params.itemId;
+  const start = req.body.time;
+  Table.findOne({number: tableNumber}) 
+    .then(table => {
+      if (table && table.services && table.services.length > 0) {
+        const lastServiceIndex = table.services.length - 1;
+        const orderIndex = table.services[lastServiceIndex].orders.findIndex((order: IOrder) => `${order._id}` == orderId);
+        const itemIndex = table.services[lastServiceIndex].orders[orderIndex].items.findIndex((item: any) => `${item._id}` == itemId);
+        table.services[lastServiceIndex].orders[orderIndex].items[itemIndex].start = start;
+        table.save((err: any, table) => {
+          if (err) {
+            let msg = `DB error: ${err}`;
+			      return next({ statusCode: 500, error: true, errormessage: msg });
+          }
+          return res.status(200).json({ start });
+        });
+      } else {
+        return next({ statusCode: 404, error: true, errormessage: "Table or order not found" });
+      }
+    });
+}
+
+export const endPreparation: Handler = (req, res, next) => {
+  const tableNumber = req.params.tableNumber;
+  const orderId = req.params.orderId;
+  const itemId = req.params.itemId;
+  const end = req.body.time;
+  Table.findOne({number: tableNumber}) 
+    .then(table => {
+      if (table && table.services && table.services.length > 0) {
+        const lastServiceIndex = table.services.length - 1;
+        const orderIndex = table.services[lastServiceIndex].orders.findIndex((order: IOrder) => `${order._id}` == orderId);
+        const itemIndex = table.services[lastServiceIndex].orders[orderIndex].items.findIndex((item: any) => `${item._id}` == itemId);
+        table.services[lastServiceIndex].orders[orderIndex].items[itemIndex].end = end;
+        table.save((err: any, table) => {
+          if (err) {
+            let msg = `DB error: ${err}`;
+			      return next({ statusCode: 500, error: true, errormessage: msg });
+          }
+          return res.status(200).json({ end });
         });
       } else {
         return next({ statusCode: 404, error: true, errormessage: "Table or order not found" });

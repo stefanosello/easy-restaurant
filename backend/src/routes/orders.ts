@@ -22,5 +22,7 @@ orders.route('/:orderId/items')
 
 orders.route('/:orderId/items/:itemId')
   .delete(itemsController.removeFromOrder)
+  .post(itemsController.startPreparation)
+  .put(itemsController.endPreparation)
 
 export default orders
