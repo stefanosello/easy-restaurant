@@ -3,6 +3,7 @@ import { AuthService } from '../_services/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
+import * as SocketHelper from '../_helpers/socket-helper';
 
 @Component({
   selector: 'app-login',
@@ -44,7 +45,8 @@ export class LoginComponent implements OnInit {
         .pipe(first())
         .subscribe(
           data => {
-            this.router.navigate([this.returnUrl])
+            SocketHelper.setSocketInstance();
+            this.router.navigate([this.returnUrl]);
           },
           error => {
             this.invalid = true;

@@ -4,10 +4,9 @@ import mongoose from 'mongoose'
 import cors from 'cors'
 import bodyparser from 'body-parser'
 import http from 'http'
-import https from 'https'
-import fs from 'fs'
 import routes from './routes'
 import User from './models/user'
+import * as SocketIoHelper from './helpers/socketio'
 let path = require('path');
 
 if (setup.error) {
@@ -64,21 +63,13 @@ mongoose.connect(process.env.MONGODB_URI!, {
       });
 
     // HTTP Server
-    http.createServer(app).listen(process.env.HTTP_PORT, () => {
+    const server = http.createServer(app).listen(process.env.HTTP_PORT, () => {
       console.log(`Connected on http://localhost:${process.env.HTTP_PORT}`)
     });
 
-    // HTTPS Server
-    /*
-    https.createServer({
-        key: fs.readFileSync('keys/key.pem'),
-        cert: fs.readFileSync('keys/cert.pem')
-    }, app).listen(process.env.HTTPS_PORT, () => {
-        console.log(`Connected on http://localhost:${process.env.HTTPS_PORT}`)
-    });
-    */
+    SocketIoHelper.setSocketInstance(server);
 
   }, (err) => {
     console.log(`Unable to connect to MongoDB:\n${err}`);
     process.exit(-2);
-  })
+  });
