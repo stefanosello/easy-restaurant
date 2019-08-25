@@ -6,7 +6,7 @@ import bodyparser from 'body-parser'
 import http from 'http'
 import routes from './routes'
 import User from './models/user'
-import * as SocketIoHelper from './helpers/socketio'
+import SocketIoHelper from './helpers/socketio'
 let path = require('path');
 
 if (setup.error) {

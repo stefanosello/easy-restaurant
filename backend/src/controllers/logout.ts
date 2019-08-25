@@ -1,7 +1,7 @@
 import { Handler } from 'express'
 import jwt from 'jsonwebtoken';
 import User from '../models/user'
-import * as SocketIoHelper from '../helpers/socketio';
+import SocketIoHelper from '../helpers/socketio';
 
 const logout: Handler = async (req, res, next) => {
 
@@ -16,11 +16,16 @@ const logout: Handler = async (req, res, next) => {
   User.updateOne(
     { username: req.user.username },
     { $pull: { sessions: { token: payload.token } } }
-  ).then(() => {
+  )
+  .then(() => {
+    try {
       SocketIoHelper.disconnectSocket(payload.id);
-      res.status(200).json({ error: false, errormessage: "", result: "User succesfully logged out" })
-    })
-    .catch(err => next({ statusCode: 500, error: true, errormessage: err }))
+    } catch (e) {
+      console.error(e);
+    }
+    res.status(200).json({ error: false, errormessage: "", result: "User succesfully logged out" })
+  })
+  .catch(err => next({ statusCode: 500, error: true, errormessage: err }))
 }
 
 export default logout;

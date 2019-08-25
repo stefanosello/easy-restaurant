@@ -1,19 +1,39 @@
 import io from 'socket.io-client';
-import { Observable, observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-let socket: any = null;
+// tslint:disable-next-line: only-arrow-functions
+export default (function() {
+  let socket: any = null;
+  let registeredEvents: string[] = [];
 
-export function setSocketInstance(token) {
-  if (!socket) {
-    socket = io.connect(`${environment.api}?token=${token.split('"')[1]}`);
+  function setSocketInstance(token) {
+    if (!socket) {
+      socket = io.connect(`${environment.api}?token=${token.split('"')[1]}`);
+    }
+    registerEvent('connected', (message) => {
+      console.log(`Socket succesfully connected with message: ${ message }`, registeredEvents);
+    });
   }
-}
 
-export function clearSocket() {
-  socket = null;
-}
+  function registerEvent(eventName, callback) {
+    if (!registeredEvents.find(ev => eventName === ev)) {
+      registeredEvents.push('connected');
+      socket.on(eventName, callback);
+    } else {
+      console.log('Event already registered');
+    }
+  }
 
-export function getSocketInstance() {
-  return socket;
-}
+  function clearSocket() {
+    registeredEvents = [];
+    socket = null;
+    console.log('Socket disconnected');
+  }
+
+  function getSocketInstance() {
+    return socket;
+  }
+
+  return { setSocketInstance, clearSocket, getSocketInstance };
+
+})();

@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { User, Roles } from '../_models/user';
 import jwtDecode from 'jwt-decode';
-import * as SocketHelper from '../_helpers/socket-helper';
+import SocketHelper from '../_helpers/socket-helper';
 
 @Injectable({
   providedIn: 'root'
