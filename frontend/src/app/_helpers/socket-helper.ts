@@ -1,5 +1,6 @@
 import io from 'socket.io-client';
 import { environment } from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 // tslint:disable-next-line: only-arrow-functions
 export default (function() {
@@ -17,7 +18,7 @@ export default (function() {
 
   function registerEvent(eventName, callback) {
     if (!registeredEvents.find(ev => eventName === ev)) {
-      registeredEvents.push('connected');
+      registeredEvents.push(eventName);
       socket.on(eventName, callback);
     } else {
       console.log('Event already registered');
@@ -34,6 +35,6 @@ export default (function() {
     return socket;
   }
 
-  return { setSocketInstance, clearSocket, getSocketInstance };
+  return { setSocketInstance, clearSocket, getSocketInstance, registerEvent };
 
 })();

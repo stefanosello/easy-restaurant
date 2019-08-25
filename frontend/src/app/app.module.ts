@@ -17,7 +17,7 @@ import { CookComponent } from './cook/cook.component';
 import { BartenderComponent } from './bartender/bartender.component';
 import { LayoutModule } from '@angular/cdk/layout';
 // tslint:disable-next-line: max-line-length
-import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatTabsModule, MatExpansionModule } from '@angular/material';
+import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatTabsModule, MatExpansionModule, MatSnackBarModule } from '@angular/material';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { CashdeskTableCardComponent } from './cashdesk/cashdesk-table-card/cashdesk-table-card.component';
@@ -68,6 +68,7 @@ import { CookOrderCardComponent } from './cook/cook-order-card/cook-order-card.c
     AngularFontAwesomeModule,
     ModalModule.forRoot(),
     MatAutocompleteModule,
+    MatSnackBarModule,
     MatChipsModule,
     FormsModule,
     MatTabsModule,
