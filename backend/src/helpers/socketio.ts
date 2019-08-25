@@ -1,5 +1,5 @@
 import { Server } from 'http';
-import { cloneDeep } from 'lodash';
+import { Roles } from '../models/user';
 const socketio = require("socket.io");
 const jwt = require('jsonwebtoken');
 
@@ -12,6 +12,7 @@ export default (function SocketIoHelper() {
     if (!io) {
       io = socketio(server).of('/api/v1');
       io
+        // authenticate with jwt
         .use((socket: any, next: any) => {
           if (socket.handshake.query && socket.handshake.query.token){
             jwt.verify(socket.handshake.query.token, process.env.JWT_SECRET, (err: any, decoded: any) => {
@@ -28,7 +29,14 @@ export default (function SocketIoHelper() {
         .on('connection', (socket: any) => {
           // Connection now authenticated to receive further events
           userIdToSocket[socket.decoded.id] = socket;
+          if (socket.decoded.role == Roles.Cook) {
+            socket.join('cooks');
+          }
+          if (socket.decoded.role == Roles.Bartender) {
+            socket.join('bartenders');
+          }
           socket.emit('connected', { userId: socket.decoded.id, socket: socket.id });
+          // socket.emit('prova', { userId: socket.decoded.id, socket: socket.id });
           console.info(`User with id ${socket.decoded.id} connected to socket with id ${socket.id}`);
         });
     }
@@ -37,7 +45,7 @@ export default (function SocketIoHelper() {
   function getSocketFromUserId(userId: string) {
     const userSocket = userIdToSocket[userId];
     if (userSocket) {
-      return cloneDeep(userSocket);
+      return userSocket;
     } else {
       throw new Error(`Socket.io ERROR: user with id ${userId} has no socket associated`);
     }
@@ -57,8 +65,13 @@ export default (function SocketIoHelper() {
   function emitToUser(userId: string, eventName: string, data?: any) {
     let socket = getSocketFromUserId(userId);
     const message = !!data ? data : '';
-    socket.emit(eventName, data);  
+    socket.emit(eventName, data); 
   }
 
-  return { setSocketInstance, disconnectSocket, emitToUser };
+  function emitToRoom(room: string, eventName: string, data?: any) {
+    const message = !!data ? data : '';
+    io.to(room).emit(eventName, data); 
+  }
+
+  return { setSocketInstance, disconnectSocket, emitToUser, emitToRoom };
 })();

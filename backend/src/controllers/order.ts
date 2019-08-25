@@ -2,6 +2,7 @@ import { Handler } from 'express'
 import { Schema } from 'mongoose'
 import Order, { IOrder } from '../models/order'
 import Table, { ITable } from '../models/table'
+import SocketHelper from '../helpers/socketio'
 
 /**
  * Controller used to retrieve orders info.
@@ -166,6 +167,9 @@ export const update: Handler = (req, res, next) => {
 						table.services[lastServiceIndex].orders[orderIndex][key] = updateBlock[key];
 					});
 					table.save((err, table) => {
+						if (!!req.body.processed) {
+							SocketHelper.emitToUser(table.services[lastServiceIndex].waiter, 'orderProcessed');
+						}
 						return err ? next({ statusCode: 500, error: true, errormessage: err }) : res.status(200).json({ table });
 					});
 				} else {
@@ -178,54 +182,6 @@ export const update: Handler = (req, res, next) => {
 		.catch(err => {
 			let msg = `DB error: ${err}`;
 			next({ statusCode: 500, error: true, errormessage: msg });
-		});
-}
-
-// WARN: deprecated for items management, use item controller "addToOrder" or "removeFromOrder" instead
-// This controller should be used to add items or to update item quantity
-export const updateMany: Handler = (req, res, next) => {
-
-	// updateInfo should be a map with order Ids as keys
-	const updatedInfo: any = req.body.updatedInfo;
-	const tableNumber: number = req.params.tableNumber;
-
-	// update table
-	Table.findOne({
-		number: tableNumber
-	})
-		.then(table => {
-			if (table && table.services && table.services.length > 0) {
-				const lastServiceIndex = table.services.length - 1;
-				// all updates should be made only if last service is not already done
-				if (!table.services[lastServiceIndex].done) {
-					Object.keys(updatedInfo).forEach(key => {
-						const orderId = new Schema.Types.ObjectId(key);
-						const activeServiceOrders = table.services[lastServiceIndex].orders;
-						const orderIndex = activeServiceOrders.findIndex((order: IOrder) => order._id ==  orderId);
-						updatedInfo[key].forEach((element:any) => {
-							const itemId = element.item;
-							const itemIndex = activeServiceOrders[orderIndex].items.findIndex((item: any) => `${item.item}` == itemId);
-							if (itemIndex >= 0) {
-								table.services[lastServiceIndex].orders[orderIndex].items[itemIndex].quantity = element.quantity;
-							} else {
-								table.services[lastServiceIndex].orders[orderIndex].items.push({
-									item: itemId,
-									quantity: element.quantity
-								});
-							}
-						});
-					});
-					table.save((err, table) => {
-						return err ? next({ statusCode: 500, error: true, errormessage: "BD error" }) : res.status(200).json(table);
-					})
-				}
-				return next({ statusCode: 400, error: true, errormessage: `There is no updatable service for table ${table.number}` });
-			}
-			return next({ statusCode: 400, error: true, errormessage: "Wrong params" });
-		})
-		.catch(err => {
-			let msg = `DB error: ${err}`;
-			return next({ statusCode: 500, error: true, errormessage: msg });
 		});
 }
 

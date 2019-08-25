@@ -5,6 +5,9 @@ import { Table } from '../_models/table';
 import { MatDialog } from '@angular/material';
 import { WaiterStatusModalComponent } from './waiter-status-modal/waiter-status-modal.component';
 import { WaiterOrderModalComponent } from './waiter-order-modal/waiter-order-modal.component';
+import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
+import SocketHelper from '../_helpers/socket-helper';
+import { SocketioService } from '../_services/socketio.service';
 
 @Component({
   selector: 'app-waiter',
@@ -14,11 +17,26 @@ import { WaiterOrderModalComponent } from './waiter-order-modal/waiter-order-mod
 export class WaiterComponent implements OnInit {
 
   public tables: Table[];
+  private noticeSnackbar: MatSnackBarRef<any>;
 
-  constructor(private tableService: TableService, public dialog: MatDialog) { }
+  // tslint:disable-next-line: max-line-length
+  constructor(
+    private tableService: TableService,
+    public dialog: MatDialog,
+    private SnackBar: MatSnackBar,
+    private SocketService: SocketioService
+  ) { }
 
   ngOnInit() {
     this.getTables();
+    SocketHelper.registerEvent('orderProcessed', () => {
+      this.openSnackBar('An order has just been processed');
+      this.getTables();
+    });
+  }
+
+  openSnackBar(message) {
+    this.noticeSnackbar = this.SnackBar.open(message, 'Dismiss');
   }
 
   public getTables() {
@@ -44,6 +62,7 @@ export class WaiterComponent implements OnInit {
       data: table
     });
     dialogRef.afterClosed().subscribe(result => {
+      SocketHelper.emitEvent(this.SocketService, 'orderAddedOrUpdated', null, 'cooks');
       if (result && result.status === 'updated') {
         this.getTables();
       }

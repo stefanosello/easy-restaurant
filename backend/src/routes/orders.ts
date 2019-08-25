@@ -7,15 +7,11 @@ const orders = Router({mergeParams: true});
 orders.route('/')
   .get(ordersController.get)
   .post(ordersController.create)
-  .put(ordersController.updateMany)
 
 orders.route('/:orderId')
   .get(ordersController.get)
   .put(ordersController.update)
   .delete(ordersController.remove)
-
-orders.route('/:orderId/done')
-  .put(ordersController.update)
 
 orders.route('/:orderId/items')
   .post(itemsController.addToOrder)

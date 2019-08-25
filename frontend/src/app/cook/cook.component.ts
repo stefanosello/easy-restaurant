@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { OrderService } from '../_services/order.service';
 import { Order } from '../_models/order';
 import { Observable } from 'rxjs';
+import SocketHelper from '../_helpers/socket-helper';
+import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-cook',
@@ -12,13 +14,23 @@ export class CookComponent implements OnInit {
 
   public cookId: string;
   public ordersRichInfo: any[];
+  private noticeSnackbar: MatSnackBarRef<any>;
 
   constructor(
-    private orderService: OrderService
+    private orderService: OrderService,
+    private SnackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
     this.getOrders();
+    SocketHelper.registerEvent('orderAddedOrUpdated', () => {
+      this.openSnackBar('Some orders have been added or updated');
+      this.getOrders();
+    });
+  }
+
+  openSnackBar(message) {
+    this.noticeSnackbar = this.SnackBar.open(message, 'Dismiss');
   }
 
   getOrders() {
