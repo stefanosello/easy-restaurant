@@ -62,7 +62,12 @@ export class WaiterComponent implements OnInit {
       data: table
     });
     dialogRef.afterClosed().subscribe(result => {
-      SocketHelper.emitEvent(this.SocketService, 'orderAddedOrUpdated', null, 'cooks');
+      if (result.foodOrdersModified) {
+        SocketHelper.emitEvent(this.SocketService, 'orderAddedOrUpdated', null, 'cooks');
+      }
+      if (result.beverageOrdersModified) {
+        SocketHelper.emitEvent(this.SocketService, 'orderAddedOrUpdated', null, 'bartenders');
+      }
       if (result && result.status === 'updated') {
         this.getTables();
       }

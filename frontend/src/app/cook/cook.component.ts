@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { OrderService } from '../_services/order.service';
-import { Order } from '../_models/order';
 import { Observable } from 'rxjs';
 import SocketHelper from '../_helpers/socket-helper';
 import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';

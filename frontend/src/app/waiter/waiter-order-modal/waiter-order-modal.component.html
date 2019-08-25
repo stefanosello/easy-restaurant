@@ -89,14 +89,14 @@
                   mat-button 
                   color="primary" 
                   title="add an item" 
-                  (click)="order.addingItem = true"
+                  (click)="order.addingItem ? addItemHandler(foodAutocomplete.value, order) : order.addingItem = true;"
                 ><mat-icon>add</mat-icon> Add item
                 </button>
                 <button 
                   mat-button 
                   color="warn" 
                   title="delete order" 
-                  (click)="deleteOrder(order._id)"
+                  (click)="deleteOrder(order)"
                 ><mat-icon>delete_forever</mat-icon> Delete order
                 </button>
               </mat-action-row>
@@ -192,14 +192,14 @@
                   mat-button 
                   color="primary" 
                   title="add an item" 
-                  (click)="order.addingItem = true"
+                  (click)="order.addingItem ? addItemHandler(beverageAutocomplete.value, order) : order.addingItem = true;"
                 ><mat-icon>add</mat-icon> Add item
                 </button>
                 <button 
                   mat-button 
                   color="warn" 
                   title="delete order" 
-                  (click)="deleteOrder(order._id)"
+                  (click)="deleteOrder(order)"
                 ><mat-icon>delete_forever</mat-icon> Delete order
                 </button>
               </mat-action-row>

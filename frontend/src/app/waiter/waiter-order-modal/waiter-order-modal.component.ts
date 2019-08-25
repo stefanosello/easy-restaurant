@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { ItemService } from 'src/app/_services/item.service';
 import { Item } from 'src/app/_models/item';
 import { startWith, map } from 'rxjs/operators';
+import { Order } from 'src/app/_models/order';
 
 @Component({
   selector: 'app-waiter-order-modal',
@@ -28,10 +29,11 @@ export class WaiterOrderModalComponent implements OnInit {
   beverageOptions: Item[] = [];
   filteredBeverageOptions: Observable<Item[]>;
   newItemQuantity: number = undefined;
+  private foodOrdersModified = false;
+  private beverageOrdersModified = false;
 
   constructor(
     public dialogRef: MatDialogRef<WaiterOrderModalComponent>,
-    private tableService: TableService,
     private itemService: ItemService,
     private orderService: OrderService,
     @Inject(MAT_DIALOG_DATA) public data: Table
@@ -86,7 +88,11 @@ export class WaiterOrderModalComponent implements OnInit {
   }
 
   public closeClick(): void {
-    this.dialogRef.close({ status: 'updated' });
+    this.dialogRef.close({
+      status: 'updated',
+      foodOrdersModified: this.foodOrdersModified,
+      beverageOrdersModified: this.beverageOrdersModified
+    });
   }
 
   public addOrder(orderType): void {
@@ -95,25 +101,31 @@ export class WaiterOrderModalComponent implements OnInit {
         this.table = data.table;
       },
       err => { console.error(err); },
-      () => { console.log('order created', this.table); }
+      () => {
+        console.log('order created', this.table);
+        this.setOrderModified(orderType);
+      }
     );
   }
 
-  public deleteOrder(orderId): void {
-    this.orderService.delete(orderId, this.table.number).subscribe(
+  public deleteOrder(order: Order): void {
+    this.orderService.delete(order._id, this.table.number).subscribe(
       data => {
         this.table = data.table;
       },
       err => { console.error(err); },
-      () => { console.log('order deleted'); }
+      () => {
+        console.log('order deleted');
+        this.setOrderModified(order.type);
+      }
     );
   }
 
-  public addItemHandler(item, order) {
+  public addItemHandler(item, order: Order) {
     this.addItemToOrder(item, order, this.newItemQuantity);
   }
 
-  public addItemToOrder(item, order, quantity) {
+  public addItemToOrder(item, order: Order, quantity) {
     this.itemService.addToOrder(item, order, quantity, this.table.number).subscribe(
       (result: any) => {
         this.table = result.table;
@@ -125,11 +137,12 @@ export class WaiterOrderModalComponent implements OnInit {
         this.foodAutocomplete.setValue('');
         this.beverageAutocomplete.setValue('');
         this.newItemQuantity = undefined;
+        this.setOrderModified(order.type);
       }
     );
   }
 
-  public removeItemFromOrder(item, order) {
+  public removeItemFromOrder(item, order: Order) {
     this.itemService.removeFromOrder(item, order, this.table.number).subscribe(
       (result: any) => {
         this.table = result.table;
@@ -139,8 +152,17 @@ export class WaiterOrderModalComponent implements OnInit {
       },
       () => {
         console.log('Item removed');
+        this.setOrderModified(order.type);
       }
     );
+  }
+
+  private setOrderModified(orderType) {
+    if (orderType === 'food') {
+      this.foodOrdersModified = true;
+    } else {
+      this.beverageOrdersModified = true;
+    }
   }
 
 }
