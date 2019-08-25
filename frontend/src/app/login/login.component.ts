@@ -45,11 +45,13 @@ export class LoginComponent implements OnInit {
         .pipe(first())
         .subscribe(
           data => {
-            SocketHelper.setSocketInstance();
             this.router.navigate([this.returnUrl]);
           },
           error => {
             this.invalid = true;
+          },
+          () => {
+            SocketHelper.setSocketInstance(this.authService.getUserInfo().token);
           }
         );
     }

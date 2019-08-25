@@ -14,6 +14,7 @@ export class User {
     last: string
   }
   role: string;
+  token?: string;
   sessions: [{
     ip: string,
     token: string

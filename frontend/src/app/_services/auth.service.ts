@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { User, Roles } from '../_models/user';
 import jwtDecode from 'jwt-decode';
+import * as SocketHelper from '../_helpers/socket-helper';
 
 @Injectable({
   providedIn: 'root'
@@ -14,13 +15,13 @@ export class AuthService {
   baseUrl = environment.api;
 
   constructor(private http: HttpClient,
-    private router: Router) { }
+              private router: Router) { }
 
   login(username: string, password: string) {
-    let endpoint = this.baseUrl + '/login';
+    const endpoint = this.baseUrl + '/login';
     let headers = new HttpHeaders();
-    headers = headers.append("Authorization", "Basic " + btoa(`${username}:${password}`));
-    headers = headers.append("Content-Type", "application/x-www-form-urlencoded");
+    headers = headers.append('Authorization', 'Basic ' + btoa(`${username}:${password}`));
+    headers = headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
     return this.http.post<any>(endpoint, {}, { headers })
       .pipe(map(response => {
@@ -38,28 +39,28 @@ export class AuthService {
   }
 
   logout() {
-    let endpoint = this.baseUrl + '/logout';
-    let refresh = JSON.parse(localStorage.getItem('session'));
+    const endpoint = this.baseUrl + '/logout';
+    const refresh = JSON.parse(localStorage.getItem('session'));
     this.http.post<any>(endpoint, { token: refresh }).toPromise()
       .then(response => {
         if (response && !response.error) {
+          SocketHelper.clearSocket();
           localStorage.removeItem('token');
           localStorage.removeItem('session');
           this.router.navigate(['/login']);
+        } else {
+          console.log('ERRORE');
         }
-        else {
-          console.log("ERRORE")
-        }
-      })
+      });
   }
 
   refreshToken() {
-    let endpoint = this.baseUrl + '/renew';
-    let refresh = JSON.parse(localStorage.getItem('session'));
+    const endpoint = this.baseUrl + '/renew';
+    const refresh = JSON.parse(localStorage.getItem('session'));
 
     let headers = new HttpHeaders();
-    headers = headers.append("Authorization", "Bearer " + refresh);
-    headers = headers.append("Content-Type", "application/x-www-form-urlencoded");
+    headers = headers.append('Authorization', 'Bearer ' + refresh);
+    headers = headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
     return this.http.post<any>(endpoint, {}, { headers })
       .pipe(map(response => {
@@ -73,13 +74,14 @@ export class AuthService {
   }
 
   getUserInfo(): User {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('token');
     try {
       const payload = jwtDecode(token);
       const user = new User();
       user.username = payload.username;
       user.role = payload.role;
       user._id = payload.id;
+      user.token = token;
       return user;
     } catch (Error) {
       return null;
