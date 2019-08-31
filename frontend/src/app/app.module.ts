@@ -31,6 +31,7 @@ import { CashdeskAddCardModalComponent } from './cashdesk/cashdesk-add-card-moda
 import { FormsModule } from '@angular/forms';
 import { BartenderOrderCardComponent } from './bartender/bartender-order-card/bartender-order-card.component';
 import { CookOrderCardComponent } from './cook/cook-order-card/cook-order-card.component';
+import { NoticesComponent } from './notices/notices.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { CookOrderCardComponent } from './cook/cook-order-card/cook-order-card.c
     CashdeskAddCardModalComponent,
     BartenderOrderCardComponent,
     CookOrderCardComponent,
+    NoticesComponent,
   ],
   imports: [
     BrowserModule,
