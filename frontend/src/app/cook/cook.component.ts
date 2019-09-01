@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import SocketHelper from '../_helpers/socket-helper';
 import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
 import { NoticeService } from '../_services/notice.service';
+import NoticeHelper from '../_helpers/notice-helper';
 
 @Component({
   selector: 'app-cook',
@@ -33,8 +34,10 @@ export class CookComponent implements OnInit {
   private getNotice() {
     this.noticeService.get(1).subscribe(
       (data: any) => {
-        console.log(data);
-        this.openSnackBar(`<strong>${data.notices[0].from.username}</strong>: ${data.notices[0].message}`);
+        if (data.notices[0]) {
+          this.openSnackBar(`${data.notices[0].from.username.toUpperCase()}: ${data.notices[0].message}`);
+          NoticeHelper.pushToNotices(data.notices[0]);
+        }
       },
       err => console.error(err),
       () => { }

@@ -16,4 +16,9 @@ export class NoticeService {
     const url = limit ? `${this.baseUrl}?limit=${limit}` : this.baseUrl;
     return this.http.get(url);
   }
+
+  drop(noticeId) {
+    const url =`${this.baseUrl}/${noticeId}`;
+    return this.http.delete(url);
+  }
 }

@@ -1,5 +1,6 @@
 import Notice from '../models/notice';
 import User, { Roles } from '../models/user';
+import SocketHelper from '../helpers/socketio'
 
 export function pushNotice(from: string, to: string, message: string, cb: Function) {
   const findBlock: any = {};
@@ -19,6 +20,12 @@ export function pushNotice(from: string, to: string, message: string, cb: Functi
           .then(message => {
             console.log(message);
             cb();
+            if (!!findBlock._id) {
+              SocketHelper.emitToUser(findBlock._id, 'fetchNotices');
+            }
+            if (!!findBlock.role) {
+              SocketHelper.emitToRoom(findBlock.role, 'fetchNotices');
+            }
             return true;
           })
           .catch(err => {

@@ -23,3 +23,29 @@ export const get: Handler = async (req, res, next) => {
       })
     );
 }
+
+export const remove: Handler = async (req, res, next) => {
+  const userId = req.user.id;
+  const noticeId = req.params.noticeId;
+  Notice.findOne(noticeId)
+    .then(notice => {
+      if (notice) {
+        notice.to = notice.to.filter(u => `${u}` != userId);
+        notice.save((err, data) => {
+          if (err) {
+            return next({ statusCode: 500, error: true, errormessage: "Notice DB errors" });
+          }
+          res.status(200).end();
+        });
+      } else {
+        return next({ statusCode: 404, error: true, errormessage: "No notice found" });
+      }
+    })
+    .catch(
+      err => next({
+        statusCode: 500,
+        error: true,
+        errormessage: err
+      })
+    );
+}

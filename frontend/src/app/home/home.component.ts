@@ -5,6 +5,8 @@ import { map } from 'rxjs/operators';
 import { Roles } from '../_models/user';
 import { AuthService } from '../_services/auth.service';
 import SocketHelper from '../_helpers/socket-helper';
+import NoticeHelper from '../_helpers/notice-helper';
+import { NoticeService } from '../_services/notice.service';
 
 @Component({
   selector: 'app-home',
@@ -15,6 +17,7 @@ export class HomeComponent implements OnInit {
 
   currentUser = this.authService.getUserInfo();
   roles = Roles;
+  public NoticeHelper = NoticeHelper;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -24,9 +27,11 @@ export class HomeComponent implements OnInit {
   constructor(
     private breakpointObserver: BreakpointObserver,
     private authService: AuthService,
+    private noticeService: NoticeService
   ) { }
 
   ngOnInit() {
+    NoticeHelper.initNotices(this.noticeService);
     SocketHelper.setSocketInstance(this.authService.getUserInfo().token);
   }
 

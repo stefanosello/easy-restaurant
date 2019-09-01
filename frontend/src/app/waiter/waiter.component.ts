@@ -10,6 +10,7 @@ import SocketHelper from '../_helpers/socket-helper';
 import { SocketioService } from '../_services/socketio.service';
 import { Roles } from '../_models/user';
 import { NoticeService } from '../_services/notice.service';
+import NoticeHelper from '../_helpers/notice-helper';
 
 @Component({
   selector: 'app-waiter',
@@ -54,7 +55,10 @@ export class WaiterComponent implements OnInit {
   private getNotice() {
     this.noticeService.get(1).subscribe(
       (data: any) => {
-        this.openSnackBar(`${data.notices[0].from.username.toUpperCase}: ${data.notices[0].message}`);
+        if (data.notices[0]) {
+          this.openSnackBar(`${data.notices[0].from.username.toUpperCase()}: ${data.notices[0].message}`);
+          NoticeHelper.pushToNotices(data.notices[0]);
+        }
       },
       err => console.error(err),
       () => { }
@@ -85,10 +89,10 @@ export class WaiterComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result.foodOrdersModified) {
-        SocketHelper.emitEvent(this.SocketService, 'orderAddedOrUpdated', null, Roles.Cook, `There are new food orders to prepare for table number ${table.number}`);
+        SocketHelper.emitEvent(this.SocketService, 'orderAddedOrUpdated', null, Roles.Cook, `There are new food orders to prepare for table number ${table.number}.`);
       }
       if (result.beverageOrdersModified) {
-        SocketHelper.emitEvent(this.SocketService, 'orderAddedOrUpdated', null, Roles.Bartender, `There are new beverage orders to prepare for table number ${table.number}`);
+        SocketHelper.emitEvent(this.SocketService, 'orderAddedOrUpdated', null, Roles.Bartender, `There are new beverage orders to prepare for table number ${table.number}.`);
       }
       if (result && result.status === 'updated') {
         this.getTables();
