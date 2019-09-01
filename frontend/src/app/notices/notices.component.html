@@ -1,3 +1,13 @@
-<div *ngFor="let notice of NoticeHelper.getNotices()">
-  {{ notice.message }}
-</div>
+<mat-list>
+  <mat-list-item *ngFor="let notice of NoticeHelper.getNotices()">
+    <img matListAvatar [src]="'../../assets/img/' + notice.from.role + '.svg'" [alt]="notice.from.role + '-avatar'">
+    <h3 matLine> {{notice.from.username}} </h3>
+    <p matLine>
+      <span> {{notice.timestamp | date:"yyyy/MM/dd HH:mm"}} </span>
+      <span> -- {{notice.message}} </span>
+    </p>
+    <a (click)="removeNotice(notice)" href="javascript:void(0)">
+      <mat-icon color="warn">clear</mat-icon>
+    </a>
+  </mat-list-item>
+</mat-list>

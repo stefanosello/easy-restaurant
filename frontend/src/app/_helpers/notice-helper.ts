@@ -4,11 +4,9 @@ import { cloneDeep } from 'lodash';
 // tslint:disable-next-line: only-arrow-functions
 export default (function () {
   let notices: any[] = [];
-  let noticeService: NoticeService;
 
   function initNotices(service) {
-    noticeService = service;
-    noticeService.get().subscribe(
+    service.get().subscribe(
       (result: any) => {
         notices = result.notices;
       },
@@ -21,12 +19,7 @@ export default (function () {
   }
 
   function removeFromNotices(notice) {
-    noticeService.drop(notice._id).subscribe(
-      _ => {
-        notices = notices.filter(n => n._id !== notice._id);
-      },
-      err => console.error(err)
-    )
+    notices = notices.filter(n => n._id !== notice._id);
   }
 
   function getNotices() {

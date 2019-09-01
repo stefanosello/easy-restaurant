@@ -27,7 +27,7 @@ export const get: Handler = async (req, res, next) => {
 export const remove: Handler = async (req, res, next) => {
   const userId = req.user.id;
   const noticeId = req.params.noticeId;
-  Notice.findOne(noticeId)
+  Notice.findOne({_id: noticeId})
     .then(notice => {
       if (notice) {
         notice.to = notice.to.filter(u => `${u}` != userId);
