@@ -30,10 +30,16 @@ export default (function SocketIoHelper() {
           // Connection now authenticated to receive further events
           userIdToSocket[socket.decoded.id] = socket;
           if (socket.decoded.role == Roles.Cook) {
-            socket.join('cooks');
+            socket.join(Roles.Cook);
           }
           if (socket.decoded.role == Roles.Bartender) {
-            socket.join('bartenders');
+            socket.join(Roles.Bartender);
+          }
+          if (socket.decoded.role == Roles.Waiter) {
+            socket.join(Roles.Waiter);
+          }
+          if (socket.decoded.role == Roles.CashDesk) {
+            socket.join(Roles.CashDesk);
           }
           socket.emit('connected', { userId: socket.decoded.id, socket: socket.id });
           // socket.emit('prova', { userId: socket.decoded.id, socket: socket.id });
@@ -65,12 +71,12 @@ export default (function SocketIoHelper() {
   function emitToUser(userId: string, eventName: string, data?: any) {
     let socket = getSocketFromUserId(userId);
     const message = !!data ? data : '';
-    socket.emit(eventName, data); 
+    socket.emit(eventName, message); 
   }
 
   function emitToRoom(room: string, eventName: string, data?: any) {
     const message = !!data ? data : '';
-    io.to(room).emit(eventName, data); 
+    io.to(room).emit(eventName, message); 
   }
 
   return { setSocketInstance, disconnectSocket, emitToUser, emitToRoom };

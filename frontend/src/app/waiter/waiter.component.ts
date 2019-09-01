@@ -8,6 +8,8 @@ import { WaiterOrderModalComponent } from './waiter-order-modal/waiter-order-mod
 import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
 import SocketHelper from '../_helpers/socket-helper';
 import { SocketioService } from '../_services/socketio.service';
+import { Roles } from '../_models/user';
+import { NoticeService } from '../_services/notice.service';
 
 @Component({
   selector: 'app-waiter',
@@ -22,6 +24,7 @@ export class WaiterComponent implements OnInit {
   // tslint:disable-next-line: max-line-length
   constructor(
     private tableService: TableService,
+    private noticeService: NoticeService,
     public dialog: MatDialog,
     private SnackBar: MatSnackBar,
     private SocketService: SocketioService
@@ -30,13 +33,29 @@ export class WaiterComponent implements OnInit {
   ngOnInit() {
     this.getTables();
     SocketHelper.registerEvent('orderProcessed', () => {
-      this.openSnackBar('An order has just been processed');
+      this.getNotice();
+      this.getTables();
+    });
+    SocketHelper.registerEvent('tableSetFree', () => {
+      this.getNotice();
       this.getTables();
     });
   }
 
   openSnackBar(message) {
-    this.noticeSnackbar = this.SnackBar.open(message, 'Dismiss');
+    this.noticeSnackbar = this.SnackBar.open(message, 'Dismiss', {
+      duration: 3000
+    });
+  }
+
+  private getNotice() {
+    this.noticeService.get(1).subscribe(
+      (data: any) => {
+        this.openSnackBar(`<strong>${data.notices[0].from.username}</strong>: ${data.notices[0].message}`);
+      },
+      err => console.error(err),
+      () => { }
+    )
   }
 
   public getTables() {
@@ -63,10 +82,10 @@ export class WaiterComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result.foodOrdersModified) {
-        SocketHelper.emitEvent(this.SocketService, 'orderAddedOrUpdated', null, 'cooks');
+        SocketHelper.emitEvent(this.SocketService, 'orderAddedOrUpdated', null, Roles.Cook, `There are new food orders to prepare for table number ${table.number}`);
       }
       if (result.beverageOrdersModified) {
-        SocketHelper.emitEvent(this.SocketService, 'orderAddedOrUpdated', null, 'bartenders');
+        SocketHelper.emitEvent(this.SocketService, 'orderAddedOrUpdated', null, Roles.Bartender, `There are new beverage orders to prepare for table number ${table.number}`);
       }
       if (result && result.status === 'updated') {
         this.getTables();

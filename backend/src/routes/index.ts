@@ -4,6 +4,7 @@ import logoutController from '../controllers/logout'
 import renewController from '../controllers/renew'
 import * as authController from '../controllers/auth'
 import * as userController from '../controllers/user'
+import * as noticeController from '../controllers/notice'
 import * as socketController from '../controllers/socket'
 import usersRoutes from './users'
 import tablesRoutes from './tables'
@@ -30,6 +31,7 @@ router
   // Routes
   .post('/socket', socketController.emit)
   .post('/logout', logoutController)
+  .get('/notices', noticeController.get)
   .use('/users', usersRoutes)
   .use('/tables', tablesRoutes)
   .use('/orders', ordersRoutes)

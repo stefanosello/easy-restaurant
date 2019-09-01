@@ -1,7 +1,10 @@
 import { Handler } from 'express'
-import Table, { ITable } from '../models/table'
+import Table from '../models/table'
 import { IOrder } from '../models/order';
-import { SchemaTypes } from 'mongoose';
+import SocketIoHelper from '../helpers/socketio'
+import { pushNotice } from '../helpers/notice'
+import { Roles } from '../models/user';
+
 
 export const findOneForValidation: Handler = (req, res, next) => {
 	if ('tableNumber' in req.query) {
@@ -90,6 +93,7 @@ export const free: Handler = (req, res, next) => {
 			table.services.forEach(service => {
 				service.done = true;
 				service.orders.forEach((order:IOrder) => {
+					// @ts-ignore -> mongoose will do the cast stuffs
 					order.processed = Date.now();
 				});
 			});
@@ -97,6 +101,9 @@ export const free: Handler = (req, res, next) => {
 				if (err) {
 					return next({ statusCode: 500, error: true, errormessage: `DB error 2: ${ err}` });
 				}
+				pushNotice(req.user.id, Roles.Waiter, `Table number ${doc.number} is now available for new consumers.`, () => {
+					SocketIoHelper.emitToRoom(Roles.Waiter, 'tableSetFree');
+				});
 				res.status(200).json({ message: "Table set free" })
 			});
 		})
@@ -114,20 +121,19 @@ export const getBill: Handler = (req, res, next) => {
 			let bill: number = 0;
 			let items: any[] = [];
 			// console.log(table.services[0].orders[0].items);
-			table.services.forEach(service => {
-				service.orders.forEach((order: IOrder) => {
-					order.items.forEach(item => {
-						// @ts-ignore -> the field is present but is populated with the 'populate' option, so at compile time it is not present
-						bill += item.quantity * item.item.price;
-						// console.log(item);
-						items.push({
-							quantity: item.quantity,
-							// @ts-ignore
-							name: item.item.name,
-							// @ts-ignore
-							price: item.item.price
-						})
-					});
+			const service = table.services.find(service => service.done == false);
+			service.orders.forEach((order: IOrder) => {
+				order.items.forEach(item => {
+					// @ts-ignore -> the field is present but is populated with the 'populate' option, so at compile time it is not present
+					bill += item.quantity * item.item.price;
+					// console.log(item);
+					items.push({
+						quantity: item.quantity,
+						// @ts-ignore
+						name: item.item.name,
+						// @ts-ignore
+						price: item.item.price
+					})
 				});
 			});
 			res.status(200).json({ items: items, total: bill });

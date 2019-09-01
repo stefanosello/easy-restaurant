@@ -6,13 +6,14 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class SocketioService {
+export class NoticeService {
 
-  baseUrl = environment.api + '/socket';
+  baseUrl = environment.api + '/notices';
 
   constructor(private http: HttpClient) { }
 
-  notifyToUser(eventName: string, userId?: string, room?: string, message?: string) {
-    return this.http.post(this.baseUrl, { eventName, userId, room, message });
+  get(limit?: number) {
+    const url = limit ? `${this.baseUrl}?limit=${limit}` : this.baseUrl;
+    return this.http.get(url);
   }
 }

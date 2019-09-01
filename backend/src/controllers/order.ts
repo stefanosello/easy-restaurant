@@ -3,6 +3,7 @@ import { Schema } from 'mongoose'
 import Order, { IOrder } from '../models/order'
 import Table, { ITable } from '../models/table'
 import SocketHelper from '../helpers/socketio'
+import { pushNotice } from '../helpers/notice';
 
 /**
  * Controller used to retrieve orders info.
@@ -168,7 +169,9 @@ export const update: Handler = (req, res, next) => {
 					});
 					table.save((err, table) => {
 						if (!!req.body.processed) {
-							SocketHelper.emitToUser(table.services[lastServiceIndex].waiter, 'orderProcessed');
+							pushNotice(req.user.id, table.services[lastServiceIndex].waiter, `One order for table number ${table.number} is ready to be served`, () => {
+								SocketHelper.emitToUser(table.services[lastServiceIndex].waiter, 'orderProcessed');
+							});
 						}
 						return err ? next({ statusCode: 500, error: true, errormessage: err }) : res.status(200).json({ table });
 					});

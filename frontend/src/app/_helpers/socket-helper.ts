@@ -38,9 +38,9 @@ export default (function() {
     return socket;
   }
 
-  function emitEvent(SocketService: SocketioService, eventName: string, userId?: string, room?: string) {
+  function emitEvent(SocketService: SocketioService, eventName: string, userId?: string, room?: string, message?: string) {
     setSocketInstance();
-    SocketService.notifyToUser(eventName, userId, room).subscribe(
+    SocketService.notifyToUser(eventName, userId, room, message).subscribe(
       (_) => {},
       (err) => console.error(err),
       () => {}
