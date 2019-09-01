@@ -1,6 +1,7 @@
 import { Handler } from 'express';
 import SocketIoHelper from '../helpers/socketio'
 import { pushNotice } from '../helpers/notice';
+import { Roles } from '../models/user';
 
 export const emit: Handler = async (req, res, next) => {
   const userId = req.body.userId;

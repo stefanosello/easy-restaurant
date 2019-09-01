@@ -71,12 +71,16 @@ export default (function SocketIoHelper() {
   function emitToUser(userId: string, eventName: string, data?: any) {
     let socket = getSocketFromUserId(userId);
     const message = !!data ? data : '';
-    socket.emit(eventName, message); 
+    socket.emit(eventName, message);
+    // should always notify cashdesk when something changes
+    io.to(Roles.CashDesk).emit("updateTables");
   }
 
   function emitToRoom(room: string, eventName: string, data?: any) {
     const message = !!data ? data : '';
-    io.to(room).emit(eventName, message); 
+    io.to(room).emit(eventName, message);
+    // should always notify cashdesk when something changes
+    io.to(Roles.CashDesk).emit("updateTables");
   }
 
   return { setSocketInstance, disconnectSocket, emitToUser, emitToRoom };

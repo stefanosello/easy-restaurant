@@ -32,6 +32,9 @@ export class WaiterComponent implements OnInit {
 
   ngOnInit() {
     this.getTables();
+    SocketHelper.registerEvent('updateTables', () => {
+      this.getTables();
+    });
     SocketHelper.registerEvent('orderProcessed', () => {
       this.getNotice();
       this.getTables();
@@ -51,7 +54,7 @@ export class WaiterComponent implements OnInit {
   private getNotice() {
     this.noticeService.get(1).subscribe(
       (data: any) => {
-        this.openSnackBar(`<strong>${data.notices[0].from.username}</strong>: ${data.notices[0].message}`);
+        this.openSnackBar(`${data.notices[0].from.username.toUpperCase}: ${data.notices[0].message}`);
       },
       err => console.error(err),
       () => { }

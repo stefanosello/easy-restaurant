@@ -42,7 +42,9 @@ export class CookComponent implements OnInit {
   }
 
   openSnackBar(message) {
-    this.noticeSnackbar = this.SnackBar.open(message, 'Dismiss');
+    this.noticeSnackbar = this.SnackBar.open(message, 'Dismiss', {
+      duration: 3000
+    });
   }
 
   getOrders() {

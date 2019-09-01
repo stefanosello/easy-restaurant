@@ -3,6 +3,7 @@ import { OrderService } from '../_services/order.service';
 import { Observable } from 'rxjs';
 import SocketHelper from '../_helpers/socket-helper';
 import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
+import { NoticeService } from '../_services/notice.service';
 
 @Component({
   selector: 'app-bartender',
@@ -17,19 +18,33 @@ export class BartenderComponent implements OnInit {
 
   constructor(
     private orderService: OrderService,
-    private SnackBar: MatSnackBar
+    private SnackBar: MatSnackBar,
+    private noticeService: NoticeService,
   ) { }
 
   ngOnInit() {
     this.getOrders();
     SocketHelper.registerEvent('orderAddedOrUpdated', () => {
-      this.openSnackBar('Some orders have been added or updated');
+      this.getNotice();
       this.getOrders();
     });
   }
 
+  private getNotice() {
+    this.noticeService.get(1).subscribe(
+      (data: any) => {
+        console.log(data);
+        this.openSnackBar(`<strong>${data.notices[0].from.username}</strong>: ${data.notices[0].message}`);
+      },
+      err => console.error(err),
+      () => { }
+    )
+  }
+
   openSnackBar(message) {
-    this.noticeSnackbar = this.SnackBar.open(message, 'Dismiss');
+    this.noticeSnackbar = this.SnackBar.open(message, 'Dismiss', {
+      duration: 3000
+    });
   }
 
   getOrders() {
