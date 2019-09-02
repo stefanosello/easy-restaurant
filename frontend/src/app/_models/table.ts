@@ -3,7 +3,7 @@ import { User } from './user';
 
 export class Service {
   covers: number;
-  waiter: User | string;
+  waiter: User | any;
   orders: Order[];
   timestamp: Date;
   done: boolean;

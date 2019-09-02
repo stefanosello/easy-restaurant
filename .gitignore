@@ -118,3 +118,9 @@
 # package json
 backend/package-lock.json
 frontend/package-lock.json
+
+
+EasyRestaurantMobileApp/node_modules/
+EasyRestaurantMobileApp/plugins/
+EasyRestaurantMobileApp/platforms/
+
