@@ -21,7 +21,7 @@ export class CashdeskComponent implements OnInit {
   public modalTableBill: any;
 
   constructor(
-    private tableService: TableService, 
+    private tableService: TableService,
     public dialog: MatDialog) { }
 
   ngOnInit() {

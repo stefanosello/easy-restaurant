@@ -154,6 +154,8 @@ export const startPreparation: Handler = (req, res, next) => {
 export const endPreparation: Handler = (req, res, next) => {
   const tableNumber = req.params.tableNumber;
   const orderId = req.params.orderId;
+  const user = req.user;
+  console.log(user);
   const itemId = req.params.itemId;
   const end = req.body.time;
   Table.findOne({number: tableNumber}) 
@@ -163,6 +165,7 @@ export const endPreparation: Handler = (req, res, next) => {
         const orderIndex = table.services[lastServiceIndex].orders.findIndex((order: IOrder) => `${order._id}` == orderId);
         const itemIndex = table.services[lastServiceIndex].orders[orderIndex].items.findIndex((item: any) => `${item._id}` == itemId);
         table.services[lastServiceIndex].orders[orderIndex].items[itemIndex].end = end;
+        table.services[lastServiceIndex].orders[orderIndex].items[itemIndex].cook = user.id;
         table.save((err: any, table) => {
           if (err) {
             let msg = `DB error: ${err}`;

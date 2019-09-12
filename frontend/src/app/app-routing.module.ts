@@ -8,6 +8,7 @@ import { WaiterComponent } from './waiter/waiter.component';
 import { CookComponent } from './cook/cook.component';
 import { BartenderComponent } from './bartender/bartender.component';
 import { CashdeskComponent } from './cashdesk/cashdesk.component';
+import { StatisticsComponent } from './statistics/statistics.component';
 import { RoleGuard } from './_guards/role.guard';
 
 const routes: Routes = [
@@ -54,6 +55,14 @@ const routes: Routes = [
         canActivate: [RoleGuard],
         data: {
           roles: ["bartender"]
+        }
+      },
+      {
+        path: 'statistics',
+        component: StatisticsComponent,
+        canActivate: [RoleGuard],
+        data: {
+          roles: ["cash_desk"]
         }
       },
     ]

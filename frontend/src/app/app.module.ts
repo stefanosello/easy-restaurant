@@ -32,6 +32,8 @@ import { FormsModule } from '@angular/forms';
 import { BartenderOrderCardComponent } from './bartender/bartender-order-card/bartender-order-card.component';
 import { CookOrderCardComponent } from './cook/cook-order-card/cook-order-card.component';
 import { NoticesComponent } from './notices/notices.component';
+import { StatisticsComponent } from './statistics/statistics.component';
+import { StatisticsModalComponent } from './statistics/statistics-modal/statistics-modal.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +55,8 @@ import { NoticesComponent } from './notices/notices.component';
     BartenderOrderCardComponent,
     CookOrderCardComponent,
     NoticesComponent,
+    StatisticsComponent,
+    StatisticsModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -85,7 +89,8 @@ import { NoticesComponent } from './notices/notices.component';
     CashdeskBillModalComponent,
     WaiterStatusModalComponent,
     WaiterOrderModalComponent,
-    CashdeskAddCardModalComponent
+    CashdeskAddCardModalComponent,
+    StatisticsModalComponent
   ],
   bootstrap: [AppComponent]
 })
