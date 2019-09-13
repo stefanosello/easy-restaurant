@@ -2334,7 +2334,7 @@ var LoginComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-list>\n  <mat-list-item *ngFor=\"let notice of NoticeHelper.getNotices()\">\n    <img matListAvatar [src]=\"'../../assets/img/' + notice.from.role + '.svg'\" [alt]=\"notice.from.role + '-avatar'\">\n    <h3 matLine> {{notice.from.username}} </h3>\n    <p matLine>\n      <span> {{notice.timestamp | date:\"yyyy/MM/dd HH:mm\"}} </span>\n      <span> -- {{notice.message}} </span>\n    </p>\n    <a (click)=\"removeNotice(notice)\" href=\"javascript:void(0)\">\n      <mat-icon color=\"warn\">clear</mat-icon>\n    </a>\n  </mat-list-item>\n</mat-list>\n"
+module.exports = "<mat-list>\n  <mat-list-item *ngFor=\"let notice of NoticeHelper.getNotices()\">\n    <img matListAvatar [src]=\"'assets/img/' + notice.from.role + '.svg'\" [alt]=\"notice.from.role + '-avatar'\">\n    <h3 matLine> {{notice.from.username}} </h3>\n    <p matLine>\n      <span> {{notice.timestamp | date:\"yyyy/MM/dd HH:mm\"}} </span>\n      <span> -- {{notice.message}} </span>\n    </p>\n    <a (click)=\"removeNotice(notice)\" href=\"javascript:void(0)\">\n      <mat-icon color=\"warn\">clear</mat-icon>\n    </a>\n  </mat-list-item>\n</mat-list>\n"
 
 /***/ }),
 
@@ -2474,7 +2474,7 @@ var StatisticsModalComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-list>\n  <mat-list-item *ngFor=\"let user of users\">\n    <img matListAvatar [src]=\"'../../assets/img/' + user.role + '.svg'\" [alt]=\"user.role + '-avatar'\">\n    <h3 matLine> {{user.username}} </h3>\n    <button mat-button color=\"accent\" (click)=\"openStatisticsModal(user)\" title=\"see statistics\" class=\"mr-3\">\n      <mat-icon color=\"accent\">insert_chart_outlined</mat-icon>\n    </button>\n    <button mat-button color=\"warn\" (click)=\"deleteUser(user)\" title=\"delete user\">\n      <mat-icon color=\"warn\">clear</mat-icon>\n    </button>\n  </mat-list-item>\n</mat-list>\n"
+module.exports = "<mat-list>\n  <mat-list-item *ngFor=\"let user of users\">\n    <img matListAvatar [src]=\"'assets/img/' + user.role + '.svg'\" [alt]=\"user.role + '-avatar'\">\n    <h3 matLine> {{user.username}} </h3>\n    <button mat-button color=\"accent\" (click)=\"openStatisticsModal(user)\" title=\"see statistics\" class=\"mr-3\">\n      <mat-icon color=\"accent\">insert_chart_outlined</mat-icon>\n    </button>\n    <button mat-button color=\"warn\" (click)=\"deleteUser(user)\" title=\"delete user\">\n      <mat-icon color=\"warn\">clear</mat-icon>\n    </button>\n  </mat-list-item>\n</mat-list>\n"
 
 /***/ }),
 
