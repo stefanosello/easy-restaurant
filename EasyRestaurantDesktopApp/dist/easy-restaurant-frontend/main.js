@@ -887,6 +887,64 @@ var TableService = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/_services/user.service.ts":
+/*!*******************************************!*\
+  !*** ./src/app/_services/user.service.ts ***!
+  \*******************************************/
+/*! exports provided: UserService */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UserService", function() { return UserService; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var src_environments_environment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/environments/environment */ "./src/environments/environment.ts");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
+
+
+
+
+var UserService = /** @class */ (function () {
+    function UserService(http) {
+        this.http = http;
+        this.baseUrl = src_environments_environment__WEBPACK_IMPORTED_MODULE_2__["environment"].api + '/users';
+    }
+    UserService.prototype.getAll = function (params) {
+        var url = "" + this.baseUrl;
+        if (!!params) {
+            url = url + "?";
+            Object.keys(params).forEach(function (key, index) {
+                url = "" + url + key + "=" + params[key];
+                if (index < (Object.keys(params).length - 1)) {
+                    url = url + "&&";
+                }
+            });
+        }
+        var users = this.http.get(url, { responseType: 'json' });
+        return users;
+    };
+    UserService.prototype.delete = function (user) {
+        var url = this.baseUrl + "/" + user.username;
+        return this.http.delete(url);
+    };
+    UserService.prototype.get = function (user) {
+        var url = this.baseUrl + "/" + user.username;
+        return this.http.get(url, { responseType: 'json' });
+    };
+    UserService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
+            providedIn: 'root'
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_3__["HttpClient"]])
+    ], UserService);
+    return UserService;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/_validators/async-table-number-not-taken.validator.ts":
 /*!***********************************************************************!*\
   !*** ./src/app/_validators/async-table-number-not-taken.validator.ts ***!
@@ -937,7 +995,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _cook_cook_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./cook/cook.component */ "./src/app/cook/cook.component.ts");
 /* harmony import */ var _bartender_bartender_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./bartender/bartender.component */ "./src/app/bartender/bartender.component.ts");
 /* harmony import */ var _cashdesk_cashdesk_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./cashdesk/cashdesk.component */ "./src/app/cashdesk/cashdesk.component.ts");
-/* harmony import */ var _guards_role_guard__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./_guards/role.guard */ "./src/app/_guards/role.guard.ts");
+/* harmony import */ var _statistics_statistics_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./statistics/statistics.component */ "./src/app/statistics/statistics.component.ts");
+/* harmony import */ var _guards_role_guard__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./_guards/role.guard */ "./src/app/_guards/role.guard.ts");
+
 
 
 
@@ -959,7 +1019,7 @@ var routes = [
             {
                 path: 'notices',
                 component: _notices_notices_component__WEBPACK_IMPORTED_MODULE_6__["NoticesComponent"],
-                canActivate: [_guards_role_guard__WEBPACK_IMPORTED_MODULE_11__["RoleGuard"]],
+                canActivate: [_guards_role_guard__WEBPACK_IMPORTED_MODULE_12__["RoleGuard"]],
                 data: {
                     roles: ["cash_desk", "waiter", "cook", "bartender"]
                 }
@@ -967,7 +1027,7 @@ var routes = [
             {
                 path: 'waiter',
                 component: _waiter_waiter_component__WEBPACK_IMPORTED_MODULE_7__["WaiterComponent"],
-                canActivate: [_guards_role_guard__WEBPACK_IMPORTED_MODULE_11__["RoleGuard"]],
+                canActivate: [_guards_role_guard__WEBPACK_IMPORTED_MODULE_12__["RoleGuard"]],
                 data: {
                     roles: ["waiter"]
                 }
@@ -975,7 +1035,7 @@ var routes = [
             {
                 path: 'cashdesk',
                 component: _cashdesk_cashdesk_component__WEBPACK_IMPORTED_MODULE_10__["CashdeskComponent"],
-                canActivate: [_guards_role_guard__WEBPACK_IMPORTED_MODULE_11__["RoleGuard"]],
+                canActivate: [_guards_role_guard__WEBPACK_IMPORTED_MODULE_12__["RoleGuard"]],
                 data: {
                     roles: ["cash_desk"]
                 }
@@ -983,7 +1043,7 @@ var routes = [
             {
                 path: 'cook',
                 component: _cook_cook_component__WEBPACK_IMPORTED_MODULE_8__["CookComponent"],
-                canActivate: [_guards_role_guard__WEBPACK_IMPORTED_MODULE_11__["RoleGuard"]],
+                canActivate: [_guards_role_guard__WEBPACK_IMPORTED_MODULE_12__["RoleGuard"]],
                 data: {
                     roles: ["cook"]
                 }
@@ -991,9 +1051,17 @@ var routes = [
             {
                 path: 'bartender',
                 component: _bartender_bartender_component__WEBPACK_IMPORTED_MODULE_9__["BartenderComponent"],
-                canActivate: [_guards_role_guard__WEBPACK_IMPORTED_MODULE_11__["RoleGuard"]],
+                canActivate: [_guards_role_guard__WEBPACK_IMPORTED_MODULE_12__["RoleGuard"]],
                 data: {
                     roles: ["bartender"]
+                }
+            },
+            {
+                path: 'statistics',
+                component: _statistics_statistics_component__WEBPACK_IMPORTED_MODULE_11__["StatisticsComponent"],
+                canActivate: [_guards_role_guard__WEBPACK_IMPORTED_MODULE_12__["RoleGuard"]],
+                data: {
+                    roles: ["cash_desk"]
                 }
             },
         ]
@@ -1116,6 +1184,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _bartender_bartender_order_card_bartender_order_card_component__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./bartender/bartender-order-card/bartender-order-card.component */ "./src/app/bartender/bartender-order-card/bartender-order-card.component.ts");
 /* harmony import */ var _cook_cook_order_card_cook_order_card_component__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./cook/cook-order-card/cook-order-card.component */ "./src/app/cook/cook-order-card/cook-order-card.component.ts");
 /* harmony import */ var _notices_notices_component__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./notices/notices.component */ "./src/app/notices/notices.component.ts");
+/* harmony import */ var _statistics_statistics_component__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ./statistics/statistics.component */ "./src/app/statistics/statistics.component.ts");
+/* harmony import */ var _statistics_statistics_modal_statistics_modal_component__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./statistics/statistics-modal/statistics-modal.component */ "./src/app/statistics/statistics-modal/statistics-modal.component.ts");
 
 
 
@@ -1135,6 +1205,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 // tslint:disable-next-line: max-line-length
+
+
 
 
 
@@ -1174,6 +1246,8 @@ var AppModule = /** @class */ (function () {
                 _bartender_bartender_order_card_bartender_order_card_component__WEBPACK_IMPORTED_MODULE_29__["BartenderOrderCardComponent"],
                 _cook_cook_order_card_cook_order_card_component__WEBPACK_IMPORTED_MODULE_30__["CookOrderCardComponent"],
                 _notices_notices_component__WEBPACK_IMPORTED_MODULE_31__["NoticesComponent"],
+                _statistics_statistics_component__WEBPACK_IMPORTED_MODULE_32__["StatisticsComponent"],
+                _statistics_statistics_modal_statistics_modal_component__WEBPACK_IMPORTED_MODULE_33__["StatisticsModalComponent"],
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["BrowserModule"],
@@ -1206,7 +1280,8 @@ var AppModule = /** @class */ (function () {
                 _cashdesk_cashdesk_bill_modal_cashdesk_bill_modal_component__WEBPACK_IMPORTED_MODULE_23__["CashdeskBillModalComponent"],
                 _waiter_waiter_status_modal_waiter_status_modal_component__WEBPACK_IMPORTED_MODULE_26__["WaiterStatusModalComponent"],
                 _waiter_waiter_order_modal_waiter_order_modal_component__WEBPACK_IMPORTED_MODULE_27__["WaiterOrderModalComponent"],
-                _cashdesk_cashdesk_add_card_modal_cashdesk_add_card_modal_component__WEBPACK_IMPORTED_MODULE_28__["CashdeskAddCardModalComponent"]
+                _cashdesk_cashdesk_add_card_modal_cashdesk_add_card_modal_component__WEBPACK_IMPORTED_MODULE_28__["CashdeskAddCardModalComponent"],
+                _statistics_statistics_modal_statistics_modal_component__WEBPACK_IMPORTED_MODULE_33__["StatisticsModalComponent"]
             ],
             bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_9__["AppComponent"]]
         })
@@ -2071,7 +2146,7 @@ var CookComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-sidenav-container class=\"sidenav-container\">\n  <mat-sidenav #drawer class=\"sidenav\" fixedInViewport=\"true\"\n    [attr.role]=\"(isHandset$ | async) ? 'dialog' : 'navigation'\" [mode]=\"(isHandset$ | async) ? 'over' : 'side'\"\n    [opened]=\"!(isHandset$ | async)\">\n    <mat-toolbar>Menu</mat-toolbar>\n    <mat-nav-list>\n      <a mat-list-item [routerLink]=\"'/'+ currentUser.role.replace('_', '')\">Home</a>\n      <a mat-list-item routerLink=\"/notices\">\n        Notices\n        <mat-chip color=\"accent\" *ngIf=\"NoticeHelper.getNotices() && NoticeHelper.getNotices().length > 0\" class=\"ml-3\">\n          {{NoticeHelper.getNotices().length}}\n        </mat-chip>\n      </a>\n      <a mat-list-item (click)=\"logOut()\">Logout</a>\n    </mat-nav-list>\n  </mat-sidenav>\n  <mat-sidenav-content>\n    <mat-toolbar color=\"primary\">\n      <button type=\"button\" aria-label=\"Toggle sidenav\" mat-icon-button (click)=\"drawer.toggle()\"\n        *ngIf=\"isHandset$ | async\">\n        <mat-icon aria-label=\"Side nav toggle icon\">menu</mat-icon>\n      </button>\n      <span>Easy Restaurant</span>\n    </mat-toolbar>\n    <div class=\"content\">\n      <router-outlet></router-outlet>\n    </div>\n  </mat-sidenav-content>\n</mat-sidenav-container>"
+module.exports = "<mat-sidenav-container class=\"sidenav-container\">\n  <mat-sidenav #drawer class=\"sidenav\" fixedInViewport=\"true\"\n    [attr.role]=\"(isHandset$ | async) ? 'dialog' : 'navigation'\" [mode]=\"(isHandset$ | async) ? 'over' : 'side'\"\n    [opened]=\"!(isHandset$ | async)\">\n    <mat-toolbar>Menu</mat-toolbar>\n    <mat-nav-list>\n      <a mat-list-item [routerLink]=\"'/'+ currentUser.role.replace('_', '')\">Home</a>\n      <a mat-list-item *ngIf=\"currentUser.role === 'cash_desk'\" routerLink=\"/statistics\">Statistics</a>\n      <a mat-list-item routerLink=\"/notices\">\n        Notices\n        <mat-chip color=\"accent\" *ngIf=\"NoticeHelper.getNotices() && NoticeHelper.getNotices().length > 0\" class=\"ml-3\">\n          {{NoticeHelper.getNotices().length}}\n        </mat-chip>\n      </a>\n      <a mat-list-item (click)=\"logOut()\">Logout</a>\n    </mat-nav-list>\n  </mat-sidenav>\n  <mat-sidenav-content>\n    <mat-toolbar color=\"primary\">\n      <button type=\"button\" aria-label=\"Toggle sidenav\" mat-icon-button (click)=\"drawer.toggle()\"\n        *ngIf=\"isHandset$ | async\">\n        <mat-icon aria-label=\"Side nav toggle icon\">menu</mat-icon>\n      </button>\n      <span>Easy Restaurant</span>\n    </mat-toolbar>\n    <div class=\"content\">\n      <router-outlet></router-outlet>\n    </div>\n  </mat-sidenav-content>\n</mat-sidenav-container>"
 
 /***/ }),
 
@@ -2314,6 +2389,169 @@ var NoticesComponent = /** @class */ (function () {
         tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_services_notice_service__WEBPACK_IMPORTED_MODULE_3__["NoticeService"]])
     ], NoticesComponent);
     return NoticesComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/statistics/statistics-modal/statistics-modal.component.html":
+/*!*****************************************************************************!*\
+  !*** ./src/app/statistics/statistics-modal/statistics-modal.component.html ***!
+  \*****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<p>\n  statistics-modal works!\n</p>\n"
+
+/***/ }),
+
+/***/ "./src/app/statistics/statistics-modal/statistics-modal.component.scss":
+/*!*****************************************************************************!*\
+  !*** ./src/app/statistics/statistics-modal/statistics-modal.component.scss ***!
+  \*****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3N0YXRpc3RpY3Mvc3RhdGlzdGljcy1tb2RhbC9zdGF0aXN0aWNzLW1vZGFsLmNvbXBvbmVudC5zY3NzIn0= */"
+
+/***/ }),
+
+/***/ "./src/app/statistics/statistics-modal/statistics-modal.component.ts":
+/*!***************************************************************************!*\
+  !*** ./src/app/statistics/statistics-modal/statistics-modal.component.ts ***!
+  \***************************************************************************/
+/*! exports provided: StatisticsModalComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StatisticsModalComponent", function() { return StatisticsModalComponent; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm5/material.es5.js");
+/* harmony import */ var src_app_services_user_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app/_services/user.service */ "./src/app/_services/user.service.ts");
+/* harmony import */ var src_app_models_user__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/app/_models/user */ "./src/app/_models/user.ts");
+
+
+
+
+
+var StatisticsModalComponent = /** @class */ (function () {
+    function StatisticsModalComponent(dialogRef, user, userService) {
+        this.dialogRef = dialogRef;
+        this.user = user;
+        this.userService = userService;
+    }
+    StatisticsModalComponent.prototype.ngOnInit = function () {
+        this.getUser();
+    };
+    StatisticsModalComponent.prototype.getUser = function () {
+        this.userService.get(this.user).subscribe(function (data) { console.log(data); }, function (err) { console.error(err); }, function () { });
+    };
+    StatisticsModalComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
+            selector: 'app-statistics-modal',
+            template: __webpack_require__(/*! ./statistics-modal.component.html */ "./src/app/statistics/statistics-modal/statistics-modal.component.html"),
+            styles: [__webpack_require__(/*! ./statistics-modal.component.scss */ "./src/app/statistics/statistics-modal/statistics-modal.component.scss")]
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__param"](1, Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"])(_angular_material__WEBPACK_IMPORTED_MODULE_2__["MAT_DIALOG_DATA"])),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_material__WEBPACK_IMPORTED_MODULE_2__["MatDialogRef"],
+            src_app_models_user__WEBPACK_IMPORTED_MODULE_4__["User"],
+            src_app_services_user_service__WEBPACK_IMPORTED_MODULE_3__["UserService"]])
+    ], StatisticsModalComponent);
+    return StatisticsModalComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/statistics/statistics.component.html":
+/*!******************************************************!*\
+  !*** ./src/app/statistics/statistics.component.html ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<mat-list>\n  <mat-list-item *ngFor=\"let user of users\">\n    <img matListAvatar [src]=\"'../../assets/img/' + user.role + '.svg'\" [alt]=\"user.role + '-avatar'\">\n    <h3 matLine> {{user.username}} </h3>\n    <button mat-button color=\"accent\" (click)=\"openStatisticsModal(user)\" title=\"see statistics\" class=\"mr-3\">\n      <mat-icon color=\"accent\">insert_chart_outlined</mat-icon>\n    </button>\n    <button mat-button color=\"warn\" (click)=\"deleteUser(user)\" title=\"delete user\">\n      <mat-icon color=\"warn\">clear</mat-icon>\n    </button>\n  </mat-list-item>\n</mat-list>\n"
+
+/***/ }),
+
+/***/ "./src/app/statistics/statistics.component.scss":
+/*!******************************************************!*\
+  !*** ./src/app/statistics/statistics.component.scss ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3N0YXRpc3RpY3Mvc3RhdGlzdGljcy5jb21wb25lbnQuc2NzcyJ9 */"
+
+/***/ }),
+
+/***/ "./src/app/statistics/statistics.component.ts":
+/*!****************************************************!*\
+  !*** ./src/app/statistics/statistics.component.ts ***!
+  \****************************************************/
+/*! exports provided: StatisticsComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StatisticsComponent", function() { return StatisticsComponent; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _services_user_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../_services/user.service */ "./src/app/_services/user.service.ts");
+/* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/material/dialog */ "./node_modules/@angular/material/esm5/dialog.es5.js");
+/* harmony import */ var _statistics_modal_statistics_modal_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./statistics-modal/statistics-modal.component */ "./src/app/statistics/statistics-modal/statistics-modal.component.ts");
+
+
+
+
+
+var StatisticsComponent = /** @class */ (function () {
+    function StatisticsComponent(userService, dialog) {
+        this.userService = userService;
+        this.dialog = dialog;
+        this.users = [];
+    }
+    StatisticsComponent.prototype.ngOnInit = function () {
+        this.getUsers();
+    };
+    StatisticsComponent.prototype.getUsers = function () {
+        var _this = this;
+        this.userService.getAll().subscribe(function (data) {
+            console.log(data);
+            _this.users = data.users;
+        }, function (err) {
+            console.error(err);
+        }, function () { });
+    };
+    StatisticsComponent.prototype.deleteUser = function (user) {
+        var _this = this;
+        this.userService.delete(user).subscribe(function (_) {
+            _this.users = _this.users.filter(function (u) { return u.username != user.username; });
+        }, function (err) {
+            console.error(err);
+        }, function () { });
+    };
+    StatisticsComponent.prototype.openStatisticsModal = function (user) {
+        var dialogRef = this.dialog.open(_statistics_modal_statistics_modal_component__WEBPACK_IMPORTED_MODULE_4__["StatisticsModalComponent"], {
+            data: user
+        });
+        dialogRef.afterClosed().subscribe(function (result) {
+            console.log('The dialog was closed with result: ' + result);
+        });
+    };
+    StatisticsComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
+            selector: 'app-statistics',
+            template: __webpack_require__(/*! ./statistics.component.html */ "./src/app/statistics/statistics.component.html"),
+            styles: [__webpack_require__(/*! ./statistics.component.scss */ "./src/app/statistics/statistics.component.scss")]
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_services_user_service__WEBPACK_IMPORTED_MODULE_2__["UserService"], _angular_material_dialog__WEBPACK_IMPORTED_MODULE_3__["MatDialog"]])
+    ], StatisticsComponent);
+    return StatisticsComponent;
 }());
 
 
@@ -2888,6 +3126,8 @@ __webpack_require__.r(__webpack_exports__);
 if (_environments_environment__WEBPACK_IMPORTED_MODULE_3__["environment"].production) {
     Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["enableProdMode"])();
 }
+Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_1__["platformBrowserDynamic"])().bootstrapModule(_app_app_module__WEBPACK_IMPORTED_MODULE_2__["AppModule"])
+    .catch(function (err) { return console.error(err); });
 var onDeviceReady = function () {
     Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_1__["platformBrowserDynamic"])().bootstrapModule(_app_app_module__WEBPACK_IMPORTED_MODULE_2__["AppModule"]);
 };
