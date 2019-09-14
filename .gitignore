@@ -123,5 +123,6 @@ frontend/package-lock.json
 EasyRestaurantMobileApp/node_modules/
 EasyRestaurantDesktopApp/node_modules/
 EasyRestaurantMobileApp/plugins/
+EasyRestaurantMobileApp/www/
 EasyRestaurantMobileApp/platforms/
 
