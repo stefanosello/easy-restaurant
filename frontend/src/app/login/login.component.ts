@@ -43,13 +43,9 @@ export class LoginComponent implements OnInit {
       this.authService.login(fields.username, fields.password)
         .pipe(first())
         .subscribe(
-          data => {
-            this.router.navigate([this.returnUrl]);
-          },
-          error => {
-            this.invalid = true;
-          }
-        );
+          data => this.router.navigate([this.returnUrl]),
+          error => this.invalid = true
+        )
     }
   }
 

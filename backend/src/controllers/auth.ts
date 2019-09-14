@@ -37,3 +37,7 @@ export const admin: Handler = (req, res, next) => {
     return next()
   next({ statusCode: 401, error: true, errormessage: "Unauthorized" })
 }
+
+export default {
+  credentials, token, admin
+}

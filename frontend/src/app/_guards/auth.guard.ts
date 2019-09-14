@@ -15,15 +15,14 @@ export class AuthGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-    if (localStorage.getItem('token')) {
-      const currentUser = this.authService.getUserInfo();
-      if (currentUser && currentUser.role) {
-        if (!next.queryParams.authorized) {
-          this.router.navigate(['/' + currentUser.role.replace('_', '')], { queryParams: { authorized: true } });
-          return true;
-        } else {
-          return true;
-        }
+    if (this.authService.isLoggedIn()) {
+
+      let user = this.authService.loggedUser;
+
+      if (user && user.role) {
+        if (!next.queryParams.authorized)
+          this.router.navigate(['/' + user.role.replace('_', '')], { queryParams: { authorized: true }, replaceUrl: true });
+        return true;
       }
     }
 

@@ -20,8 +20,8 @@ export class RequestInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // add authorization header with jwt token if available
 
-    if (!this.isRefreshing) {
-      let token = JSON.parse(localStorage.getItem('token'));
+    if (!this.isRefreshing || request.url.includes('/renew')) {
+      const token = this.authService.tokens.jwt;
       if (token)
         request = this.addToken(request, token);
     }
@@ -43,15 +43,15 @@ export class RequestInterceptor implements HttpInterceptor {
       this.refreshTokenSubject.next(null)
 
       return this.authService.refreshToken().pipe(
-        switchMap(token => {
-          if (token) {
-            this.isRefreshing = false;
-            this.refreshTokenSubject.next(token);
-            // refresh page with new access token
-            return next.handle(this.addToken(request, token));
-          }
-          this.authService.logout();
-          return next.handle(request);
+        switchMap(tokens => {
+          this.isRefreshing = false;
+          this.authService.storeJwtToken(tokens.jwt)
+          this.refreshTokenSubject.next(tokens.jwt);
+          // refresh page with new access token
+          return next.handle(this.addToken(request, tokens.jwt));
+        }),
+        catchError(err => {
+          return throwError(err)
         })
       )
     }

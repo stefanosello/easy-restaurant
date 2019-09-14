@@ -5,8 +5,9 @@ import SocketIoHelper from '../helpers/socketio';
 
 const logout: Handler = async (req, res, next) => {
 
-  let session = req.body.token;
-  let payload = <any>jwt.verify(session, process.env.JWT_SECRET!, { algorithms: ['HS256'] }, (err, decoded) => {
+  let session = req.body.session;
+  
+  let payload = <any>jwt.verify(session, process.env.JWT_SECRET!, { algorithms: ['HS256'], ignoreExpiration: true  }, (err, decoded) => {
     if (err)
       return next({ statusCode: 401, error: true, errormessage: "Unauthorized" });
     else

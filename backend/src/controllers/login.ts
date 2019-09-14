@@ -14,7 +14,7 @@ const login: Handler = async (req, res, next) => {
   let user = new User(req.user);
 
   try {
-    token = user.generateToken();
+    token = await user.generateToken();
     refresh = await user.generateRefreshToken(req.ip);
   }
   catch (error) {

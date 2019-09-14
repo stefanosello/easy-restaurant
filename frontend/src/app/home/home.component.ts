@@ -7,6 +7,7 @@ import { AuthService } from '../_services/auth.service';
 import SocketHelper from '../_helpers/socket-helper';
 import NoticeHelper from '../_helpers/notice-helper';
 import { NoticeService } from '../_services/notice.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -26,6 +27,7 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
+    private router: Router,
     private authService: AuthService,
     private noticeService: NoticeService
   ) { }
@@ -36,7 +38,10 @@ export class HomeComponent implements OnInit {
   }
 
   public logOut() {
-    this.authService.logout();
+    this.authService.logout().subscribe(
+      ok => this.router.navigate(['/login']),
+      error => alert('An error has occured during logout')
+    );
   }
 
 }

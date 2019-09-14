@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment'
-import { map } from 'rxjs/operators';
+import { map, tap, mapTo, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { User, Roles } from '../_models/user';
 import jwtDecode from 'jwt-decode';
 import SocketHelper from '../_helpers/socket-helper';
+import { of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,78 +14,107 @@ import SocketHelper from '../_helpers/socket-helper';
 export class AuthService {
 
   baseUrl = environment.api;
+  private readonly JWT_TOKEN = 'token';
+  private readonly REFRESH_TOKEN = 'session';
+  private _user: User;
 
   constructor(private http: HttpClient,
-              private router: Router) { }
+    private router: Router) { }
+
+  get loggedUser() {
+    if (!this._user) this._user = this.getUserInfo();
+    return this._user
+  }
+
+  get tokens() {
+    return {
+      jwt: localStorage.getItem(this.JWT_TOKEN),
+      refresh: localStorage.getItem(this.REFRESH_TOKEN)
+    }
+  }
 
   login(username: string, password: string) {
     const endpoint = this.baseUrl + '/login';
     let headers = new HttpHeaders();
     headers = headers.append('Authorization', 'Basic ' + btoa(`${username}:${password}`));
     headers = headers.append('Content-Type', 'application/x-www-form-urlencoded');
-
     return this.http.post<any>(endpoint, {}, { headers })
-      .pipe(map(response => {
-        // login successful if there's a jwt token in the response
-        if (response && response.token) {
-          // store user details and jwt token in local storage to keep user logged in between page refreshes
-          localStorage.setItem('token', JSON.stringify(response.token));
-        }
-        if (response && response.session) {
-          // store user details and jwt token in local storage to keep user logged in between page refreshes
-          localStorage.setItem('session', JSON.stringify(response.session));
-        }
-        return response.token;
-      }));
+      .pipe(
+        tap(tokens => {
+          console.log(tokens)
+          this.doLoginUser(tokens)
+        }),
+        mapTo(true),
+        catchError(error => {
+          return of(false);
+        }));
   }
 
   logout() {
     const endpoint = this.baseUrl + '/logout';
-    const refresh = JSON.parse(localStorage.getItem('session'));
-    this.http.post<any>(endpoint, { token: refresh }).toPromise()
-      .then(response => {
-        if (response && !response.error) {
+    return this.http.post<any>(endpoint, { session: this.tokens.refresh })
+      .pipe(
+        tap(() => {
+          console.log('logged out')
           SocketHelper.clearSocket();
-          localStorage.removeItem('token');
-          localStorage.removeItem('session');
-          this.router.navigate(['/login']);
-        } else {
-          console.log('ERRORE');
-        }
-      });
+          this.doLogoutUser()
+        }),
+        mapTo(true),
+        catchError(error => of(false)));
   }
 
   refreshToken() {
     const endpoint = this.baseUrl + '/renew';
-    const refresh = JSON.parse(localStorage.getItem('session'));
+    return this.http.post<any>(endpoint, { refresh: this.tokens.refresh });
+  }
 
-    let headers = new HttpHeaders();
-    headers = headers.append('Authorization', 'Bearer ' + refresh);
-    headers = headers.append('Content-Type', 'application/x-www-form-urlencoded');
+  private doLoginUser(tokens) {
+    this.storeTokens(tokens);
+    this._user = this.getUserInfo();
+  }
 
-    return this.http.post<any>(endpoint, {}, { headers })
-      .pipe(map(response => {
-        // refresh successful if there's a jwt token in the response
-        if (response && response.token) {
-          // store user details and jwt token in local storage to keep user logged in between page refreshes
-          localStorage.setItem('token', JSON.stringify(response.token));
-        }
-        return response.token;
-      }));
+  private doLogoutUser() {
+    this._user = null;
+    this.removeTokens();
+  }
+
+  isLoggedIn() {
+    return !!this.tokens.jwt;
+  }
+
+  isTokenExpired(): boolean {
+    const token = this.tokens.jwt;
+    if (!token) return true;
+    const decoded = jwtDecode(token);
+    const date = new Date(0).setUTCSeconds(decoded.exp);
+    if (date === undefined) return false;
+
+    if (date.valueOf() < new Date().valueOf()) {
+      this.refreshToken();
+    }
+    return false;
+  }
+
+  storeJwtToken(jwt: string) {
+    localStorage.setItem(this.JWT_TOKEN, jwt);
+  }
+
+  private storeTokens(tokens) {
+    localStorage.setItem(this.JWT_TOKEN, tokens.token);
+    localStorage.setItem(this.REFRESH_TOKEN, tokens.session);
+  }
+
+  private removeTokens() {
+    localStorage.removeItem(this.JWT_TOKEN);
+    localStorage.removeItem(this.REFRESH_TOKEN);
   }
 
   getUserInfo(): User {
-    const token = localStorage.getItem('token');
-    try {
-      const payload = jwtDecode(token);
-      const user = new User();
-      user.username = payload.username;
-      user.role = payload.role;
-      user._id = payload.id;
-      user.token = token;
-      return user;
-    } catch (Error) {
-      return null;
-    }
+    const payload = jwtDecode(this.tokens.jwt);
+    const user = new User();
+    user.username = payload.username;
+    user.role = payload.role;
+    user._id = payload.id;
+    return user;
   }
 }

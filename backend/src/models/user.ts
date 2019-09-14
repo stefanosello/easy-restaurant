@@ -56,7 +56,7 @@ UserSchema.methods.validatePassword = function (pwd: string): boolean {
   return bcrypt.compareSync(pwd, this.password);
 }
 
-UserSchema.methods.generateToken = function (exp: string = '1h'): string {
+UserSchema.methods.generateToken = function (exp: string = '5m'): string {
   return jsonwebtoken.sign({
     username: this.username,
     role: this.role,
@@ -76,16 +76,18 @@ UserSchema.methods.generateRefreshToken = async function (ip: string): Promise<s
     issued: new Date()
   };
 
-  return this.updateOne({ $push: { sessions: session } }
-  )
+  let signedToken;
+
+  await this.updateOne({ $push: { sessions: session } })
     .then(u => {
-      return jsonwebtoken.sign({
+      signedToken = jsonwebtoken.sign({
         username: this.username,
         role: this.role,
         id: this._id,
         token: token
       }, process.env.JWT_SECRET!)
     })
+  return (signedToken || '')
 
 }
 
