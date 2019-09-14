@@ -9,7 +9,7 @@ import { AuthService } from '../_services/auth.service';
 export class RoleGuard implements CanActivate {
 
   constructor(private router: Router,
-    private authService: AuthService) { }
+              private authService: AuthService) { }
 
   canActivate(
     next: ActivatedRouteSnapshot,

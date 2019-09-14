@@ -2,7 +2,7 @@
   <mat-list-item *ngFor="let user of users">
     <img matListAvatar [src]="'assets/img/' + user.role + '.svg'" [alt]="user.role + '-avatar'">
     <h3 matLine> {{user.username}} </h3>
-    <button mat-button color="accent" (click)="openStatisticsModal(user)" title="see statistics" class="mr-3">
+    <button mat-button color="accent" *ngIf="user.role !== 'cash_desk'" (click)="openStatisticsModal(user)" title="see statistics" class="mr-3">
       <mat-icon color="accent">insert_chart_outlined</mat-icon>
     </button>
     <button mat-button color="warn" (click)="deleteUser(user)" title="delete user">

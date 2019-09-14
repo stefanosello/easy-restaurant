@@ -3,6 +3,7 @@ import { UserService } from '../_services/user.service';
 import { User } from '../_models/user';
 import { MatDialog } from '@angular/material/dialog';
 import { StatisticsModalComponent } from './statistics-modal/statistics-modal.component';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-statistics',
@@ -13,7 +14,7 @@ export class StatisticsComponent implements OnInit {
 
   public users: User[] = [];
 
-  constructor(private userService: UserService, public dialog: MatDialog) { }
+  constructor(private userService: UserService, public dialog: MatDialog, private authService: AuthService) { }
 
   ngOnInit() {
     this.getUsers();
@@ -23,7 +24,7 @@ export class StatisticsComponent implements OnInit {
     this.userService.getAll().subscribe(
       data => {
         console.log(data);
-        this.users = data.users;
+        this.users = data.users.filter(user => user.username !== this.authService.getUserInfo().username);
       },
       err => {
         console.error(err);
