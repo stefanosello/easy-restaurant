@@ -1,0 +1,59 @@
+<h3 matSubheader>
+  <button mat-raised-button (click)="openAddModal()">
+    <mat-icon>add</mat-icon> New user
+  </button>
+</h3>
+
+<h3 matSubheader>Users</h3>
+<mat-list *ngIf="this.users">
+  <h2 matSubheader>Cashdesk</h2>
+  <mat-list-item *ngFor="let user of cashdesks()">
+    <img matListAvatar [src]="'assets/img/' + user.role + '.svg'" [alt]="user.role + '-avatar'">
+    <h3 matLine> {{user.username}} </h3>
+    <mat-action-list>
+      <a matLine href="...">{{ link }}</a>
+      <button mat-list-item (click)="openInfoModal(user.username)">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </mat-action-list>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+  <h2 matSubheader>Waiter</h2>
+  <mat-list-item *ngFor="let user of waiters()">
+    <img matListAvatar [src]="'assets/img/' + user.role + '.svg'" [alt]="user.role + '-avatar'">
+    <h3 matLine> {{user.username}} </h3>
+    <mat-action-list>
+      <a matLine href="...">{{ link }}</a>
+      <button mat-list-item (click)="openInfoModal(user.username)">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </mat-action-list>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+  <h2 matSubheader>Cook</h2>
+  <mat-list-item *ngFor="let user of cooks()">
+    <img matListAvatar [src]="'assets/img/' + user.role + '.svg'" [alt]="user.role + '-avatar'">
+    <h3 matLine> {{user.username}} </h3>
+    <mat-action-list>
+      <a matLine href="...">{{ link }}</a>
+      <button mat-list-item (click)="openInfoModal(user.username)">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </mat-action-list>
+  </mat-list-item>
+
+  <mat-divider></mat-divider>
+  <h2 matSubheader>Bartender</h2>
+  <mat-list-item *ngFor="let user of bartenders()">
+    <img matListAvatar [src]="'assets/img/' + user.role + '.svg'" [alt]="user.role + '-avatar'">
+    <h3 matLine> {{user.username}} </h3>
+    <mat-action-list>
+      <a matLine href="...">{{ link }}</a>
+      <button mat-list-item (click)="openInfoModal(user.username)">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </mat-action-list>
+  </mat-list-item>
+</mat-list>

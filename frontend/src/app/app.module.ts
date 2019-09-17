@@ -34,6 +34,9 @@ import { CookOrderCardComponent } from './cook/cook-order-card/cook-order-card.c
 import { NoticesComponent } from './notices/notices.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { StatisticsModalComponent } from './statistics/statistics-modal/statistics-modal.component';
+import { UsersComponent } from './users/users.component';
+import { UserInfoModalComponent } from './users/user-info-modal/user-info-modal.component';
+import { UserAddModalComponent } from './users/user-add-modal/user-add-modal.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +60,9 @@ import { StatisticsModalComponent } from './statistics/statistics-modal/statisti
     NoticesComponent,
     StatisticsComponent,
     StatisticsModalComponent,
+    UsersComponent,
+    UserInfoModalComponent,
+    UserAddModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -90,7 +96,9 @@ import { StatisticsModalComponent } from './statistics/statistics-modal/statisti
     WaiterStatusModalComponent,
     WaiterOrderModalComponent,
     CashdeskAddCardModalComponent,
-    StatisticsModalComponent
+    StatisticsModalComponent,
+    UserInfoModalComponent,
+    UserAddModalComponent
   ],
   bootstrap: [AppComponent]
 })

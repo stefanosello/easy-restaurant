@@ -30,6 +30,7 @@ export class RequestInterceptor implements HttpInterceptor {
       .pipe(
         catchError(error => {
           if (error.status == 401 && this.authService.getUserInfo()) {
+            console.log('TOKEN EXPIRED')
             return this.handle401Error(request, next);
           } else {
             return throwError(error)
@@ -41,14 +42,16 @@ export class RequestInterceptor implements HttpInterceptor {
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.refreshTokenSubject.next(null)
+      console.log('ASKING RENEW')
 
       return this.authService.refreshToken().pipe(
         switchMap(tokens => {
+          console.log('GOT NEW TOKEN')
           this.isRefreshing = false;
-          this.authService.storeJwtToken(tokens.jwt)
-          this.refreshTokenSubject.next(tokens.jwt);
+          this.authService.storeJwtToken(tokens.token)
+          this.refreshTokenSubject.next(tokens.token);
           // refresh page with new access token
-          return next.handle(this.addToken(request, tokens.jwt));
+          return next.handle(this.addToken(request, tokens.token));
         }),
         catchError(err => {
           return throwError(err)

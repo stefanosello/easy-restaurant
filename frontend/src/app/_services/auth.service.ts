@@ -65,7 +65,8 @@ export class AuthService {
 
   refreshToken() {
     const endpoint = this.baseUrl + '/renew';
-    return this.http.post<any>(endpoint, { refresh: this.tokens.refresh });
+    console.log('ASKED FOR RENEW')
+    return this.http.post<any>(endpoint, { session: this.tokens.refresh });
   }
 
   private doLoginUser(tokens) {
