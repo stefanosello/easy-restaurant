@@ -3,38 +3,35 @@ import { CommonModule } from '@angular/common';
 
 import {
   MatButtonModule, MatCardModule, MatDialogModule, MatInputModule, MatTableModule,
-  MatToolbarModule, MatMenuModule, MatIconModule, MatProgressSpinnerModule, MatSidenavModule
+  MatToolbarModule, MatMenuModule, MatIconModule, MatProgressSpinnerModule, MatSidenavModule,
+  MatSelectModule, MatListModule, MatTabsModule, MatExpansionModule, MatSnackBarModule
 } from '@angular/material';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+
+const modules = [
+  CommonModule,
+  MatToolbarModule,
+  MatButtonModule,
+  MatCardModule,
+  MatInputModule,
+  MatDialogModule,
+  MatTableModule,
+  MatMenuModule,
+  MatIconModule,
+  MatProgressSpinnerModule,
+  MatSidenavModule,
+  MatSelectModule,
+  MatListModule,
+  MatTabsModule,
+  MatExpansionModule,
+  MatSnackBarModule,
+  MatAutocompleteModule
+]
 
 @NgModule({
-
-  imports: [
-    CommonModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatCardModule,
-    MatInputModule,
-    MatDialogModule,
-    MatTableModule,
-    MatMenuModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-    MatSidenavModule
-  ],
-
-  exports: [
-    CommonModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatCardModule,
-    MatInputModule,
-    MatDialogModule,
-    MatTableModule,
-    MatMenuModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-    MatSidenavModule
-  ],
+  declarations: [],
+  imports: [modules],
+  exports: [modules],
 
 })
 export class MaterialModule { }

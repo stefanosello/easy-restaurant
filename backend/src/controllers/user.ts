@@ -1,5 +1,5 @@
 import { Handler } from 'express'
-import User, { Roles, IUser} from '../models/user'
+import User, { Roles, IUser } from '../models/user'
 import Table from '../models/table'
 import { IOrder } from '../models/order'
 
@@ -27,16 +27,16 @@ export const get: Handler = (req, res, next) => {
             });
             if (user.role === Roles.Cook || user.role === Roles.Bartender) {
               // retrieve all orders
-              const orders:IOrder[] = [];
-              services.forEach( service => {
-                service.orders.forEach((order:IOrder) => orders.push(order));
+              const orders: IOrder[] = [];
+              services.forEach(service => {
+                service.orders.forEach((order: IOrder) => orders.push(order));
               });
-              const items:any[] = []
+              const items: any[] = []
               orders.forEach(order => {
-                order.items.forEach( item => items.push(item));
+                order.items.forEach(item => items.push(item));
               });
               const itemsPrepared = items.filter(item => { return `${item.cook}` === `${user._id}`; });
-              let daysOfService =  itemsPrepared.map(item => new Date(item.end).toDateString());
+              let daysOfService = itemsPrepared.map(item => new Date(item.end).toDateString());
               daysOfService = Array.from(new Set(daysOfService));
               response.richInfo = {
                 itemsPrepared: itemsPrepared,
@@ -47,8 +47,8 @@ export const get: Handler = (req, res, next) => {
             }
             if (user.role === Roles.Waiter) {
               let peopleServedAmount = 0;
-              const servicesServed = services.filter( service => { return `${service.waiter}` === `${user._id}`; });
-              let daysOfService =  servicesServed.map(service => new Date(service.timestamp).toDateString());
+              const servicesServed = services.filter(service => { return `${service.waiter}` === `${user._id}`; });
+              let daysOfService = servicesServed.map(service => new Date(service.timestamp).toDateString());
               daysOfService = Array.from(new Set(daysOfService));
               servicesServed.forEach(service => { peopleServedAmount += service.covers });
               response.richInfo = {
@@ -94,7 +94,9 @@ export const update: Handler = (req, res, next) => {
 }
 
 export const updatePartial: Handler = (req, res, next) => {
-  res.status(501);
+  User.findOneAndUpdate({ username: req.params.username }, { $set: req.body }, { new: true })
+    .then(user => res.status(200).json({ user }))
+    .catch(err => next({ statusCode: 400, error: true, errormessage: `DB error: ${err.errmsg}` }));
 }
 
 export const remove: Handler = (req, res, next) => {

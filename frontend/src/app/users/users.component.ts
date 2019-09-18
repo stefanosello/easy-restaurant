@@ -34,9 +34,9 @@ export class UsersComponent implements OnInit {
   cooks = () => this.users.filter(user => user.role == 'cook')
   bartenders = () => this.users.filter(user => user.role == 'bartender')
 
-  public openInfoModal(table): void {
+  public openInfoModal(user): void {
     const dialogRef = this.dialog.open(UserInfoModalComponent, {
-      data: table
+      data: user
     });
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed with result: ' + result);
