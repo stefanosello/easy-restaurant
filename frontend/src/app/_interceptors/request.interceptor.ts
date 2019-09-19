@@ -13,13 +13,14 @@ export class RequestInterceptor implements HttpInterceptor {
 
   constructor(private authService: AuthService) { }
 
+  // Injects the token in the authorization header of a http request
   addToken(req: HttpRequest<any>, token: string): HttpRequest<any> {
     return req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // add authorization header with jwt token if available
 
+    // Add authorization header with jwt token unless it is a repeated request while waiting for renew
     if (!this.isRefreshing || request.url.includes('/renew')) {
       const token = this.authService.tokens.jwt;
       if (token)
@@ -29,8 +30,8 @@ export class RequestInterceptor implements HttpInterceptor {
     return next.handle(request)
       .pipe(
         catchError(error => {
+          // If unauthorized, ask for token renew
           if (error.status == 401 && this.authService.getUserInfo()) {
-            console.log('TOKEN EXPIRED')
             return this.handle401Error(request, next);
           } else {
             return throwError(error)
@@ -39,18 +40,18 @@ export class RequestInterceptor implements HttpInterceptor {
   }
 
   handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    // Handle only the first request, in case of spammed requests
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.refreshTokenSubject.next(null)
-      console.log('ASKING RENEW')
 
       return this.authService.refreshToken().pipe(
         switchMap(tokens => {
-          console.log('GOT NEW TOKEN')
           this.isRefreshing = false;
           this.authService.storeJwtToken(tokens.token)
+          // Other requests will wait for this token
           this.refreshTokenSubject.next(tokens.token);
-          // refresh page with new access token
+          // Refresh page with new access token
           return next.handle(this.addToken(request, tokens.token));
         }),
         catchError(err => {

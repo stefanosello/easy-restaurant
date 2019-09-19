@@ -40,14 +40,9 @@ export class AuthService {
     headers = headers.append('Content-Type', 'application/x-www-form-urlencoded');
     return this.http.post<any>(endpoint, {}, { headers })
       .pipe(
-        tap(tokens => {
-          console.log(tokens)
-          this.doLoginUser(tokens)
-        }),
+        tap(tokens => this.doLoginUser(tokens)),
         mapTo(true),
-        catchError(error => {
-          return of(false);
-        }));
+        catchError(error => of(false)));
   }
 
   logout() {
@@ -55,7 +50,6 @@ export class AuthService {
     return this.http.post<any>(endpoint, { session: this.tokens.refresh })
       .pipe(
         tap(() => {
-          console.log('logged out')
           SocketHelper.clearSocket();
           this.doLogoutUser()
         }),
@@ -65,7 +59,6 @@ export class AuthService {
 
   refreshToken() {
     const endpoint = this.baseUrl + '/renew';
-    console.log('ASKED FOR RENEW')
     return this.http.post<any>(endpoint, { session: this.tokens.refresh });
   }
 
