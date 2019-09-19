@@ -4,8 +4,6 @@ import User from '../models/user';
 
 const renew: Handler = async (req, res, next) => {
 
-console.log(req.headers)
-
   let token = req.headers!['authorization']!.split(" ")[1];
   let session = req.body.session;
 

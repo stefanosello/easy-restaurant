@@ -35,4 +35,14 @@ export class UserService {
     const url = `${this.baseUrl}/${user.username}`;
     return this.http.get<any>(url, { responseType: 'json' });
   }
+
+  create(user) {
+    const url = `${this.baseUrl}`
+    return this.http.post<any>(url, user);
+  }
+
+  update(user) {
+    const url = `${this.baseUrl}/${user.username}`;
+    return this.http.put<any>(url, user);
+  }
 }

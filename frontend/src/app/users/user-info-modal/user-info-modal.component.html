@@ -1,0 +1,38 @@
+<div class="px-2 pt-2" *ngIf="user">
+  <h1 mat-dialog-title class="text-primary mb-3"><i class="fas fa-edit mr-2"></i> Edit user {{user.username}} </h1>
+  <div mat-dialog-content>
+    <mat-form-field appearance="outline">
+      <mat-label>First name</mat-label>
+      <input matInput type="text" [formControl]="firstName" required>
+      <mat-icon matSuffix class="mx-2 text-small">person</mat-icon>
+    </mat-form-field>
+    <br>
+    <mat-form-field appearance="outline">
+      <mat-label>Last name</mat-label>
+      <input matInput type="text" [formControl]="lastName" required>
+      <mat-icon matSuffix class="mx-2 text-small">person</mat-icon>
+    </mat-form-field>
+    <br>
+    <mat-form-field appearance="outline">
+      <mat-label>Role</mat-label>
+      <mat-select [formControl]="role" required>
+        <mat-option value="cash_desk">Cashdesk</mat-option>
+        <mat-option value="bartender">Bartender</mat-option>
+        <mat-option value="cook">Cook</mat-option>
+        <mat-option value="waiter">Waiter</mat-option>
+      </mat-select>
+      <mat-icon matSuffix class="mx-2 text-small">work</mat-icon>
+    </mat-form-field>
+    <br>
+    <mat-form-field appearance="outline">
+      <mat-label>Username</mat-label>
+      <input matInput type="text" [formControl]="username" >
+      <mat-icon matSuffix class="mx-2 text-small">face</mat-icon>
+    </mat-form-field>
+    <br>
+  </div>
+  <div mat-dialog-actions class="w-100 d-flex mb-0">
+    <button mat-flat-button class="flex-fill mr-3" color="accent" (click)="onNoClick()">No Thanks</button>
+    <button mat-flat-button class="flex-fill" color="primary" (click)="updateUser()" type="submit">Ok</button>
+  </div>
+</div>
