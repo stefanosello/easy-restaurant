@@ -25,4 +25,4 @@ const TableSchema: Schema = new Schema({
 });
 
 const Table = model<ITable>('Table', TableSchema);
-export default Table; 
+export default Table;

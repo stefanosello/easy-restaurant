@@ -2,9 +2,9 @@ import Notice from '../models/notice';
 import User, { Roles } from '../models/user';
 import SocketHelper from '../helpers/socketio'
 
-export function pushNotice(from: string, to: string, message: string, cb: Function) {
+export function pushNotice(from: string, to: string, message: string, cb: () => void) {
   const findBlock: any = {};
-  if (to == Roles.Waiter || to == Roles.Cook || to == Roles.Bartender || to == Roles.CashDesk) {
+  if (to === Roles.Waiter || to === Roles.Cook || to === Roles.Bartender || to === Roles.CashDesk) {
     findBlock.role = to;
   } else {
     findBlock._id = to;
@@ -16,9 +16,9 @@ export function pushNotice(from: string, to: string, message: string, cb: Functi
       if (userIds && userIds.length > 0) {
         console.log(userIds);
         Notice
-          .create({ from: from, to: userIds, message: message })
-          .then(message => {
-            console.log(message);
+          .create({ from, to: userIds, message })
+          .then(notice => {
+            console.log(notice);
             cb();
             if (!!findBlock._id) {
               SocketHelper.emitToUser(findBlock._id, 'fetchNotices');

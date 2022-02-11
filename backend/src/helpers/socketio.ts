@@ -1,16 +1,16 @@
 import { Server } from 'http';
 import { Roles } from '../models/user';
-const socketio = require("socket.io");
-const jwt = require('jsonwebtoken');
+import socketio from 'socket.io';
+import jwt from 'jsonwebtoken';
 
 
 export default (function SocketIoHelper() {
   let io: any = null;
-  let userIdToSocket: any = { };
-  
+  const userIdToSocket: any = { };
+
   function setSocketInstance(server: Server) {
     if (!io) {
-      io = socketio(server).of('/api/v1');
+      io = (new socketio.Server(server)).of('/api/v1');
       io
         // authenticate with jwt
         .use((socket: any, next: any) => {
@@ -24,21 +24,21 @@ export default (function SocketIoHelper() {
             });
           } else {
             next(new Error('Authentication error'));
-          }    
+          }
         })
         .on('connection', (socket: any) => {
           // Connection now authenticated to receive further events
           userIdToSocket[socket.decoded.id] = socket;
-          if (socket.decoded.role == Roles.Cook) {
+          if (socket.decoded.role === Roles.Cook) {
             socket.join(Roles.Cook);
           }
-          if (socket.decoded.role == Roles.Bartender) {
+          if (socket.decoded.role === Roles.Bartender) {
             socket.join(Roles.Bartender);
           }
-          if (socket.decoded.role == Roles.Waiter) {
+          if (socket.decoded.role === Roles.Waiter) {
             socket.join(Roles.Waiter);
           }
-          if (socket.decoded.role == Roles.CashDesk) {
+          if (socket.decoded.role === Roles.CashDesk) {
             socket.join(Roles.CashDesk);
           }
           socket.emit('connected', { userId: socket.decoded.id, socket: socket.id });
@@ -47,7 +47,7 @@ export default (function SocketIoHelper() {
         });
     }
   }
-  
+
   function getSocketFromUserId(userId: string) {
     const userSocket = userIdToSocket[userId];
     if (userSocket) {
@@ -56,7 +56,7 @@ export default (function SocketIoHelper() {
       throw new Error(`Socket.io ERROR: user with id ${userId} has no socket associated`);
     }
   }
-  
+
   function disconnectSocket(userId: string) {
     const userSocket = userIdToSocket[userId];
     if (userSocket) {
@@ -69,7 +69,7 @@ export default (function SocketIoHelper() {
   }
 
   function emitToUser(userId: string, eventName: string, data?: any) {
-    let socket = getSocketFromUserId(userId);
+    const socket = getSocketFromUserId(userId);
     const message = !!data ? data : '';
     socket.emit(eventName, message);
     // should always notify cashdesk when something changes

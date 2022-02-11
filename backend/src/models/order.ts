@@ -29,4 +29,4 @@ export const OrderSchema: Schema = new Schema({
 });
 
 const Order = model<IOrder>('Order', OrderSchema);
-export default Order; 
+export default Order;

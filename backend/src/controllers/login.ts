@@ -11,7 +11,7 @@ const login: Handler = async (req, res, next) => {
 
   let token;
   let refresh;
-  let user = new User(req.user);
+  const user = new User(req.user);
 
   try {
     token = await user.generateToken();
@@ -24,7 +24,7 @@ const login: Handler = async (req, res, next) => {
   res.status(200).json({
     error: false,
     errormessage: "",
-    token: token,
+    token,
     session: refresh
   });
 

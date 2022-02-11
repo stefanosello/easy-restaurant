@@ -21,7 +21,7 @@ export const get: Handler = (req, res, next) => {
           .then(tables => {
             // retrieve all services
             const servicesArray = tables.map(table => table.services);
-            let services: any[] = [];
+            const services: any[] = [];
             servicesArray.forEach(srv => {
               srv.forEach(s => services.push(s));
             });
@@ -39,10 +39,10 @@ export const get: Handler = (req, res, next) => {
               let daysOfService = itemsPrepared.map(item => new Date(item.end).toDateString());
               daysOfService = Array.from(new Set(daysOfService));
               response.richInfo = {
-                itemsPrepared: itemsPrepared,
+                itemsPrepared,
                 itemsTotalsAmount: items.length,
                 itemsPreparedAmount: itemsPrepared.length,
-                daysOfService: daysOfService
+                daysOfService
               }
             }
             if (user.role === Roles.Waiter) {
@@ -52,11 +52,11 @@ export const get: Handler = (req, res, next) => {
               daysOfService = Array.from(new Set(daysOfService));
               servicesServed.forEach(service => { peopleServedAmount += service.covers });
               response.richInfo = {
-                servicesServed: servicesServed,
+                servicesServed,
                 servicesTotalsAmount: services.length,
                 servicesServedAmount: servicesServed.length,
-                peopleServedAmount: peopleServedAmount,
-                daysOfService: daysOfService
+                peopleServedAmount,
+                daysOfService
               }
             }
             res.status(200).json(response);
@@ -103,7 +103,7 @@ export const remove: Handler = (req, res, next) => {
   if (!req.params.username)
     return next({ statusCode: 400, error: true, errormessage: `Must specify a Username` });
 
-  if (req.user.username == req.params.username)
+  if ((new User(req.user).username === req.params.username))
     return next({ statusCode: 400, error: true, errormessage: `You can't delete your own user!` });
 
   User.findOneAndDelete({ username: req.params.username })

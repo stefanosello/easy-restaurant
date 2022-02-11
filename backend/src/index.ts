@@ -1,4 +1,4 @@
-let setup = require('dotenv').config();
+import dotenv from 'dotenv'
 import express, { ErrorRequestHandler } from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
@@ -7,7 +7,9 @@ import http from 'http'
 import routes from './routes'
 import User from './models/user'
 import SocketIoHelper from './helpers/socketio'
-let path = require('path');
+import path from 'path';
+
+const setup = dotenv.config();
 
 if (setup.error) {
   console.log("Unable to load \".env\" file. Please provide one to store the JWT secret key");
@@ -42,15 +44,11 @@ app
     res.status(404).json({ statusCode: 404, error: true, errormessage: "Invalid endpoint" });
   });
 
-mongoose.connect(process.env.MONGODB_URI!, {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useFindAndModify: false
-})
+mongoose.connect(process.env.MONGODB_URI!, { })
   .then(() => {
     console.log(`Connected to MongoDB on ${process.env.MONGODB_URI}`);
 
-    let admin = User.create({
+    User.create({
       username: "admin",
       password: "admin",
       role: "cash_desk"

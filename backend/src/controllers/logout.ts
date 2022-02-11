@@ -1,21 +1,22 @@
 import { Handler } from 'express'
 import jwt from 'jsonwebtoken';
-import User from '../models/user'
+import User, { IUser } from '../models/user'
 import SocketIoHelper from '../helpers/socketio';
 
 const logout: Handler = async (req, res, next) => {
 
-  let session = req.body.session;
-  
-  let payload = <any>jwt.verify(session, process.env.JWT_SECRET!, { algorithms: ['HS256'], ignoreExpiration: true  }, (err, decoded) => {
+  const session = req.body.session;
+
+  const payload = jwt.verify(session, process.env.JWT_SECRET!, { algorithms: ['HS256'], ignoreExpiration: true  }, (err, decoded) => {
     if (err)
       return next({ statusCode: 401, error: true, errormessage: "Unauthorized" });
     else
       return decoded;
-  });
+  }) as any;
 
+  const user: IUser = new User(req.user);
   User.updateOne(
-    { username: req.user.username },
+    { username: user.username },
     { $pull: { sessions: { token: payload.token } } }
   )
   .then(() => {

@@ -26,7 +26,7 @@ interface IItemModel extends Model<IItem> {
 	types: Readonly<object>
 }
 
-ItemSchema.statics.types = Object.values(Types);
+ItemSchema.statics.types = () => Object.values(Types);
 
 const Item = model<IItem, IItemModel>('Item', ItemSchema);
-export default Item; 
+export default Item;

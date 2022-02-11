@@ -2,12 +2,12 @@ import { Handler } from 'express';
 import passport from 'passport'
 import http from 'passport-http'
 import jwt from 'passport-jwt'
-import User, { Roles } from '../models/user'
+import User, { Roles, IUser } from '../models/user'
 
 passport
   .use(new http.BasicStrategy(
-    function (username, password, done) {
-      User.findOne({ username: username }, (err, user) => {
+    (username, password, done) => {
+      User.findOne({ username }, (err: any, user: IUser) => {
         if (err) { return done(err); }
         if (!user) { return done(null, false); }
         if (!user.validatePassword(password)) { return done(null, false); }
@@ -32,8 +32,8 @@ export const credentials: Handler = passport.authenticate('basic', { session: fa
 export const token: Handler = passport.authenticate('jwt', { session: false })
 
 export const admin: Handler = (req, res, next) => {
-  let user = new User(req.user);
-  if (user.role == Roles.CashDesk)
+  const user = new User(req.user);
+  if (user.role === Roles.CashDesk)
     return next()
   next({ statusCode: 401, error: true, errormessage: "Unauthorized" })
 }
